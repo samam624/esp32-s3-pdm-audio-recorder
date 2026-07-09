@@ -44,20 +44,83 @@ This PCB revision has no dedicated card-detect pin (the SD socket was
 jury-rigged), so `updateSdPresence()` in the firmware infers presence in
 software instead of reading a hardware signal:
 
-- While idle, every `SD_CHECK_INTERVAL_MS` (currently **50ms**) it does a
-  cheap `SD.open("/")` probe. If that fails while we thought the card was
-  mounted, the card is marked absent and the LED turns off. If the card was
-  absent, it retries a full `mountSd()` — so reinserting a card is picked up
-  automatically within ~50ms, no reboot needed.
+- While idle **and mounted**, every `SD_CHECK_INTERVAL_MS` (currently
+  **50ms**) it does a cheap `SD.open("/")` probe. If that fails, the card is
+  marked absent and the LED turns off.
+- While idle **and not mounted**, it retries a full `mountSd()` on a slower
+  `SD_REMOUNT_INTERVAL_MS` cadence (currently **1000ms**) — see "Boot-time
+  mount failure" below for why this is deliberately much slower than the
+  50ms presence probe.
 - This check is **skipped entirely while actively recording** so it never
   competes with the SD write for the SPI bus.
 - If a **write fails during an active recording** (the strongest possible
   signal the card was just pulled), the firmware marks the card gone
   immediately rather than waiting for the next poll.
 
-If you ever need a longer/shorter interval, it's the one `#define` near the
-top of the sketch (`SD_CHECK_INTERVAL_MS`). Going much below ~50ms buys
-nothing perceptible and adds SPI bus churn while idle.
+If you ever need a longer/shorter interval, they're the two `#define`s near
+the top of the sketch (`SD_CHECK_INTERVAL_MS`, `SD_REMOUNT_INTERVAL_MS`).
+
+### Boot-time mount failure (fixed 2026-07-08)
+
+Observed once: after flashing and hitting reset, the SD LED never lit even
+with a card inserted, and the level-meter LED (41) got stuck on. Unplugging
+and reinserting the card fixed it immediately. Two contributing issues, both
+addressed:
+
+1. **The card's own SPI state machine can get stuck.** If the board resets
+   while a prior SD transaction is unfinished (e.g. the reset button), the
+   card can be left waiting for the rest of that command and will silently
+   ignore a fresh `CMD0` — a physical unplug/replug clears this by
+   power-cycling the card. `mountSd()` now sends the SD spec's required
+   >=74 clock pulses (CS high, MOSI high) before each mount attempt
+   (`wakeSdSpiBus()`), which flushes the same stuck state in software. This
+   may not cover every possible stuck state a card can get into, but it's
+   the standard recovery sequence and costs a negligible ~10 SPI bytes per
+   attempt.
+2. **The old code retried a full `mountSd()` (all 7 SPI speeds) every 50ms
+   while unmounted.** Each `SD.begin()` against a non-responding card can
+   block for a while, so back-to-back retries at 50ms could starve `loop()`
+   of time for anything else — including `updateLevelMeter()`, which is why
+   the level LED appeared to freeze at whatever value it last computed
+   rather than decaying back down. This is what `SD_REMOUNT_INTERVAL_MS`
+   fixes: the expensive remount path now runs at most once a second,
+   independent of the cheap 50ms presence probe used once a card is mounted.
+
+## Surviving a card pulled mid-recording (fixed 2026-07-08)
+
+The WAV header's data-size field is written once when a recording starts
+(as `0`, since the final size isn't known yet) and was previously only
+corrected once, in `stopRecording()`. If the card was pulled before that
+final write could happen, the file on disk kept its `dataSize=0` header
+forever — even though the audio data was physically written to it — and
+most players treat that as an empty/corrupt file, discarding everything.
+
+`updateWavHeaderInPlace()` now rewrites the header with the current byte
+count on the same 1-second cadence as the existing periodic flush
+(`FLUSH_INTERVAL_MS`), seeking back to the append position afterward so it
+doesn't disturb normal writing. A card pulled mid-recording now costs at
+most ~1s of audio at the tail instead of the entire file; recordings before
+and after the pull are unaffected either way.
+
+## Filenames surviving a flaky mid-session remount (fixed 2026-07-08)
+
+Filenames (`REC_00001.WAV`, ...) used to be chosen by scanning from 1 on
+every recording, using `SD.exists()` to find the first free slot. That's
+fine across a real power cycle, but on a bench run with a marginal card
+connection we saw the SD interface remount mid-session (unrelated to the
+button/BLE) after a `SD card removed` event, and the very next recording
+picked `REC_00001.WAV` again — even though it had already been used earlier
+in the same session. Since `startRecording()` opens files with
+`FILE_WRITE`, which truncates whatever's already there, that meant the
+earlier take was silently overwritten.
+
+`nextRecordingPath()` now scans forward from a RAM-tracked
+`nextRecordingIndex` that only ever advances, instead of always restarting
+at 1. A real power-on still starts it at 1 and lets `SD.exists()` skip
+whatever's already on the card from previous sessions, so numbering across
+reboots is unchanged. But within a single boot, an index is never revisited
+once used — so even if a flaky remount makes `SD.exists()` misreport an
+already-recorded file as free, it can no longer be reused and overwritten.
 
 ## Bluetooth LE control
 
@@ -67,14 +130,56 @@ The board advertises as **`ESP32 SD Recorder`**. GATT layout:
 |---|---|---|---|
 | Service | `6e400001-b5a3-f393-e0a9-e50e24dcca9e` | — | Container for the two below |
 | Control | `6e400002-b5a3-f393-e0a9-e50e24dcca9e` | Write | Write `0x01`/`'1'` to start, `0x00`/`'0'` to stop, anything else toggles |
-| Status | `6e400003-b5a3-f393-e0a9-e50e24dcca9e` | Read, Notify | `0x01` while recording, `0x00` when idle; notifies on every state change |
+| Status | `6e400003-b5a3-f393-e0a9-e50e24dcca9e` | Read, Notify | 10-byte status payload (see below); notifies on every state change **and** on a 500ms heartbeat |
+
+### Status payload (10 bytes, little-endian)
+
+| Bytes | Field | Meaning |
+|---|---|---|
+| `[0]` | flags | bit0 recording · bit1 SD ready · bit2 low space · bit3 error present |
+| `[1-4]` | bytes written | uint32, bytes written to the current/last recording |
+| `[5-8]` | free space | uint32, MB free on the SD card |
+| `[9]` | error code | `0`=none, `1`=SD not ready, `2`=write failed, `3`=card removed, `4`=no free filename, `5`=file open failed, `6`=auto-stopped (low space), `7`=start refused (low space) |
+
+The heartbeat (independent of state changes) exists so a client can tell
+"idle and fine" apart from "the link went stale" — see below — and can watch
+the byte counter climb in real time as proof that audio is actually being
+written to the card, not just that the record button was pressed.
+
+**Low-space handling:** below 200MB free, the low-space flag is set (client
+shows a soft warning) but recording continues; below 50MB, a new recording is
+refused outright and an in-progress one is stopped automatically rather than
+letting the card fill up and corrupt the last file (`LOW_SPACE_WARN_MB` /
+`LOW_SPACE_STOP_MB` in the sketch).
 
 ### `ble_control.html` — one-button remote
 
 A self-contained Web Bluetooth control page (no build step, no server, no
 external dependencies — everything is inlined in one HTML file). Connect,
-then tap one button to start/stop; it shows a live elapsed-recording timer
-and a collapsible technical log (useful for debugging the BLE link itself).
+then tap one button to start/stop. Beyond the elapsed timer and technical
+log, it actively cross-checks that the recording is real rather than just
+trusting the button state:
+
+- **Audio saved** tile — duration and size computed from the device's
+  running byte counter, not from a client-side clock. If this stops
+  climbing while "Recording" is shown, something is wrong even though no
+  explicit error fired.
+- **Free space** tile — live free space on the card, flagged when it's
+  getting low.
+- **Stale-link detection** — if no status heartbeat arrives for 2.5s while
+  connected, a warning banner appears; recording confirmation can't be
+  trusted until the link recovers.
+- **Stall detection** — if "Recording" is active but the byte counter hasn't
+  moved in 4s, a warning banner appears even without a device-reported error.
+- **Device error banner** — SD card not ready, write failed, card removed,
+  storage too low, etc. are surfaced as plain-language warnings, not just
+  logged.
+- **Disconnect-while-recording warning** — if the BLE link drops while a
+  recording was in progress, a persistent banner says so (the file on the
+  card may be incomplete) until you reconnect.
+
+All of the above are also written to the collapsible technical log for a
+full timeline when debugging the link itself.
 
 **How to use it:**
 1. Open `ble_control.html` directly in **Chrome or Edge** — double-click it,

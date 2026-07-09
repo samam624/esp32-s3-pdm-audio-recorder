@@ -280,6 +280,60 @@
 
   .message.error { color: var(--rec); }
 
+  .stats {
+    display: flex;
+    gap: 10px;
+  }
+
+  .stat {
+    flex: 1;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 9px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .stat .stat-label {
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    font-weight: 600;
+  }
+
+  .stat .stat-value {
+    font-size: 14px;
+    font-weight: 650;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .stat.warn .stat-value { color: var(--rec); }
+
+  .alert {
+    display: none;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    font-size: 12.5px;
+    line-height: 1.5;
+    background: color-mix(in srgb, var(--rec) 14%, var(--surface));
+    border: 1px solid color-mix(in srgb, var(--rec) 40%, var(--line));
+    color: var(--ink);
+  }
+
+  .alert.warn {
+    background: color-mix(in srgb, #e0a72a 16%, var(--surface));
+    border-color: color-mix(in srgb, #e0a72a 45%, var(--line));
+  }
+
+  .alert.visible { display: flex; }
+
+  .alert .alert-icon { flex-shrink: 0; }
+
   details {
     border-top: 1px solid var(--line);
     padding-top: 14px;
@@ -344,7 +398,7 @@
 <div class="panel">
   <header>
     <div class="device-id">
-      <span class="eyebrow">UC Davis MEMS Lab</span>
+      <span class="eyebrow">UC Davis - ECE - Micropower Circuits and Systems</span>
       <h1>ESP32 SD Recorder</h1>
     </div>
     <span class="pill" id="statusPill"><span class="dot"></span><span id="statusPillText">Disconnected</span></span>
@@ -356,6 +410,19 @@
     </button>
     <span class="record-label" id="recordLabel">Not connected</span>
     <span class="elapsed mono" id="elapsed"></span>
+  </div>
+
+  <div class="alert" id="alert"><span class="alert-icon">⚠</span><span id="alertText"></span></div>
+
+  <div class="stats">
+    <div class="stat" id="dataStat">
+      <span class="stat-label">Audio saved</span>
+      <span class="stat-value mono" id="dataStatValue">—</span>
+    </div>
+    <div class="stat" id="storageStat">
+      <span class="stat-label">Free space</span>
+      <span class="stat-value mono" id="storageStatValue">—</span>
+    </div>
   </div>
 
   <div class="connect-row">
@@ -385,6 +452,34 @@
   const CONTROL_UUID = "6e400002-b5a3-f393-e0a9-e50e24dcca9e";
   const STATUS_UUID = "6e400003-b5a3-f393-e0a9-e50e24dcca9e";
 
+  // Must match SAMPLE_RATE * CHANNELS * (BITS_PER_SAMPLE/8) in the firmware —
+  // used to turn a raw byte count into a trustworthy "audio saved" duration.
+  const BYTES_PER_SECOND = 48000 * 2 * 2;
+
+  // Status flag bits — must match STATUS_FLAG_* in the firmware.
+  const FLAG_RECORDING = 0x01;
+  const FLAG_SD_READY = 0x02;
+  const FLAG_LOW_SPACE = 0x04;
+  const FLAG_ERROR = 0x08;
+
+  const ERROR_MESSAGES = {
+    1: "SD card not ready — recording could not start.",
+    2: "SD write failed — recording was stopped to protect the file.",
+    3: "SD card was removed.",
+    4: "No free filename slots on the SD card.",
+    5: "Could not open a new file on the SD card.",
+    6: "Storage ran critically low — recording was stopped automatically.",
+    7: "Storage is too low to start a new recording.",
+  };
+
+  // The firmware sends a status heartbeat every 500ms (device-side
+  // STATUS_NOTIFY_INTERVAL_MS). If nothing arrives for this long while
+  // connected, treat the link as stale rather than trusting a frozen UI.
+  const STALE_STATUS_MS = 2500;
+  // If recording and the byte counter hasn't moved in this long, the write
+  // path may have silently stalled even though no explicit error was raised.
+  const STALL_DATA_MS = 4000;
+
   const statusPill = document.getElementById("statusPill");
   const statusPillText = document.getElementById("statusPillText");
   const recordBtn = document.getElementById("recordBtn");
@@ -394,13 +489,32 @@
   const disconnectBtn = document.getElementById("disconnectBtn");
   const messageEl = document.getElementById("message");
   const logEl = document.getElementById("log");
+  const alertEl = document.getElementById("alert");
+  const alertTextEl = document.getElementById("alertText");
+  const dataStatValue = document.getElementById("dataStatValue");
+  const storageStat = document.getElementById("storageStat");
+  const storageStatValue = document.getElementById("storageStatValue");
 
   let device = null;
   let controlChar = null;
   let statusChar = null;
   let recording = false;
+  let connected = false;
   let elapsedTimer = null;
   let recordStartedAt = 0;
+
+  // Live status fields, kept in sync from every heartbeat/notification.
+  let lastStatusAt = 0;
+  let lastBytesWritten = 0;
+  let lastBytesChangeAt = 0;
+  let freeSpaceMB = 0;
+  let sdCardReady = false;
+  let lowSpace = false;
+  let currentErrorCode = 0;
+  let lastLoggedErrorCode = 0;
+  let linkStale = false;
+  let dataStalled = false;
+  let disconnectedWhileRecording = false;
 
   function log(text) {
     const row = document.createElement("div");
@@ -415,20 +529,92 @@
     messageEl.classList.toggle("error", !!isError);
   }
 
-  function setConnectedUi(connected) {
-    connectBtn.disabled = connected;
-    disconnectBtn.disabled = !connected;
-    recordBtn.disabled = !connected;
+  function pad2(n) {
+    return String(n).padStart(2, "0");
+  }
+
+  function formatDuration(totalSeconds) {
+    const secs = Math.max(0, Math.floor(totalSeconds));
+    return pad2(Math.floor(secs / 60)) + ":" + pad2(secs % 60);
+  }
+
+  function formatMB(mb) {
+    if (mb >= 1024) return (mb / 1024).toFixed(2) + " GB";
+    return mb.toFixed(mb >= 10 ? 0 : 1) + " MB";
+  }
+
+  function setAlert(text, level) {
+    if (!text) {
+      alertEl.classList.remove("visible", "warn");
+      alertTextEl.textContent = "";
+      return;
+    }
+    alertEl.classList.add("visible");
+    alertEl.classList.toggle("warn", level === "warn");
+    alertTextEl.textContent = text;
+  }
+
+  // Priority order: a link that dropped mid-recording is the most urgent
+  // thing to surface, down to a soft low-space heads-up. Only one banner is
+  // shown at a time; everything is still written to the log below.
+  function refreshAlert() {
+    if (disconnectedWhileRecording) {
+      setAlert("Connection dropped while a recording was in progress. The file on the SD card may be incomplete — reconnect to check the device.", "error");
+      return;
+    }
     if (!connected) {
+      setAlert(null);
+      return;
+    }
+    if (linkStale) {
+      setAlert("No status update from the device in a while — the BLE link may be unstable. Recording confirmation can't be trusted until it recovers.", "warn");
+      return;
+    }
+    if (currentErrorCode) {
+      setAlert(ERROR_MESSAGES[currentErrorCode] || ("Device reported error code " + currentErrorCode), "error");
+      return;
+    }
+    if (dataStalled) {
+      setAlert("Recording is active but no new audio has been written in several seconds — the recording may have stalled.", "error");
+      return;
+    }
+    if (lowSpace) {
+      setAlert("Storage is getting low (" + formatMB(freeSpaceMB) + " free). Recording will stop automatically if it runs out.", "warn");
+      return;
+    }
+    setAlert(null);
+  }
+
+  function updateStatsUi() {
+    if (lastBytesWritten > 0 || recording) {
+      const audioSecs = lastBytesWritten / BYTES_PER_SECOND;
+      dataStatValue.textContent = formatDuration(audioSecs) + " · " + formatMB(lastBytesWritten / (1024 * 1024));
+    } else {
+      dataStatValue.textContent = "—";
+    }
+
+    storageStatValue.textContent = sdCardReady ? formatMB(freeSpaceMB) + " free" : "no card";
+    storageStat.classList.toggle("warn", lowSpace || !sdCardReady);
+  }
+
+  function setConnectedUi(isConnected) {
+    connected = isConnected;
+    connectBtn.disabled = isConnected;
+    disconnectBtn.disabled = !isConnected;
+    recordBtn.disabled = !isConnected;
+    if (!isConnected) {
       statusPill.className = "pill";
       statusPillText.textContent = "Disconnected";
       recordLabel.textContent = "Not connected";
       recordBtn.classList.remove("recording");
       stopElapsedTimer();
     }
+    refreshAlert();
   }
 
-  function setRecordingUi(isRecording) {
+  // Only called on an actual recording-state transition (not on every
+  // heartbeat) so the elapsed timer doesn't get reset every 500ms.
+  function applyRecordingTransition(isRecording) {
     recording = isRecording;
     recordBtn.classList.toggle("recording", isRecording);
     recordBtn.setAttribute("aria-label", isRecording ? "Stop recording" : "Start recording");
@@ -460,20 +646,79 @@
 
   function tickElapsed() {
     const secs = Math.floor((Date.now() - recordStartedAt) / 1000);
-    const m = String(Math.floor(secs / 60)).padStart(2, "0");
-    const s = String(secs % 60).padStart(2, "0");
-    elapsedEl.textContent = m + ":" + s;
+    elapsedEl.textContent = formatDuration(secs);
+  }
+
+  // Shared by the initial post-connect read and every subsequent
+  // notification, so both paths agree on what "current status" means.
+  function processStatusValue(value) {
+    if (value.byteLength < 10) {
+      log("warning: status payload too short (" + value.byteLength + " bytes) — device firmware may be out of date");
+      return;
+    }
+
+    const flags = value.getUint8(0);
+    const bytesWritten = value.getUint32(1, true);
+    const freeMB = value.getUint32(5, true);
+    const errCode = value.getUint8(9);
+
+    const isRecording = !!(flags & FLAG_RECORDING);
+    sdCardReady = !!(flags & FLAG_SD_READY);
+    lowSpace = !!(flags & FLAG_LOW_SPACE);
+    currentErrorCode = (flags & FLAG_ERROR) ? errCode : 0;
+    freeSpaceMB = freeMB;
+
+    lastStatusAt = Date.now();
+    linkStale = false;
+
+    if (bytesWritten !== lastBytesWritten) {
+      lastBytesWritten = bytesWritten;
+      lastBytesChangeAt = Date.now();
+      dataStalled = false;
+    }
+
+    if (currentErrorCode !== lastLoggedErrorCode) {
+      lastLoggedErrorCode = currentErrorCode;
+      log(currentErrorCode
+        ? "device error: " + (ERROR_MESSAGES[currentErrorCode] || ("code " + currentErrorCode))
+        : "device error cleared");
+    }
+
+    if (isRecording !== recording) {
+      applyRecordingTransition(isRecording);
+      log(isRecording ? "device reports: recording started" : "device reports: recording stopped");
+    }
+
+    updateStatsUi();
+    refreshAlert();
   }
 
   function onStatusNotify(event) {
-    const value = event.target.value;
-    const isRecording = value.getUint8(0) === 1;
-    setRecordingUi(isRecording);
-    log(isRecording ? "device reports: recording started" : "device reports: recording stopped");
+    processStatusValue(event.target.value);
   }
+
+  // Runs once a second while connected to catch problems that don't arrive
+  // as a discrete event: a link that's gone quiet, or a recording whose byte
+  // counter has stopped moving without an explicit device-side error.
+  function watchdogTick() {
+    if (!connected) return;
+    const now = Date.now();
+    if (now - lastStatusAt > STALE_STATUS_MS) {
+      linkStale = true;
+    }
+    if (recording && now - lastBytesChangeAt > STALL_DATA_MS) {
+      dataStalled = true;
+    }
+    refreshAlert();
+  }
+  setInterval(watchdogTick, 1000);
 
   function onDisconnected() {
     log("gatt server disconnected");
+    if (recording) {
+      disconnectedWhileRecording = true;
+      log("warning: link dropped while a recording was in progress");
+    }
     setMessage("Disconnected. Tap Connect to reconnect.");
     controlChar = null;
     statusChar = null;
@@ -485,6 +730,14 @@
       setMessage("This browser doesn't support Web Bluetooth. Use Chrome/Edge on desktop or Android, or the Bluefy app on iOS.", true);
       return;
     }
+
+    // A fresh connection attempt clears stale state from any previous
+    // session so old warnings don't linger once we're reconnected.
+    disconnectedWhileRecording = false;
+    linkStale = false;
+    dataStalled = false;
+    currentErrorCode = 0;
+    lastLoggedErrorCode = 0;
 
     try {
       setMessage("Opening device chooser…");
@@ -502,7 +755,7 @@
       statusChar = await service.getCharacteristic(STATUS_UUID);
 
       const initial = await statusChar.readValue();
-      setRecordingUi(initial.getUint8(0) === 1);
+      processStatusValue(initial);
 
       await statusChar.startNotifications();
       statusChar.addEventListener("characteristicvaluechanged", onStatusNotify);

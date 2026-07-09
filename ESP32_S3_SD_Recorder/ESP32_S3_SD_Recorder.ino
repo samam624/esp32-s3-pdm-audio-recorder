@@ -76,12 +76,61 @@
 #define LEVEL_RELEASE     0.06f
 
 #define FLUSH_INTERVAL_MS 1000
+// Cheap "is the mounted card still answering" probe, while mounted.
 #define SD_CHECK_INTERVAL_MS 50
+// Full remount-attempt cadence while no card is mounted. Deliberately much
+// slower than SD_CHECK_INTERVAL_MS: mountSd() sweeps every SPI speed and
+// each SD.begin() can block for a while against a card that isn't
+// responding, so retrying it back-to-back at 50ms starves loop() of time
+// for audio/BLE/button servicing for as long as the card stays absent.
+#define SD_REMOUNT_INTERVAL_MS 1000
+
+// How often the free-space estimate is refreshed from the card while idle
+// (skipped while recording — see updateFreeSpace()).
+#define FREE_SPACE_CHECK_INTERVAL_MS 2000
+
+// A new recording is refused below this much free space, and an in-progress
+// one is auto-stopped if it drops below this while recording (rather than
+// running the card completely out and corrupting the last file).
+#define LOW_SPACE_STOP_MB 50
+// Below this (but above the stop threshold), recording is still allowed but
+// the status payload carries a warning flag so the remote can show it.
+#define LOW_SPACE_WARN_MB 200
+
+// Status is pushed on every state change immediately, plus on this cadence
+// regardless of state so the remote can confirm the link is alive and see
+// the byte counter actually incrementing while recording.
+#define STATUS_NOTIFY_INTERVAL_MS 500
 
 #define BLE_DEVICE_NAME       "ESP32 SD Recorder"
 #define BLE_SERVICE_UUID      "6e400001-b5a3-f393-e0a9-e50e24dcca9e"
 #define BLE_CONTROL_CHAR_UUID "6e400002-b5a3-f393-e0a9-e50e24dcca9e"
 #define BLE_STATUS_CHAR_UUID  "6e400003-b5a3-f393-e0a9-e50e24dcca9e"
+
+// ---------------------------------------------------------------------------
+// Status payload (10 bytes, all multi-byte fields little-endian):
+//   [0]   flag bitfield (see STATUS_FLAG_*)
+//   [1-4] bytes written to the current/last recording (uint32)
+//   [5-8] free space on the SD card, in MB (uint32)
+//   [9]   latched error code (see ErrorCode)
+// Sent on every state change and on a fixed heartbeat cadence so the remote
+// can distinguish "idle and fine" from "link has gone stale".
+// ---------------------------------------------------------------------------
+#define STATUS_FLAG_RECORDING 0x01
+#define STATUS_FLAG_SD_READY  0x02
+#define STATUS_FLAG_LOW_SPACE 0x04
+#define STATUS_FLAG_ERROR     0x08
+
+enum ErrorCode : uint8_t {
+  ERR_NONE = 0,
+  ERR_SD_NOT_READY = 1,       // start refused: card not mounted
+  ERR_SD_WRITE_FAILED = 2,    // write failed mid-recording, stopped
+  ERR_SD_CARD_REMOVED = 3,    // card disappeared while idle
+  ERR_NO_FREE_FILENAME = 4,   // REC_00001..REC_99999 all taken
+  ERR_FILE_OPEN_FAILED = 5,   // SD.open() failed
+  ERR_LOW_SPACE_STOPPED = 6,  // auto-stopped, ran low on space
+  ERR_LOW_SPACE_REFUSED = 7,  // start refused, too little space to begin
+};
 
 struct AudioChunk {
   uint8_t *data;
@@ -101,6 +150,18 @@ File recordingFile;
 uint32_t dataBytesWritten = 0;
 unsigned long lastFlushMs = 0;
 unsigned long lastSdCheckMs = 0;
+unsigned long lastSdRemountMs = 0;
+
+// Next filename index to try, tracked in RAM so it only ever moves forward
+// within a boot session — see nextRecordingPath() for why.
+uint32_t nextRecordingIndex = 1;
+
+// Free space + error tracking (see status payload doc above)
+uint32_t freeSpaceMB = 0;
+uint64_t freeSpaceAtRecordStartBytes = 0;
+ErrorCode errorCode = ERR_NONE;
+unsigned long lastFreeSpaceCheckMs = 0;
+unsigned long lastStatusNotifyMs = 0;
 
 bool lastButton = HIGH;
 unsigned long lastDebounceMs = 0;
@@ -144,6 +205,21 @@ static void writeWavHeader(File &f, uint32_t dataSize) {
   f.write(header, sizeof(header));
 }
 
+// Rewrites the header with the data size known so far, then restores the
+// write position so appending continues normally. Called on the same
+// cadence as the periodic flush (see loop()) so that if the card is pulled
+// mid-recording, the file on disk still has a header claiming (approximately)
+// the audio actually present in it — a WAV header stuck at dataSize=0 (its
+// value from file creation) makes most players treat the whole file as
+// empty/corrupt even though the audio bytes are physically there. Worst case
+// this leaves the header up to one flush interval stale, i.e. a pulled card
+// costs at most ~1s of the recording instead of the entire file.
+static void updateWavHeaderInPlace(File &f, uint32_t dataSize) {
+  size_t appendPos = f.position();
+  writeWavHeader(f, dataSize);
+  f.seek(appendPos);
+}
+
 // ---------------------------------------------------------------------------
 // SD card
 // ---------------------------------------------------------------------------
@@ -155,11 +231,30 @@ static const uint32_t kSdSpeeds[] = {
 };
 static const size_t kSdSpeedCount = sizeof(kSdSpeeds) / sizeof(kSdSpeeds[0]);
 
+// Per the SD spec, a card expects >=74 clock cycles with CS deasserted and
+// MOSI high before it will accept CMD0. If the board was reset (e.g. the
+// reset button) while a prior SD transaction was left unfinished, the card's
+// internal state machine can be left waiting for the rest of that command
+// and will silently ignore a fresh CMD0 until it either times out on its own
+// or gets these clocks — which is effectively what a physical unplug/replug
+// does by power-cycling the card. Sending them explicitly here means a stuck
+// card can recover without needing to be physically reseated.
+static void wakeSdSpiBus() {
+  pinMode(SD_CS, OUTPUT);
+  digitalWrite(SD_CS, HIGH);
+  sdSPI.beginTransaction(SPISettings(400000, MSBFIRST, SPI_MODE0));
+  for (int i = 0; i < 10; i++) {
+    sdSPI.transfer(0xFF);
+  }
+  sdSPI.endTransaction();
+}
+
 static bool mountSd() {
   for (size_t i = 0; i < kSdSpeedCount; i++) {
     SD.end();
     sdSPI.end();
     sdSPI.begin(SD_SCK, SD_MISO, SD_MOSI, SD_CS);
+    wakeSdSpiBus();
 
     if (SD.begin(SD_CS, sdSPI, kSdSpeeds[i])) {
       Serial.printf("SD mounted at %lu Hz\r\n", (unsigned long)kSdSpeeds[i]);
@@ -170,12 +265,28 @@ static bool mountSd() {
   return false;
 }
 
+// Scans forward from nextRecordingIndex rather than always restarting the
+// search at 1. On a real power-on, nextRecordingIndex starts at 1 and
+// SD.exists() skips over whatever the card already has from previous
+// sessions, same as before. But within a single boot, the index only ever
+// advances — it's never reset — so a mid-session SD remount (see
+// updateSdPresence(), which can happen after a flaky reconnect) can't land
+// back on a filename already used this session. That matters because
+// startRecording() opens with FILE_WRITE, which silently truncates whatever
+// is already at that path: if a marginal remount ever made SD.exists()
+// falsely report an already-recorded file as absent, scanning from 1 again
+// would reuse and overwrite it. Scanning from a monotonic counter instead
+// makes that impossible regardless of what SD.exists() reports.
 static bool nextRecordingPath(char *outPath, size_t outPathLen) {
-  for (int i = 1; i <= 99999; i++) {
-    snprintf(outPath, outPathLen, "/REC_%05d.WAV", i);
+  while (nextRecordingIndex <= 99999) {
+    snprintf(outPath, outPathLen, "/REC_%05lu.WAV", (unsigned long)nextRecordingIndex);
+    uint32_t candidate = nextRecordingIndex;
+    nextRecordingIndex++; // reserve it now so it's never retried, even if this attempt fails below
+
     if (!SD.exists(outPath)) {
       return true;
     }
+    Serial.printf("REC_%05lu.WAV already exists, skipping\r\n", (unsigned long)candidate);
   }
   return false;
 }
@@ -188,35 +299,70 @@ static void setSdReady(bool ready) {
 
 // There's no hardware card-detect pin wired on this PCB, so presence is
 // inferred: while mounted, periodically confirm the card still answers a
-// cheap directory read; while absent, periodically retry mounting so a card
-// inserted later is picked up automatically. Skipped entirely while
-// recording so it never competes with the active write for the SPI bus.
+// cheap directory read (SD_CHECK_INTERVAL_MS); while absent, periodically
+// retry a full mount so a card inserted later is picked up automatically
+// (SD_REMOUNT_INTERVAL_MS — deliberately slower, see its comment). Skipped
+// entirely while recording so it never competes with the active write for
+// the SPI bus.
 static void updateSdPresence() {
   if (recording) {
     return;
   }
-  if (millis() - lastSdCheckMs < SD_CHECK_INTERVAL_MS) {
-    return;
-  }
-  lastSdCheckMs = millis();
 
-  bool present = false;
+  bool present;
+
   if (sdReady) {
+    if (millis() - lastSdCheckMs < SD_CHECK_INTERVAL_MS) {
+      return;
+    }
+    lastSdCheckMs = millis();
+
+    present = false;
     File root = SD.open("/");
     if (root) {
       present = true;
       root.close();
     }
-  }
+  } else {
+    if (millis() - lastSdRemountMs < SD_REMOUNT_INTERVAL_MS) {
+      return;
+    }
+    lastSdRemountMs = millis();
 
-  if (!present) {
     present = mountSd();
   }
 
   if (present != sdReady) {
     setSdReady(present);
     Serial.println(present ? "SD card detected" : "SD card removed");
+    if (!present) {
+      errorCode = ERR_SD_CARD_REMOVED;
+    } else if (errorCode == ERR_SD_CARD_REMOVED) {
+      // The condition that caused this latched error is gone now that the
+      // card answers again; don't keep showing a stale warning forever.
+      errorCode = ERR_NONE;
+    }
+    notifyBleStatus();
   }
+}
+
+// Refreshes the free-space estimate from the card itself. Only runs while
+// idle (recording keeps its own cheap running estimate below, so this never
+// competes with an active write for the SPI bus — same reasoning as
+// updateSdPresence()).
+static void updateFreeSpace() {
+  if (recording || !sdReady) {
+    return;
+  }
+  if (millis() - lastFreeSpaceCheckMs < FREE_SPACE_CHECK_INTERVAL_MS) {
+    return;
+  }
+  lastFreeSpaceCheckMs = millis();
+
+  uint64_t total = SD.totalBytes();
+  uint64_t used = SD.usedBytes();
+  uint64_t freeBytes = (total > used) ? (total - used) : 0;
+  freeSpaceMB = (uint32_t)(freeBytes / (1024ULL * 1024ULL));
 }
 
 // ---------------------------------------------------------------------------
@@ -228,8 +374,19 @@ static void notifyBleStatus() {
     return;
   }
 
-  uint8_t value = recording ? 1 : 0;
-  bleStatusCharacteristic->setValue(&value, 1);
+  uint8_t flags = 0;
+  if (recording) flags |= STATUS_FLAG_RECORDING;
+  if (sdReady) flags |= STATUS_FLAG_SD_READY;
+  if (sdReady && freeSpaceMB < LOW_SPACE_WARN_MB) flags |= STATUS_FLAG_LOW_SPACE;
+  if (errorCode != ERR_NONE) flags |= STATUS_FLAG_ERROR;
+
+  uint8_t payload[10];
+  payload[0] = flags;
+  memcpy(payload + 1, &dataBytesWritten, 4);
+  memcpy(payload + 5, &freeSpaceMB, 4);
+  payload[9] = (uint8_t)errorCode;
+
+  bleStatusCharacteristic->setValue(payload, sizeof(payload));
   if (bleClientConnected) {
     bleStatusCharacteristic->notify();
   }
@@ -240,24 +397,52 @@ static void notifyBleStatus() {
 // ---------------------------------------------------------------------------
 
 static void startRecording() {
-  if (recording || !sdReady) {
+  if (recording) {
+    return;
+  }
+
+  // A fresh attempt always clears whatever error was last latched, so the
+  // remote doesn't keep showing a stale failure after the user retries.
+  errorCode = ERR_NONE;
+
+  if (!sdReady) {
+    errorCode = ERR_SD_NOT_READY;
+    notifyBleStatus();
+    Serial.println("Recording refused: SD card not ready");
+    return;
+  }
+
+  uint64_t total = SD.totalBytes();
+  uint64_t used = SD.usedBytes();
+  uint64_t freeBytes = (total > used) ? (total - used) : 0;
+  if (freeBytes < (uint64_t)LOW_SPACE_STOP_MB * 1024ULL * 1024ULL) {
+    errorCode = ERR_LOW_SPACE_REFUSED;
+    freeSpaceMB = (uint32_t)(freeBytes / (1024ULL * 1024ULL));
+    notifyBleStatus();
+    Serial.println("Recording refused: free space too low");
     return;
   }
 
   char path[32];
   if (!nextRecordingPath(path, sizeof(path))) {
+    errorCode = ERR_NO_FREE_FILENAME;
+    notifyBleStatus();
     Serial.println("No free recording filename slots on SD card");
     return;
   }
 
   recordingFile = SD.open(path, FILE_WRITE);
   if (!recordingFile) {
+    errorCode = ERR_FILE_OPEN_FAILED;
+    notifyBleStatus();
     Serial.printf("Failed to open %s for recording\r\n", path);
     return;
   }
 
   writeWavHeader(recordingFile, 0);
   dataBytesWritten = 0;
+  freeSpaceAtRecordStartBytes = freeBytes;
+  freeSpaceMB = (uint32_t)(freeBytes / (1024ULL * 1024ULL));
   lastFlushMs = millis();
   recording = true;
   lastRecBlinkMs = millis();
@@ -516,6 +701,17 @@ void loop() {
   checkButton();
   updateRecordLed();
   updateSdPresence();
+  updateFreeSpace();
+
+  // Heartbeat: pushed on this fixed cadence regardless of state changes, so
+  // the remote can tell "still connected and fine" apart from "link has gone
+  // stale" and watch the byte counter actually climb during a recording.
+  // Placed before the queue-timeout return so it isn't skipped when no
+  // audio chunk happens to be ready yet.
+  if (millis() - lastStatusNotifyMs >= STATUS_NOTIFY_INTERVAL_MS) {
+    lastStatusNotifyMs = millis();
+    notifyBleStatus();
+  }
 
   AudioChunk chunk;
   if (xQueueReceive(filledQueue, &chunk, pdMS_TO_TICKS(50)) != pdTRUE) {
@@ -531,11 +727,27 @@ void loop() {
 
     if (written != chunk.len) {
       Serial.println("SD write short/failed, stopping recording");
+      errorCode = ERR_SD_WRITE_FAILED;
       stopRecording();
       setSdReady(false);
-    } else if (millis() - lastFlushMs >= FLUSH_INTERVAL_MS) {
-      lastFlushMs = millis();
-      recordingFile.flush();
+    } else {
+      // Cheap arithmetic estimate (no SD query) so a long recording still
+      // gets a live free-space readout without contending with the write
+      // for the SPI bus — see updateFreeSpace() for the idle-time version.
+      uint64_t estFreeBytes = (freeSpaceAtRecordStartBytes > dataBytesWritten)
+        ? (freeSpaceAtRecordStartBytes - dataBytesWritten)
+        : 0;
+      freeSpaceMB = (uint32_t)(estFreeBytes / (1024ULL * 1024ULL));
+
+      if (estFreeBytes < (uint64_t)LOW_SPACE_STOP_MB * 1024ULL * 1024ULL) {
+        Serial.println("Free space critically low, stopping recording");
+        errorCode = ERR_LOW_SPACE_STOPPED;
+        stopRecording();
+      } else if (millis() - lastFlushMs >= FLUSH_INTERVAL_MS) {
+        lastFlushMs = millis();
+        updateWavHeaderInPlace(recordingFile, dataBytesWritten);
+        recordingFile.flush();
+      }
     }
   }
 
