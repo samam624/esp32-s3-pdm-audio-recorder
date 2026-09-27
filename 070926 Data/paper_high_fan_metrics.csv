@@ -1,0 +1,10 @@
+configuration,high_fan_file,high_full_band_dbfs_100Hz_16kHz,observed_difference_vs_lid_off_full_band_db,observed_difference_vs_lid_off_rumble_20_150Hz_db,interpretation
+Pop filter,REC_00015.WAV,-46.39,12.49,12.42,Strongest candidate; validate with controlled replicates
+Pop filter + electrical tape,REC_00019.WAV,-38.97,5.06,1.12,Full-band reduction but little rumble-band reduction
+Confor square pad,REC_00022.WAV,-38.94,5.03,2.45,Approximately tied with pop filter + electrical in full band
+Scotch tape,REC_00012.WAV,-34.64,0.74,1.06,Within likely experimental variability
+Pop filter + Scotch tape,REC_00016.WAV,-34.55,0.64,1.78,Within likely experimental variability
+Confor + electrical tape,REC_00028.WAV,-34.02,0.11,0.20,No meaningful observed difference
+Lid off (reference),REC_00031.WAV,-33.91,0.00,0.00,Reference
+Confor + Scotch tape,REC_00025.WAV,-32.77,-1.13,1.33,Within likely experimental variability
+Lid on,REC_00009.WAV,-31.00,-2.91,0.96,Do not interpret causally without controlled retest
