@@ -1,0 +1,10 @@
+configuration,high_fan_file,level_dbfs_20Hz_20kHz,attenuation_vs_lid_off_db,attenuation_if_ref_REC_00033_db
+Pop filter,REC_00015.WAV,-44.10,12.37,11.49
+Confor square pad,REC_00022.WAV,-35.51,3.78,2.90
+Pop filter + electrical tape,REC_00019.WAV,-34.70,2.98,2.10
+Pop filter + Scotch tape,REC_00016.WAV,-32.99,1.26,0.38
+Scotch tape,REC_00012.WAV,-32.59,0.86,-0.02
+Confor + electrical tape,REC_00028.WAV,-31.90,0.18,-0.70
+Lid off,REC_00031.WAV,-31.73,0.00,-0.88
+Confor + Scotch tape,REC_00025.WAV,-31.49,-0.24,-1.12
+Lid on,REC_00009.WAV,-30.05,-1.67,-2.55
