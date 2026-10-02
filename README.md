@@ -7,7 +7,7 @@ physical button and (working, as of 2026-07-07) Bluetooth LE.
 ## Status
 
 **Working.** [ESP32_S3_SD_Recorder](ESP32_S3_SD_Recorder/) is the active
-firmware — flashed and validated on the bench hardware over COM13. Everything
+firmware — flashed and validated on the bench hardware (last 2026-10-01). Everything
 else in this repo is earlier exploratory/diagnostic work kept for reference.
 
 ## Directory map
@@ -20,6 +20,9 @@ else in this repo is earlier exploratory/diagnostic work kept for reference.
 | [ESP32_devkit_Mems_Test_2.ino](ESP32_devkit_Mems_Test_2.ino) | Earliest PDM mic test: streams raw PCM over Serial (921600 baud) between `REC_START`/`REC_STOP` markers, no SD card involved. Paired with `mictest.py`. |
 | [mictest.py](mictest.py) | Python/pyserial companion script for `ESP32_devkit_Mems_Test_2.ino` — waits for the button-press marker, captures raw PCM over serial, writes it to a WAV file on the PC. Not used by the current SD-recorder firmware (which needs no PC in the loop). |
 | `button_recording.wav`, `esp32_pdm_test.wav` | Sample recordings captured during early bring-up/testing. |
+| [damping_tests/](damping_tests/) | Damping test recordings `REC_00007`–`REC_00034` copied off the SD card, with `SHA256SUMS.txt` of the originals. Timestamps on these are 1980 (no clock was set when they were recorded). |
+| [bench_tests/](bench_tests/) | 2026-10-01 bench recordings used to verify capture speed: `REC_00002.WAV` has 1/2/3kHz test tones at 1s/3s/5s. |
+| [SD_Card_testing.ino](SD_Card_testing.ino) | Very first basic SPI SD test (from the original GitHub upload); superseded by `SD_Card_SPI_Diagnostic/`. |
 
 ## Hardware (custom ESP32-S3 PCB)
 

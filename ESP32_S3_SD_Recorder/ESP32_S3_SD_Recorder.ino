@@ -19,9 +19,10 @@
 //
 // Remote trigger: a BLE service exposes a write characteristic (start/stop/
 // toggle) and a notify characteristic (recording state) — see the "BLE
-// control" section. A future WiFi trigger can hook in the same way, by
-// calling toggleRecording() / startRecording() / stopRecording() from its own
-// handler; no other changes should be required.
+// control" section. BLE commands are queued to loop() (see commandQueue)
+// rather than run in the BLE callback, since only loop() may touch the SD
+// card. A future WiFi trigger should do the same: push onto commandQueue from
+// its own handler; no other changes should be required.
 //
 // Build with the ESP32 Arduino core using:
 //   Board: ESP32S3 Dev Module
@@ -29,6 +30,8 @@
 #include <Arduino.h>
 #include <driver/i2s_pdm.h>
 #include <math.h>
+#include <sys/time.h>
+#include <time.h>
 #include "FS.h"
 #include "SD.h"
 #include "SPI.h"
@@ -85,6 +88,19 @@
 // for audio/BLE/button servicing for as long as the card stays absent.
 #define SD_REMOUNT_INTERVAL_MS 1000
 
+// A card hot-inserted while the board is running often gets probed while its
+// contacts are still seating / it's still powering up: the fast SPI speeds
+// fail and mountSd() settles on a slow one (seen: 4MHz instead of 20MHz),
+// which then sticks until the card is removed. At low speeds the average SD
+// write barely keeps up with the audio, so recordings start dropping audio
+// (sped-up / glitchy playback). To mount at full speed every time:
+//   - a hot-insert mount below full speed waits SD_SETTLE_MS and re-sweeps;
+//   - if still below full speed, it re-sweeps up to SD_UPGRADE_MAX_ATTEMPTS
+//     more times while idle, every SD_UPGRADE_INTERVAL_MS.
+#define SD_SETTLE_MS            500
+#define SD_UPGRADE_INTERVAL_MS  3000
+#define SD_UPGRADE_MAX_ATTEMPTS 3
+
 // How often the free-space estimate is refreshed from the card while idle
 // (skipped while recording — see updateFreeSpace()).
 #define FREE_SPACE_CHECK_INTERVAL_MS 2000
@@ -106,6 +122,13 @@
 #define BLE_SERVICE_UUID      "6e400001-b5a3-f393-e0a9-e50e24dcca9e"
 #define BLE_CONTROL_CHAR_UUID "6e400002-b5a3-f393-e0a9-e50e24dcca9e"
 #define BLE_STATUS_CHAR_UUID  "6e400003-b5a3-f393-e0a9-e50e24dcca9e"
+#define BLE_TIME_CHAR_UUID    "6e400004-b5a3-f393-e0a9-e50e24dcca9e"
+
+// No RTC on this PCB, so the clock starts at the 1970 epoch on every boot and
+// FAT file timestamps come out as 1980-01-01 (Windows shows Dec 31 1979). The
+// remote sets the clock over BLE on connect (see BleTimeCallbacks); until
+// then, files get that placeholder date.
+volatile bool clockSet = false;
 
 // ---------------------------------------------------------------------------
 // Status payload (10 bytes, all multi-byte fields little-endian):
@@ -144,6 +167,29 @@ static uint8_t audioPool[NUM_BUFFERS][BUFFER_BYTES];
 static QueueHandle_t freeQueue;
 static QueueHandle_t filledQueue;
 
+// Recording commands received over BLE. The BLE callbacks run on the
+// Bluetooth stack's task (core 0), so they must not touch recordingFile
+// directly — closing the file there while loop() is mid-write on core 1
+// makes that write fail (ERR_SD_WRITE_FAILED) and drops sdReady. Commands
+// are queued here instead and executed by loop(), the only SD user.
+enum RecordCommand : uint8_t { CMD_STOP = 0, CMD_START = 1, CMD_TOGGLE = 2 };
+static QueueHandle_t commandQueue;
+
+// Per-recording capture diagnostics, printed by stopRecording(). Sped-up /
+// glitchy playback means audio went missing between the mic and the card;
+// these say where. diagDropBytes counts audio the reader task had to discard
+// because every pool buffer was still waiting on the SD writer;
+// diagDmaOverflows counts times the I2S DMA ring itself overran (reader task
+// starved of CPU).
+volatile uint32_t diagDropBytes = 0;
+volatile uint32_t diagDmaOverflows = 0;
+uint32_t diagMaxWriteUs = 0;
+uint64_t diagTotalWriteUs = 0;
+uint32_t diagSlowWrites = 0;   // writes that took longer than 50ms
+UBaseType_t diagMinFreeBuffers = NUM_BUFFERS;
+unsigned long recordStartMs = 0;
+uint32_t sdMountedHz = 0;
+
 bool sdReady = false;
 bool recording = false;
 File recordingFile;
@@ -151,6 +197,8 @@ uint32_t dataBytesWritten = 0;
 unsigned long lastFlushMs = 0;
 unsigned long lastSdCheckMs = 0;
 unsigned long lastSdRemountMs = 0;
+unsigned long lastSdUpgradeMs = 0;
+uint8_t sdUpgradeAttempts = 0;
 
 // Next filename index to try, tracked in RAM so it only ever moves forward
 // within a boot session — see nextRecordingPath() for why.
@@ -257,6 +305,7 @@ static bool mountSd() {
     wakeSdSpiBus();
 
     if (SD.begin(SD_CS, sdSPI, kSdSpeeds[i])) {
+      sdMountedHz = kSdSpeeds[i];
       Serial.printf("SD mounted at %lu Hz\r\n", (unsigned long)kSdSpeeds[i]);
       return true;
     }
@@ -323,6 +372,18 @@ static void updateSdPresence() {
       present = true;
       root.close();
     }
+
+    // Still below full SPI speed after a hot-insert: try for full speed
+    // again while idle (see SD_SETTLE_MS).
+    if (present && sdMountedHz < kSdSpeeds[0] &&
+        sdUpgradeAttempts < SD_UPGRADE_MAX_ATTEMPTS &&
+        millis() - lastSdUpgradeMs >= SD_UPGRADE_INTERVAL_MS) {
+      lastSdUpgradeMs = millis();
+      sdUpgradeAttempts++;
+      Serial.printf("SD at %lu Hz, retrying for full speed (attempt %u/%u)\r\n",
+                    (unsigned long)sdMountedHz, sdUpgradeAttempts, SD_UPGRADE_MAX_ATTEMPTS);
+      present = mountSd();
+    }
   } else {
     if (millis() - lastSdRemountMs < SD_REMOUNT_INTERVAL_MS) {
       return;
@@ -330,6 +391,13 @@ static void updateSdPresence() {
     lastSdRemountMs = millis();
 
     present = mountSd();
+    if (present && sdMountedHz < kSdSpeeds[0]) {
+      // Probably caught the card mid-insertion; let it settle and re-sweep.
+      delay(SD_SETTLE_MS);
+      present = mountSd();
+    }
+    sdUpgradeAttempts = 0;
+    lastSdUpgradeMs = millis();
   }
 
   if (present != sdReady) {
@@ -444,12 +512,28 @@ static void startRecording() {
   freeSpaceAtRecordStartBytes = freeBytes;
   freeSpaceMB = (uint32_t)(freeBytes / (1024ULL * 1024ULL));
   lastFlushMs = millis();
+  diagDropBytes = 0;
+  diagDmaOverflows = 0;
+  diagMaxWriteUs = 0;
+  diagTotalWriteUs = 0;
+  diagSlowWrites = 0;
+  diagMinFreeBuffers = NUM_BUFFERS;
+  recordStartMs = millis();
   recording = true;
   lastRecBlinkMs = millis();
   recBlinkState = true;
   digitalWrite(REC_LED_PIN, HIGH);
   notifyBleStatus();
-  Serial.printf("Recording started: %s\r\n", path);
+  if (clockSet) {
+    time_t now = time(NULL);
+    struct tm t;
+    localtime_r(&now, &t);
+    char stamp[24];
+    strftime(stamp, sizeof(stamp), "%Y-%m-%d %H:%M:%S", &t);
+    Serial.printf("Recording started: %s (%s)\r\n", path, stamp);
+  } else {
+    Serial.printf("Recording started: %s (clock not set, file will be dated 1980)\r\n", path);
+  }
 }
 
 static void stopRecording() {
@@ -463,6 +547,25 @@ static void stopRecording() {
   digitalWrite(REC_LED_PIN, LOW);
   notifyBleStatus();
   Serial.printf("Recording stopped (%lu bytes)\r\n", (unsigned long)dataBytesWritten);
+
+  const uint32_t bytesPerSec = SAMPLE_RATE * CHANNELS * (BITS_PER_SAMPLE / 8);
+  unsigned long elapsedMs = millis() - recordStartMs;
+  uint32_t chunks = dataBytesWritten / BUFFER_BYTES;
+  Serial.printf("  diag: wall %lu ms, audio %lu ms (%.1f%% of wall time)\r\n",
+                elapsedMs,
+                (unsigned long)((uint64_t)dataBytesWritten * 1000 / bytesPerSec),
+                elapsedMs ? 100.0 * dataBytesWritten / ((double)bytesPerSec * elapsedMs / 1000.0) : 0.0);
+  Serial.printf("  diag: dropped %lu bytes (%lu ms), DMA overflows %lu\r\n",
+                (unsigned long)diagDropBytes,
+                (unsigned long)((uint64_t)diagDropBytes * 1000 / bytesPerSec),
+                (unsigned long)diagDmaOverflows);
+  Serial.printf("  diag: SD %lu Hz, write avg %lu us / max %lu us per %d-byte chunk (budget %lu us), %lu writes >50ms, min free buffers %lu/%d\r\n",
+                (unsigned long)sdMountedHz,
+                (unsigned long)(chunks ? diagTotalWriteUs / chunks : 0),
+                (unsigned long)diagMaxWriteUs, BUFFER_BYTES,
+                (unsigned long)((uint64_t)BUFFER_BYTES * 1000000 / bytesPerSec),
+                (unsigned long)diagSlowWrites,
+                (unsigned long)diagMinFreeBuffers, NUM_BUFFERS);
 }
 
 static void toggleRecording() {
@@ -480,9 +583,12 @@ static void toggleRecording() {
 //   - a WRITE characteristic: write 0x01/'1' to start, 0x00/'0' to stop, or
 //     anything else to toggle (mirrors the physical button).
 //   - a NOTIFY characteristic: broadcasts 0x01 while recording, 0x00 when idle.
+//   - a WRITE time characteristic: sets the clock used for file timestamps
+//     (see BleTimeCallbacks).
 //
 // A future WiFi trigger can live alongside this the same way: have its
-// handler call toggleRecording()/startRecording()/stopRecording() directly.
+// handler push a RecordCommand onto commandQueue (not call startRecording()
+// etc. directly, since it would run off loop()'s core too).
 // ---------------------------------------------------------------------------
 
 class BleControlCallbacks : public BLECharacteristicCallbacks {
@@ -493,13 +599,45 @@ class BleControlCallbacks : public BLECharacteristicCallbacks {
     }
 
     uint8_t cmd = (uint8_t)value[0];
+    RecordCommand command;
     if (cmd == '1' || cmd == 1) {
-      startRecording();
+      command = CMD_START;
     } else if (cmd == '0' || cmd == 0) {
-      stopRecording();
+      command = CMD_STOP;
     } else {
-      toggleRecording();
+      command = CMD_TOGGLE;
     }
+    // Executed by loop(); see commandQueue for why this can't run here.
+    xQueueSend(commandQueue, &command, 0);
+  }
+};
+
+// Time-set characteristic: the remote writes the current *local* wall-clock
+// time as a uint32 little-endian count of seconds since 1970 (i.e. Unix time
+// already shifted by the remote's UTC offset). The system clock is kept in
+// that local time with TZ left at UTC, so localtime() — which FatFS uses for
+// file timestamps — returns local wall-clock time, matching how FAT (and
+// Windows) interpret those timestamps. Survives soft resets, not power loss.
+class BleTimeCallbacks : public BLECharacteristicCallbacks {
+  void onWrite(BLECharacteristic *characteristic) override {
+    String value = characteristic->getValue();
+    if (value.length() < 4) {
+      return;
+    }
+
+    uint32_t localSeconds;
+    memcpy(&localSeconds, value.c_str(), 4);
+
+    struct timeval tv = { (time_t)localSeconds, 0 };
+    settimeofday(&tv, NULL);
+    clockSet = true;
+
+    struct tm t;
+    time_t now = (time_t)localSeconds;
+    localtime_r(&now, &t);
+    char stamp[24];
+    strftime(stamp, sizeof(stamp), "%Y-%m-%d %H:%M:%S", &t);
+    Serial.printf("Clock set over BLE: %s\r\n", stamp);
   }
 };
 
@@ -531,6 +669,12 @@ static void beginBle() {
     BLECharacteristic::PROPERTY_WRITE
   );
   controlCharacteristic->setCallbacks(new BleControlCallbacks());
+
+  BLECharacteristic *timeCharacteristic = service->createCharacteristic(
+    BLE_TIME_CHAR_UUID,
+    BLECharacteristic::PROPERTY_WRITE
+  );
+  timeCharacteristic->setCallbacks(new BleTimeCallbacks());
 
   bleStatusCharacteristic = service->createCharacteristic(
     BLE_STATUS_CHAR_UUID,
@@ -608,6 +752,14 @@ static void updateRecordLed() {
 // PDM microphone
 // ---------------------------------------------------------------------------
 
+static bool IRAM_ATTR onI2sRecvOverflow(i2s_chan_handle_t handle, i2s_event_data_t *event, void *ctx) {
+  (void)handle;
+  (void)event;
+  (void)ctx;
+  diagDmaOverflows++;
+  return false;
+}
+
 static void beginPdmMic() {
   i2s_chan_config_t chan_cfg = I2S_CHANNEL_DEFAULT_CONFIG(I2S_NUM_0, I2S_ROLE_MASTER);
   // Deeper DMA queue than the default gives the driver its own cushion
@@ -632,6 +784,11 @@ static void beginPdmMic() {
   };
 
   ESP_ERROR_CHECK(i2s_channel_init_pdm_rx_mode(rx_handle, &pdm_rx_cfg));
+
+  i2s_event_callbacks_t cbs = {};
+  cbs.on_recv_q_ovf = onI2sRecvOverflow;
+  ESP_ERROR_CHECK(i2s_channel_register_event_callback(rx_handle, &cbs, NULL));
+
   ESP_ERROR_CHECK(i2s_channel_enable(rx_handle));
 }
 
@@ -644,9 +801,19 @@ static void beginPdmMic() {
 static void i2sReaderTask(void *param) {
   (void)param;
 
+  static uint8_t scratch[BUFFER_BYTES];
+
   for (;;) {
     uint8_t *buf = NULL;
-    xQueueReceive(freeQueue, &buf, portMAX_DELAY);
+    if (xQueueReceive(freeQueue, &buf, 0) != pdTRUE) {
+      // Pool exhausted: the SD writer has fallen ~680ms behind. Keep draining
+      // the DMA into scratch (so the loss is counted here rather than hidden
+      // as a DMA overflow) and go back to waiting for a free buffer.
+      size_t dropped = 0;
+      i2s_channel_read(rx_handle, scratch, BUFFER_BYTES, &dropped, portMAX_DELAY);
+      diagDropBytes += dropped;
+      continue;
+    }
 
     size_t bytesRead = 0;
     esp_err_t err = i2s_channel_read(rx_handle, buf, BUFFER_BYTES, &bytesRead, portMAX_DELAY);
@@ -682,6 +849,8 @@ void setup() {
     xQueueSend(freeQueue, &ptr, 0);
   }
 
+  commandQueue = xQueueCreate(4, sizeof(RecordCommand));
+
   xTaskCreatePinnedToCore(i2sReaderTask, "i2s_reader", 4096, NULL, 10, NULL, 0);
 
   setSdReady(mountSd());
@@ -698,6 +867,24 @@ void setup() {
 }
 
 void loop() {
+  RecordCommand command;
+  while (xQueueReceive(commandQueue, &command, 0) == pdTRUE) {
+    if (command == CMD_START) {
+      startRecording();
+    } else if (command == CMD_STOP) {
+      stopRecording();
+    } else {
+      toggleRecording();
+    }
+  }
+
+  // Bench-test hook: 'r' over serial toggles recording, same as the button.
+  while (Serial.available()) {
+    if (Serial.read() == 'r') {
+      toggleRecording();
+    }
+  }
+
   checkButton();
   updateRecordLed();
   updateSdPresence();
@@ -722,7 +909,17 @@ void loop() {
   updateLevelMeter((const int16_t *)chunk.data, sampleCount);
 
   if (recording) {
+    UBaseType_t freeBuffers = uxQueueMessagesWaiting(freeQueue);
+    if (freeBuffers < diagMinFreeBuffers) {
+      diagMinFreeBuffers = freeBuffers;
+    }
+
+    uint32_t writeStartUs = micros();
     size_t written = recordingFile.write(chunk.data, chunk.len);
+    uint32_t writeUs = micros() - writeStartUs;
+    diagTotalWriteUs += writeUs;
+    if (writeUs > diagMaxWriteUs) diagMaxWriteUs = writeUs;
+    if (writeUs > 50000) diagSlowWrites++;
     dataBytesWritten += written;
 
     if (written != chunk.len) {

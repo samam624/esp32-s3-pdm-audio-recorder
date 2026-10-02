@@ -2,7 +2,9 @@
 
 Records the onboard PDM MEMS microphone to WAV files on the SD card.
 Start/stop by pressing the physical button or by sending a command over
-Bluetooth LE. Validated working on the bench PCB over COM13 (2026-07-07).
+Bluetooth LE. Validated working on the bench PCB (2026-07-07; re-validated
+2026-10-01). The board has enumerated as COM13 and COM3 on different
+machines/sessions — check Device Manager and substitute below.
 
 ## What it does
 
@@ -86,6 +88,31 @@ addressed:
    fixes: the expensive remount path now runs at most once a second,
    independent of the cheap 50ms presence probe used once a card is mounted.
 
+### Hot-inserted cards mounting at low speed (fixed 2026-10-01)
+
+**This was the cause of the intermittent sped-up / glitchy recordings.** A
+card inserted while the board is running gets probed by the 1s remount loop,
+often before it has finished seating/powering up. The 20MHz attempt fails,
+`mountSd()` falls through to whatever slower speed answers first (observed:
+4, 8, 10 and 16MHz), and the card then stayed at that speed until removed.
+At 4MHz a 4KB write averaged ~10.5ms against a 21.3ms real-time budget, with
+occasional 100ms+ stalls draining the buffer pool to half — slower mounts
+(or a few more stalls) exhaust it and audio is dropped, which plays back sped
+up with clicks. A card present at boot was unaffected, which is why it seemed
+random (and why resetting the board appeared to help).
+
+Fix (see `SD_SETTLE_MS` in the sketch):
+- When a newly detected card mounts below full speed, wait `SD_SETTLE_MS`
+  (500ms) and re-sweep from 20MHz.
+- If it's still below full speed, re-sweep up to `SD_UPGRADE_MAX_ATTEMPTS`
+  (3) more times while idle, every `SD_UPGRADE_INTERVAL_MS` (3s). Never
+  during a recording. If the card genuinely can't do 20MHz it keeps the best
+  speed that works.
+
+Bench result after the fix: four pull/reinsert cycles first mounted at
+8/16/16/10MHz, all came up to 20MHz after the settle delay, and all four
+recordings had zero dropped audio (avg write ~3.3ms per chunk).
+
 ## Surviving a card pulled mid-recording (fixed 2026-07-08)
 
 The WAV header's data-size field is written once when a recording starts
@@ -128,9 +155,17 @@ The board advertises as **`ESP32 SD Recorder`**. GATT layout:
 
 | Characteristic | UUID | Properties | Purpose |
 |---|---|---|---|
-| Service | `6e400001-b5a3-f393-e0a9-e50e24dcca9e` | — | Container for the two below |
+| Service | `6e400001-b5a3-f393-e0a9-e50e24dcca9e` | — | Container for the characteristics below |
 | Control | `6e400002-b5a3-f393-e0a9-e50e24dcca9e` | Write | Write `0x01`/`'1'` to start, `0x00`/`'0'` to stop, anything else toggles |
 | Status | `6e400003-b5a3-f393-e0a9-e50e24dcca9e` | Read, Notify | 10-byte status payload (see below); notifies on every state change **and** on a 500ms heartbeat |
+| Time | `6e400004-b5a3-f393-e0a9-e50e24dcca9e` | Write | 4-byte uint32 LE: local wall-clock time as seconds since 1970 (Unix time shifted by the sender's UTC offset). Sets the clock used for WAV file timestamps |
+
+**File timestamps:** the PCB has no RTC, so the clock starts at 1970 on every
+power-up and files get FAT's minimum date (1980-01-01, which Windows shows as
+Dec 31 1979). `ble_control.html` writes the Time characteristic on every
+connect, so connect the remote once after powering the board and before
+recording. The clock survives a reset but not a power loss. Recordings made
+before any BLE connection (button only) still get the 1980 date.
 
 ### Status payload (10 bytes, little-endian)
 
@@ -205,10 +240,14 @@ itself.
 
 The trigger plumbing is already factored out so a WiFi handler is a small
 addition, not a rewrite: `toggleRecording()` / `startRecording()` /
-`stopRecording()` in the sketch are the only entry points anything needs to
-call. The BLE write-characteristic callback calls them today; a future WiFi
-command handler (HTTP endpoint, WebSocket, MQTT, whatever) would just call
-the same three functions from its own handler. Not implemented yet.
+`stopRecording()` in the sketch are the only entry points, and they must only
+run on `loop()`, the sole SD card user. The BLE write callback runs on the
+Bluetooth task on core 0, so it pushes a `RecordCommand` onto `commandQueue`
+and `loop()` executes it. (Calling `stopRecording()` straight from the
+callback, as an earlier version did, could close the file mid-write and
+produce a spurious "SD write failed" when stopping from the remote.) A future
+WiFi command handler (HTTP endpoint, WebSocket, MQTT, whatever) should queue
+commands the same way. Not implemented yet.
 
 ## Architecture note: why audio capture is split across both cores
 
@@ -241,6 +280,27 @@ headroom instead of dropping samples. As long as the *average* write speed
 keeps up with the audio bitrate (it comfortably does at 20MHz SPI), recordings
 come out clean.
 
+### Capture diagnostics (serial)
+
+Every `stopRecording()` prints a summary over serial, e.g.:
+
+```
+Recording stopped (1540096 bytes)
+  diag: wall 8010 ms, audio 8021 ms (100.1% of wall time)
+  diag: dropped 0 bytes (0 ms), DMA overflows 0
+  diag: SD 20000000 Hz, write avg 3502 us / max 6800 us per 4096-byte chunk (budget 21333 us), 0 writes >50ms, min free buffers 30/32
+```
+
+- **audio vs wall time** should be ~100%. Less means audio went missing.
+- **dropped** is audio the reader task discarded because the pool was full
+  (SD writer fell behind). **DMA overflows** means the reader itself was
+  starved of CPU. Both should be 0.
+- **SD Hz** should be 20000000; lower means a slow mount (see above).
+- **min free buffers** is how close the pool came to running out.
+
+**Bench-test hook:** sending `r` over serial toggles recording, same as the
+button — handy for scripted tests without touching the board.
+
 ## Building and flashing
 
 Built with `arduino-cli` (the copy bundled with Arduino IDE 2 works fine):
@@ -251,7 +311,7 @@ SKETCH="path/to/ESP32_S3_SD_Recorder"
 FQBN="esp32:esp32:esp32s3:UploadSpeed=921600,USBMode=hwcdc,CDCOnBoot=cdc,MSCOnBoot=default,DFUOnBoot=default,UploadMode=default,CPUFreq=240,FlashMode=qio,FlashSize=4M,PartitionScheme=huge_app,DebugLevel=none,PSRAM=disabled,LoopCore=1,EventsCore=1,EraseFlash=none,JTAGAdapter=default,ZigbeeMode=default"
 
 "$CLI" compile -b "$FQBN" "$SKETCH"
-"$CLI" upload -b "$FQBN" -p COM13 "$SKETCH"
+"$CLI" upload -b "$FQBN" -p COM3 "$SKETCH"   # or whatever port the board is on
 ```
 
 Notes on the board options, since defaults silently break things here:

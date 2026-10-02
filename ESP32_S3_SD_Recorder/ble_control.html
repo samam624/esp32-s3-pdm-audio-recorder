@@ -451,6 +451,7 @@
   const SERVICE_UUID = "6e400001-b5a3-f393-e0a9-e50e24dcca9e";
   const CONTROL_UUID = "6e400002-b5a3-f393-e0a9-e50e24dcca9e";
   const STATUS_UUID = "6e400003-b5a3-f393-e0a9-e50e24dcca9e";
+  const TIME_UUID = "6e400004-b5a3-f393-e0a9-e50e24dcca9e";
 
   // Must match SAMPLE_RATE * CHANNELS * (BITS_PER_SAMPLE/8) in the firmware —
   // used to turn a raw byte count into a trustworthy "audio saved" duration.
@@ -725,6 +726,24 @@
     setConnectedUi(false);
   }
 
+  // The board has no RTC, so it starts at 1970 on every boot and its WAV files
+  // get dated 1980 (shown as Dec 31 1979). Send it local wall-clock time (Unix
+  // seconds shifted by our UTC offset) so file timestamps are correct.
+  // Firmware without the time characteristic just skips this.
+  async function syncClock(service) {
+    try {
+      const timeChar = await service.getCharacteristic(TIME_UUID);
+      const now = new Date();
+      const localSeconds = Math.floor(now.getTime() / 1000) - now.getTimezoneOffset() * 60;
+      const buf = new DataView(new ArrayBuffer(4));
+      buf.setUint32(0, localSeconds, true);
+      await timeChar.writeValue(buf.buffer);
+      log("clock synced: " + now.toLocaleString());
+    } catch (err) {
+      log("clock sync skipped: " + err.message);
+    }
+  }
+
   async function connect() {
     if (!navigator.bluetooth) {
       setMessage("This browser doesn't support Web Bluetooth. Use Chrome/Edge on desktop or Android, or the Bluefy app on iOS.", true);
@@ -753,6 +772,8 @@
       const service = await server.getPrimaryService(SERVICE_UUID);
       controlChar = await service.getCharacteristic(CONTROL_UUID);
       statusChar = await service.getCharacteristic(STATUS_UUID);
+
+      await syncClock(service);
 
       const initial = await statusChar.readValue();
       processStatusValue(initial);
