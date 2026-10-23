@@ -1,14 +1,51 @@
-# MEMS_MIC_TEST
+# ESP32-S3 PDM Audio Recorder
+
+[![Portfolio checks](https://github.com/samam624/esp32-s3-pdm-audio-recorder/actions/workflows/portfolio-checks.yml/badge.svg)](https://github.com/samam624/esp32-s3-pdm-audio-recorder/actions/workflows/portfolio-checks.yml)
 
 ESP32-S3 firmware for a custom PCB carrying a PDM MEMS microphone and a
 microSD card slot. The goal: record audio to the SD card, triggerable by a
 physical button and (working, as of 2026-07-07) Bluetooth LE.
+
+**Sam's role:** designed the recorder carrier hardware, specified capture and control behavior,
+and validated the prototype on the bench. Firmware implementation was AI-assisted and tested
+against the physical board and recorded WAV files.
+
+> [!IMPORTANT]
+> This repository is the capture prototype: one PDM front end and an external SPI microSD module.
+> It validates 48 kHz stereo, 16-bit WAV capture, DMA, BLE/button control and 128 KiB buffering. It
+> does not demonstrate the separate eight-microphone flex array's full multi-channel recording path
+> or the integrated controller's SD/BLE paths.
 
 ## Status
 
 **Working.** [ESP32_S3_SD_Recorder](ESP32_S3_SD_Recorder/) is the active
 firmware — flashed and validated on the bench hardware (last 2026-10-01). Everything
 else in this repo is earlier exploratory/diagnostic work kept for reference.
+
+## 30-second engineering summary
+
+```mermaid
+flowchart LR
+    M[PDM MEMS microphone] --> D[ESP32-S3 I2S DMA]
+    D --> B[128 KiB buffer pool]
+    B --> S[SPI microSD]
+    S --> W[48 kHz stereo<br>16-bit WAV]
+    P[Button] --> Q[Command queue]
+    L[BLE control] --> Q
+    Q --> D
+```
+
+| Evidence | Bench result |
+|---|---|
+| Capture format | 48 kHz stereo, 16-bit PCM WAV |
+| Storage resilience | Producer/consumer buffering isolates PDM capture from variable SD write latency |
+| Hot-insert recovery | Four pull/reinsert trials upgraded 8/16/16/10 MHz mounts to 20 MHz; all four recordings reported zero dropped audio |
+| Timing check | [`bench_tests/REC_00002.WAV`](bench_tests/REC_00002.WAV) contains 1/2/3 kHz test tones placed at 1/3/5 seconds |
+| Controls | Physical button and BLE start/stop both bench-validated |
+
+The detailed [active-firmware README](ESP32_S3_SD_Recorder/README.md) records the buffering,
+card-remount and failure-recovery behavior. Sample recordings are retained as measurement
+artifacts rather than as a claim about the separate eight-microphone system.
 
 ## Directory map
 
