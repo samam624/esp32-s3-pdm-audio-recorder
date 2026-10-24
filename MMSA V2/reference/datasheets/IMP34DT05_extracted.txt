@@ -1,0 +1,779 @@
+
+===PAGE 1===
+Features
+•
+Single supply voltage
+•
+Low power consumption
+•
+AOP = 122.5 dBSPL
+•
+64 dB signal-to-noise ratio
+•
+Omnidirectional sensitivity
+•
+–26 dBFS ±3 dB sensitivity
+•
+PDM output
+•
+HCLGA package
+–
+Top-port design
+–
+SMD-compliant
+–
+EMI-shielded
+–
+ECOPACK®, RoHS, and “Green” compliant
+Applications
+•
+Anti-tampering devices
+•
+Vibration monitoring
+•
+Audio-activated functions
+•
+Predictive maintenance
+•
+Noise cancelling
+•
+Sound detection for alarm systems
+•
+Human / machine voice interface
+•
+Anti-theft systems
+Description
+The IMP34DT05 is an ultra-compact, low-power, omnidirectional, digital MEMS
+microphone built with a capacitive sensing element and an IC interface.
+The sensing element, capable of detecting acoustic waves, is manufactured using a
+specialized silicon micromachining process dedicated to producing audio sensors.
+The IC interface is manufactured using a CMOS process that allows designing a
+dedicated circuit able to provide a digital signal externally in PDM format.
+The IMP34DT05 is a low-distortion digital microphone with a 64 dB signal-to-noise
+ratio and –26 dBFS ±3 dB sensitivity.
+The IMP34DT05 is available in a top-port, SMD-compliant, EMI-shielded package
+and is guaranteed to operate over an extended temperature range from -40 °C to
++85 °C.
+Product status link
+IMP34DT05
+Product summary
+Order code
+IMP34DT05TR
+Temperature
+range [°C]
+-40 to +85
+Package
+HCLGA 4LD
+(3 x 4 x 1 mm)
+Packing
+Tape and reel
+Product label
+MEMS audio sensor omnidirectional digital microphone for industrial applications
+IMP34DT05
+Datasheet
+DS12725 - Rev 2 - September 2018
+For further information contact your local STMicroelectronics sales office.
+www.st.com
+
+===PAGE 2===
+1
+Pin description
+Figure 1. Pin connections
+GND
+CLK
+LR
+DOUT
+Vdd
+BOTTOM VIEW
+Table 1. Pin description
+Pin #
+Pin name
+Function
+1
+Vdd
+Power supply
+2
+LR
+Left/Right channel selection
+3
+CLK
+Synchronization input clock
+4
+DOUT
+Left/Right PDM data output
+5 (ground ring)
+GND
+Ground
+IMP34DT05
+Pin description 
+DS12725 - Rev 2
+page 2/20
+
+===PAGE 3===
+2
+Acoustic and electrical specifications
+2.1
+Acoustic and electrical characteristics
+The values listed in the table below are specified for Vdd = 1.8 V, Clock = 2.4 MHz, T = 25 °C, unless otherwise
+noted.
+Table 2. Acoustic and electrical characteristics
+Symbol
+Parameter
+Test condition
+Min.
+Typ.(1)
+Max.
+Unit
+Vdd
+Supply voltage
+1.6
+1.8
+3.6
+V
+Idd
+Current consumption in normal mode
+Mean value
+650
+µA
+IddPdn
+Current consumption in power-down mode(2)
+5
+µA
+Scc
+Short-circuit current
+1
+10
+mA
+AOP
+Acoustic overload point
+122.5
+dBSPL
+So
+Sensitivity
+-29
+-26
+-23
+dBFS
+SNR
+Signal-to-noise ratio
+A-weighted @1 kHz,
+94 dB SPL
+64
+dB(A)
+PSR
+Power supply rejection
+100 mVpp sine 1 kHz
+-90
+dBFS
+fCLK
+Input clock frequency(3)
+1.2
+2.4
+3.25
+MHz
+Ton
+Turn-on time(4)
+Guaranteed by design
+10
+ms
+Top
+Operating temperature range
+-40
++85
+°C
+VIOL
+Low-level logic input/output voltage
+Iout = 1 mA
+-0.3
+0.35xVdd
+V
+VIOH
+High-level logic input/output voltage
+Iout = 1 mA
+0.65xVdd
+Vdd+0.3
+V
+CLOAD
+Capacitive load
+100
+pF
+1.
+Typical specifications are not guaranteed.
+2.
+Input clock in static mode.
+3.
+Duty cycle: min = 40% max = 60%.
+4.
+Time from the first clock edge to valid output data.
+Table 3. Distortion specifications @ 1 kHz
+Parameter
+Test condition
+Typical value (1)
+Distortion
+94 dBSPL
+0.2% THD + N
+Distortion
+110 dBSPL
+0.7% THD + N
+Distortion
+120 dBSP
+6% THD + N
+ 
+1.
+Typical specifications are not guaranteed.
+ 
+IMP34DT05
+Acoustic and electrical specifications 
+DS12725 - Rev 2
+page 3/20
+
+===PAGE 4===
+2.2
+Timing characteristics
+Table 4. Timing characteristics
+Parameter
+Description
+Min.
+Max.
+Unit
+fCLK
+Clock frequency for normal mode
+1.2
+3.25
+MHz
+fPD
+Clock frequency for power-down mode
+0.23
+MHz
+TCLK
+Clock period for normal mode
+308
+1000
+ns
+TR,EN
+Data enabled on DATA line, L/R pin = 1
+70
+90
+ns
+TR,DIS
+Data disabled on DATA line, L/R pin = 1
+4.3
+5.3
+ns
+TL,EN
+Data enabled on DATA line, L/R pin = 0
+64
+87
+ns
+TL,DIS
+Data disabled on DATA line, L/R pin = 0
+3.5
+4.3
+ns
+Figure 2. Timing waveforms
+High Z
+High Z
+High Z
+High Z
+TL,EN
+R,DIS
+R,EN
+T
+L,DIS
+T
+T
+TCLK
+CLK
+PDM R
+PDM L
+IMP34DT05
+Timing characteristics 
+DS12725 - Rev 2
+page 4/20
+
+===PAGE 5===
+2.3
+Frequency response
+Figure 3. Typical frequency response normalized to 1 kHz
+IMP34DT05
+Frequency response 
+DS12725 - Rev 2
+page 5/20
+
+===PAGE 6===
+3
+Application recommendations
+Figure 4.  IMP34DT05 electrical connections (top view)
+1
+2
+4
+3
+Ground ring
+5
+L / R
+CODEC
+CLK
+Dout
+100nF
+1µF
+Vdd
+TOP VIEW
+Figure 5.  IMP34DT05 electrical connections for stereo configuration (top view)
+1
+2
+4
+3
+Ground ring
+5
+L / R
+CODEC
+CLK
+Dout
+1
+2
+4
+3
+Vdd
+100nF
+1µF
+Vdd
+TOP VIEW
+Dout
+Power supply decoupling capacitors (100 nF ceramic, 1 μF ceramic) should be placed as near as possible to pin
+1 of the device (common design practice).
+The L/R pin must be connected to Vdd or GND (refer to Table 6. L/R channel selection).
+IMP34DT05
+Application recommendations 
+DS12725 - Rev 2
+page 6/20
+
+===PAGE 7===
+4
+Carrier tape mechanical specifications
+Figure 6. Carrier tape without microphone (top view)
+Figure 7. Carrier tape with microphone (top view)
+IMP34DT05
+Carrier tape mechanical specifications 
+DS12725 - Rev 2
+page 7/20
+
+===PAGE 8===
+5
+Process recommendations
+To ensure a consistent manufacturing process it is strongly advised to comply with following recommendations:
+•
+The recommended pick-up area for the MP34DT05 package must be defined using the worst case (ie. no
+device alignment during picking process). This area has been defined considering all the tolerances of the
+components involved (reel, package, sound inlet). Picker tolerance shall be considered as well.
+•
+To prevent damage to the MEMS membrane or incorrect pick-up and placement, do not pick up the
+component on the inlet area
+•
+For the package outline please refer to Figure 7. Carrier tape with microphone (top view). Nozzle shape,
+size, and placement accuracy are the other key factors to consider when deciding on the coordinates for the
+picking.
+•
+Device alignment before picking is highly recommended.
+•
+A vacuum force greater than 7 psi must be avoided
+•
+1 kPa = 0.145 psi (lb/in²) = 0.0102 kgf/cm² = 0.0098 atm
+•
+MSL (moisture sensitivity level) Class 3
+•
+Maximum of 3 reflow cycles is recommended
+•
+All recommended dimensions (device safe-picking area) do not include the pick-and-place equipment
+tolerances
+Figure 8. Recommended picking area
+To have a safe pick-up "by design", ST strongly advises an ad hoc nozzle.
+The following picker ensures that the holes for the vacuum and the air stream are ALWAYS away from the
+porthole of the device (4 vacuum ports located at each corner of the device).
+The recommended nozzle also has a recess, in the form of a cross, which guarantees that the porthole is always
+left at atmospheric pressure. By using the recommended nozzle, the membrane will not suffer any sudden air
+disturbances during the picking or placing of the devices in the tape and reel.
+IMP34DT05
+Process recommendations 
+DS12725 - Rev 2
+page 8/20
+
+===PAGE 9===
+Figure 9. Recommended picker design
+IMP34DT05
+Process recommendations 
+DS12725 - Rev 2
+page 9/20
+
+===PAGE 10===
+6
+Sensing element
+The sensing element shall mean the acoustic sensor consisting of a conductive movable plate and a fixed plate
+placed in a tiny silicon chip. This sensor transduces the sound pressure into the changes of coupled capacity
+between those two plates.
+IMP34DT05
+Sensing element 
+DS12725 - Rev 2
+page 10/20
+
+===PAGE 11===
+7
+Absolute maximum ratings
+Stresses above those listed as “absolute maximum ratings” may cause permanent damage to the device. This is
+a stress rating only and functional operation of the device under these conditions is not implied. Exposure to
+maximum rating conditions for extended periods may affect device reliability.
+Table 5. Absolute maximum ratings
+Symbol
+Ratings
+Maximum value
+Unit
+Vdd
+Supply voltage
+-0.3 to 5
+V
+Vin
+Input voltage on any control pin
+-0.3 to Vdd +0.3
+V
+TSTG
+Storage temperature range
+-40 to +125
+°C
+ESD
+Electrostatic discharge protection
+±2000 (HBM)
+V
+±200 (MM)
+±750 (CBM)
+ESD
+Product standard EN 55024:2010 - 3 air discharges
+±15000
+V
+This device is sensitive to mechanical shock, improper handling can cause permanent damage to the part.
+This device is sensitive to electrostatic discharge (ESD), improper handling can cause permanent damage to the part.
+IMP34DT05
+Absolute maximum ratings 
+DS12725 - Rev 2
+page 11/20
+
+===PAGE 12===
+8
+Functionality
+8.1
+L/R channel selection
+The L/R digital pad lets the user select the DOUT signal pattern as shown in Table 6. L/R channel selection. The
+L/R pin must be connected to Vdd or GND.
+Table 6. L/R channel selection
+L/R
+CLK low
+CLK high
+GND
+Data valid
+High impedance
+Vdd
+High impedance
+Data valid
+Note: As the L/R pin is internally connected to GND via a 200 kohm pull/down resistor, it is not mandatory to
+connect the pin itself to GND for the respective channel selection.
+IMP34DT05
+Functionality 
+DS12725 - Rev 2
+page 12/20
+
+===PAGE 13===
+9
+Package information
+In order to meet environmental requirements, ST offers these devices in different grades of ECOPACK®
+packages, depending on their level of environmental compliance. ECOPACK® specifications, grade definitions
+and product status are available at: www.st.com. ECOPACK® is an ST trademark.
+9.1
+Soldering information
+The HCLGA (3 x 4) 4LD package is also compliant with the RoHS and “Green” standards and is qualified for
+soldering heat resistance according to JEDEC J-STD-020.
+Land pattern and soldering recommendations are available at www.st.com.
+Figure 10. Recommended soldering profile limits
+RAMP-DOWN
+RAMP-UP
+ts
+PREHEAT
+tL
+tp
+TL to T P
+TSMAX
+TSMIN
+TP
+TL
+30     60     90     120     150     180      210      240      270      300      330      360     390
+T25° to PEAK
+TEMPERATURE
+CRITICAL ZONE
+TIME
+Table 7. Recommended soldering profile limits
+Description
+Parameter
+Pb free
+Average ramp rate
+TL to TP
+3 °C/sec max
+Preheat
+Minimum temperature
+TSMIN
+150 °C
+Maximum temperature
+TSMAX
+200 °C
+Time (TSMIN to TSMAX)
+tS
+60 sec to 120 sec
+Ramp-up rate
+TSMAX to TL
+Time maintained above liquidus temperature
+Liquidus temperature
+tL
+TL
+60 sec to 150 sec
+217 °C
+Peak temperature
+TP
+260 °C max
+Time within 5 °C of actual peak temperature
+20 sec to 40 sec
+Ramp-down rate
+6 °C/sec max
+Time 25 °C (t25 °C) to peak temperature
+8 minutes max
+IMP34DT05
+Package information 
+DS12725 - Rev 2
+page 13/20
+
+===PAGE 14===
+9.2
+HCLGA package information
+Figure 11. HCLGA (3 x 4 x 1 mm) 4-lead package outline and mechanical data
+Dimensions are in millimeter unless otherwise specified 
+General Tolerance is +/-0.15mm unless otherwise specified 
+OUTER DIMENSIONS
+ITEM
+DIMENSION [mm]
+TOLERANCE [mm]
+ 
+1
+.
+0
+±
+ 
+3
+ ]
+L
+[ 
+h
+t
+g
+n
+e
+L
+ 
+1
+.
+0
+±
+ 
+4
+ ]
+W
+[ 
+h
+t
+di
+W
+ 
+1
+.
+0
+±
+ 
+0
+0
+.
+1
+ ]
+H
+[ t
+h
+gie
+H
+ 
+1
+.
+0
+±
+ 
+5
+2
+.
+0
+ 
+Ø
+ 
+P
+A
+DM00231908_3
+1.
+The MEMS microphone plastic cap can exhibit some level of variation in color when the device is subjected
+to thermal processes. This variation does does not affect acoustic or electrical performance.
+2.
+Ring plating can be subject to change not affecting acoustic and electrical performance.
+IMP34DT05
+HCLGA package information 
+DS12725 - Rev 2
+page 14/20
+
+===PAGE 15===
+Figure 12. Land pattern
+GND
+GND
+GND
+GND
+DOUT
+Vdd
+CLK
+LR
+1.30
+2.30
+0.35
+0.40
+0.95
+0.35
+Pad + solder paste
+0.85
+0.85
+IMP34DT05
+HCLGA package information 
+DS12725 - Rev 2
+page 15/20
+
+===PAGE 16===
+Revision history
+Table 8. Document revision history
+Date
+Version
+Changes
+02-Aug-2018
+1
+Initial release
+04-Sep-2018
+2
+Added product label indicating ST's 10-year longevity commitment
+IMP34DT05
+ 
+DS12725 - Rev 2
+page 16/20
+
+===PAGE 17===
+Contents
+1
+Pin description . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .2
+2
+Acoustic and electrical specifications. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .3
+2.1
+Acoustic and electrical characteristics . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 3
+2.2
+Timing characteristics . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 4
+2.3
+Frequency response . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 5
+3
+Application recommendations . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .6
+4
+Carrier tape mechanical specifications. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .7
+5
+Process recommendations . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .8
+6
+Sensing element. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .10
+7
+Absolute maximum ratings . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .11
+8
+Functionality . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .12
+8.1
+L/R channel selection . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .12
+9
+Package information. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .13
+9.1
+Soldering information . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .13
+9.2
+HCLGA package information . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .13
+Revision history . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .16
+IMP34DT05
+Contents 
+DS12725 - Rev 2
+page 17/20
+
+===PAGE 18===
+List of tables
+Table 1.  
+Pin description . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 2
+Table 2.  
+Acoustic and electrical characteristics. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 3
+Table 3.  
+Distortion specifications @ 1 kHz . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 3
+Table 4.  
+Timing characteristics. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 4
+Table 5.  
+Absolute maximum ratings . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11
+Table 6.  
+L/R channel selection . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 12
+Table 7.  
+Recommended soldering profile limits. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 13
+Table 8.  
+Document revision history . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 16
+IMP34DT05
+List of tables 
+DS12725 - Rev 2
+page 18/20
+
+===PAGE 19===
+List of figures
+Figure 1.  
+Pin connections . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 2
+Figure 2.  
+Timing waveforms. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 4
+Figure 3.  
+Typical frequency response normalized to 1 kHz. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 5
+Figure 4.  
+IMP34DT05 electrical connections (top view) . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 6
+Figure 5.  
+IMP34DT05 electrical connections for stereo configuration (top view) . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 6
+Figure 6.  
+Carrier tape without microphone (top view). . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 7
+Figure 7.  
+Carrier tape with microphone (top view) . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 7
+Figure 8.  
+Recommended picking area . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 8
+Figure 9.  
+Recommended picker design . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 9
+Figure 10.  
+Recommended soldering profile limits . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 13
+Figure 11.  
+HCLGA (3 x 4 x 1 mm) 4-lead package outline and mechanical data . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 14
+Figure 12.  
+Land pattern. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 15
+IMP34DT05
+List of figures 
+DS12725 - Rev 2
+page 19/20
+
+===PAGE 20===
+IMPORTANT NOTICE – PLEASE READ CAREFULLY
+STMicroelectronics NV and its subsidiaries (“ST”) reserve the right to make changes, corrections, enhancements, modifications, and improvements to ST
+products and/or to this document at any time without notice. Purchasers should obtain the latest relevant information on ST products before placing orders. ST
+products are sold pursuant to ST’s terms and conditions of sale in place at the time of order acknowledgement.
+Purchasers are solely responsible for the choice, selection, and use of ST products and ST assumes no liability for application assistance or the design of
+Purchasers’ products.
+No license, express or implied, to any intellectual property right is granted by ST herein.
+Resale of ST products with provisions different from the information set forth herein shall void any warranty granted by ST for such product.
+ST and the ST logo are trademarks of ST. All other product or service names are the property of their respective owners.
+Information in this document supersedes and replaces information previously supplied in any prior versions of this document.
+© 2018 STMicroelectronics – All rights reserved
+IMP34DT05
+ 
+DS12725 - Rev 2
+page 20/20

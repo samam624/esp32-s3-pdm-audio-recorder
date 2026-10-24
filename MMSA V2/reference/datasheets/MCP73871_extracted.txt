@@ -1,0 +1,3696 @@
+
+===PAGE 1===
+© 2009 Microchip Technology Inc.
+DS22090B-page 1
+MCP73871
+Features
+• Integrated System Load Sharing and Battery 
+Charge Management
+- Simultaneously Power the System and 
+Charge the Li-Ion Battery
+- Voltage Proportional Current Control (VPCC) 
+ensures system load has priority over Li-Ion 
+battery charge current
+- Low-Loss Power-Path Management with 
+Ideal Diode Operation
+• Complete Linear Charge Management Controller
+- Integrated Pass Transistors
+- Integrated Current Sense
+- Integrated Reverse Discharge Protection
+- Selectable Input Power Sources: USB Port or 
+AC-DC Wall Adapter
+• Preset High Accuracy Charge Voltage Options:
+- 4.10V, 4.20V, 4.35V or 4.40V
+- ±0.5% Regulation Tolerance
+• Constant Current / Constant Voltage (CC/CV) 
+Operation with Thermal Regulation
+• Maximum 1.8A Total Input Current Control
+• Resistor Programmable Fast Charge Current 
+Control: 50 mA to 1A
+• Resistor Programmable Termination Set Point
+• Selectable USB Input Current Control
+- Absolute Maximum: 100 mA (L) / 500 mA (H)
+• Automatic Recharge
+• Automatic End-of-Charge Control
+• Safety Timer With Timer Enable/Disable Control
+• 0.1C Preconditioning for Deeply Depleted Cells
+• Battery Cell Temperature Monitor
+• Undervoltage Lockout (UVLO)
+• Low Battery Status Indicator (LBO)
+• Power-Good Status Indicator (PG)
+• Charge Status and Fault Condition Indicators
+• Numerous Selectable Options Available for a 
+Variety of Applications:
+- Refer to Section 1.0 “Electrical 
+Characteristics” for Selectable Options”
+- Refer to the “Product Identification 
+System” for Standard Options
+• Temperature Range: -40°C to +85°C
+• Packaging: 20-Lead QFN (4 mm x 4 mm)
+Applications
+• GPSs / Navigators
+• PDAs and Smart Phones
+• Portable Media Players and MP3 Players
+• Digital Cameras
+• Bluetooth Headsets
+• Portable Medical Devices
+• Charge Cradles / Docking Stations
+• Toys
+Description
+The MCP73871 device is a fully integrated linear
+solution for system load sharing and Li-Ion / Li-Polymer
+battery charge management with ac-dc wall adapter
+and USB port power sources selection. It’s also
+capable of autonomous power source selection
+between input or battery. Along with its small physical
+size, the low number of required external components
+makes 
+the 
+device 
+ideally 
+suited 
+for 
+portable
+applications.
+The MCP73871 device automatically obtains power for
+the system load from a single-cell Li-Ion battery or an
+input power source (ac-dc wall adapter or USB port).
+The MCP73871 device specifically adheres to the
+current drawn limits governed by the USB specification.
+With an ac-dc wall adapter providing power to the
+system, an external resistor sets the magnitude of 1A
+maximum charge current while supports up to 1.8A
+total current for system load and battery charge
+current.
+The MCP73871 device employs a constant current /
+constant voltage (CC/CV) charge algorithm with
+selectable charge termination point. The constant
+voltage regulation is fixed with four available options:
+4.10V,   4.20V, 4.35V, or 4.40V to accommodate new,
+emerging 
+battery 
+charging 
+requirements. 
+The
+MCP73871 device also limits the charge current based
+on die temperature during high power or high ambient
+conditions. This thermal regulation optimizes the
+charge cycle time while maintaining device reliability.
+The MCP73871 device includes a low battery indicator,
+a power-good indicator and two charge status
+indicators that allows for outputs with LEDs or
+communication 
+with 
+host 
+microcontrollers. 
+The
+MCP73871 device is fully specified over the ambient
+temperature range of -40°C to +85°C.
+Stand-Alone System Load Sharing and Li-Ion / Li-Polymer 
+Battery Charge Management Controller
+
+===PAGE 2===
+MCP73871
+DS22090B-page 2
+© 2009 Microchip Technology Inc.
+Package Types
+Typical Application Circuit
+IN
+ STAT1 / LBO
+PG
+THERM
+MCP73871 
+20-Lead QFN
+STAT2
+PROG1
+IN
+OUT
+OUT
+CE
+SEL
+PROG3
+TE
+VBAT
+VBAT
+VPCC
+VSS
+VSS
+VBAT_SENSE
+2
+EP
+20
+1
+19 18 17
+3
+4
+12
+11
+10
+9
+5
+6
+7
+8
+13
+14
+15
+16
+21
+PROG2
+STAT1 
+LBO
+IN
+OUT
+PG
+VBAT
+Single-Cell 
+Li-Ion Battery
+7
+MCP73871 Typical Application
+1, 20
+8
+18, 19
+10 µF 
+10, 11, EP
+Ac-dc Adapter 
+         or 
+    USB Port
+STAT2
+THERM
+VSS
+PROG1
+PROG3 12
+13 RPROG1
+6
+5
+14, 15, 16
+470Ω
+470Ω
+470Ω
+2
+4.7 µF 
+System 
+Load
+SEL
+TE
+PROG2
+Hi
+Low
+Hi
+Low
+Hi
+Low
+3
+4
+9
+RPROG3
+VPCC
+NTC
+10 kΩ
+Hi
+Low
+17 CE
+4.7 µF 
+
+===PAGE 3===
+© 2009 Microchip Technology Inc.
+DS22090B-page 3
+MCP73871
+Functional Block Diagram
+STAT1
+PROG1
+VBAT
+G=0.001
+VSS
+Direction
+Control
+TERM
++
+-
++
+-
+LTVT
++
+-
+HTVT
+THERM
+50 µA
+UVLO, 
+REFERENCE,
+CHARGE 
+CONTROL, 
+TIMER, 
+AND 
+STATUS 
+LOGIC
+STAT2
+PG
+Direction
+Control
+G=0.001
+G=0.001
+PROG2
+IN
++
+-
+CURRENT 
+LIMIT
+VREF
+G=0.001
++
+-
+CURRENT 
+LIMIT
+VREF/2
+ 
+PROG3
++
+-
+CA
+VREF
+PRECONDITION
++
+-
+VREF
++
+-
+VA
+VREF
+VREF
+SEL
+OUT
+VREF
+TE
+0.2Ω
+0.2Ω
+Ideal 
+Diode, 
+Synchronous
+Switch
+CHRG
++
+-
+VREF
++
+-
+VREF
+VPCC
+CE
+VBAT_SENSE
+
+===PAGE 4===
+MCP73871
+DS22090B-page 4
+© 2009 Microchip Technology Inc.
+NOTES:
+
+===PAGE 5===
+© 2009 Microchip Technology Inc.
+DS22090B-page 5
+MCP73871
+1.0
+ELECTRICAL 
+CHARACTERISTICS
+Absolute Maximum Ratings†
+VIN....................................................................................7.0V
+All Inputs and Outputs w.r.t. ................ VSS-0.3V to VDD+0.3V
+(VDD = VIN or VBAT)
+Maximum Junction Temperature, TJ ............Internally Limited
+Storage temperature .....................................-65°C to +150°C
+ESD protection on all pins
+Human Body Model (1.5 kΩ in Series with 100pF)........≥ 4 kV
+Machine Model (200 pF, No Series Resistance).............300V
+† Notice: Stresses above those listed under “Maximum
+Ratings” may cause permanent damage to the device. This is
+a stress rating only and functional operation of the device at
+those or any other conditions above those indicated in the
+operational listings of this specification is not implied.
+Exposure to maximum rating conditions for extended periods
+may affect device reliability.
+DC CHARACTERISTICS
+Electrical Specifications: Unless otherwise indicated, all limits apply for VIN = VREG + 0.3V to 6V, TA = -40°C to +85°C.
+Typical values are at +25°C, VIN = [VREG (typical) + 1.0V] 
+Parameters
+Sym
+Min
+Typ
+Max
+Units
+Conditions
+Supply Input
+Supply Voltage
+VIN
+VREG 
++0.3V
+—
+6
+V
+Supply Current
+ISS
+—
+2500
+3750
+µA
+Charging
+—
+260
+350
+µA
+Charge Complete
+—
+180
+300
+µA
+Standby
+—
+28
+50
+µA
+Shutdown
+(VDD < VBAT - 100 mV or 
+VDD < VSTOP) 
+UVLO Start Threshold
+VSTART
+VREG + 
+0.05V
+VREG + 
+0.15V
+VREG + 
+0.25V
+V
+VDD= Low-to-High
+UVLO Stop Threshold
+VSTOP
+VREG – 
+0.07V
+VREG + 
+0.07V
+VREG + 
+0.17V
+V
+VDD= High-to-Low
+UVLO Hysteresis
+VHYS
+—
+90
+—
+mV
+Voltage Regulation (Constant Voltage Mode)
+Regulated Charge Voltage
+VREG
+4.080
+4.10
+4.121
+V
+VDD=[VREG(typical)+1V]
+4.179
+4.20
+4.221
+V
+IOUT=10 mA 
+4.328
+4.35
+4.372
+V
+TA=-5°C to +55°C
+4.378
+4.40
+4.422
+Regulated Charge Voltage Tolerance
+VRTOL
+-0.5
+—
++0.5
+%
+TA= +25°C
+-0.75
+—
++0.75
+%
+TA= -5°C to +55°C
+Line Regulation
+|(ΔVBAT/VBAT)/
+ΔVDD|
+—
+0.08
+0.20
+%/V
+VDD=[VREG(typical)+1V] to 6V
+IOUT=10 mA
+Load Regulation
+|ΔVBAT/VBAT|
+—
+0.08
+0.18
+%
+IOUT=10 mA to 150 mA
+VDD= [VREG(typical)+1V]
+Supply Ripple Attenuation
+PSRR
+—
+-47
+—
+dB
+IOUT=10 mA, 1 kHz
+—
+-40
+—
+dB
+IOUT=10 mA, 10 kHz
+Current Regulation (Fast Charge Constant-Current Mode)
+AC-Adapter Fast Charge Current
+IREG
+90
+100
+110
+mA
+PROG1 = 10 kΩ
+900
+1000
+1100
+mA
+PROG1 = 1 kΩ,
+TA=-5°C to +55°C, SEL = Hi
+USB Fast Charge Current
+IREG
+80
+90
+100
+mA
+PROG2 = Low, SEL = Low, 
+(Note 2)
+400
+450
+500
+mA
+PROG2 = High, SEL = Low, 
+(Note 2)
+TA= -5°C to +55°C
+Note
+1:
+The value is ensured by design and not production tested.
+2:
+The maximum available charge current is also limited by the value set at PROG1 input.
+
+===PAGE 6===
+MCP73871
+DS22090B-page 6
+© 2009 Microchip Technology Inc.
+Input Current Limit Control (ICLC)
+USB-Port Supply Current Limit
+ILIMIT_USB
+80
+90
+100
+mA
+PROG2 = Low, SEL = Low
+400
+450
+500
+mA
+PROG2 = High, SEL = Low
+TA=-5°C to +55°C
+AC-DC Adapter Current Limit
+ILIMIT_AC
+1500
+1650
+1800
+mA
+SEL = High, TA=-5°C to +55°C
+Voltage Proportional Charge Control (VPCC - Input Voltage Regulation)
+VPCC Input Threshold
+VVPCC
+—
+1.23
+—
+V
+IOUT=10 mA
+VPCC Input Threshold Tolerance
+VRTOL
+-3
+—
++3
+%
+TA=-5°C to +55°C
+Input Leakage Current
+ILK
+—
+0.01
+1
+µA
+VVPCC = VDD
+Precondition Current Regulation (Trickle Charge Constant-Current Mode)
+Precondition Current Ratio
+IPREG / IREG
+7.5
+10
+12.5
+%
+PROG1 = 1.0 kΩ to 10 kΩ
+TA=-5°C to +55°C
+Precondition Current Threshold Ratio
+VPTH / VREG
+69
+72
+75
+%
+VBAT Low-to-High
+Precondition Hysteresis
+VPHYS
+—
+105
+—
+mV
+VBAT High-to-Low
+Automatic Charge Termination Set Point
+Charge Termination Current Ratio
+ITERM
+75
+100
+125
+mA
+PROG3 = 10 kΩ
+7.5
+10
+12.5
+mA
+PROG3 = 100 kΩ
+TA=-5°C to +55°C
+Automatic Recharge
+Recharge Voltage Threshold Ratio
+VRTH
+VREG - 
+0.21V
+VREG - 
+0.15V
+VREG - 
+0.09V
+V
+VBAT High-to-Low
+IN-to-OUT Pass Transistor ON-Resistance
+ON-Resistance
+RDS_ON
+—
+200
+—
+mΩ
+VDD = 4.5V, TJ = 105°C
+Charge Transistor ON-Resistance
+ON-Resistance
+RDSON_
+—
+200
+—
+mΩ
+VDD = 4.5V, TJ = 105°C
+BAT-to-OUT Pass Transistor ON-Resistance
+ON-Resistance
+RDS_ON
+—
+200
+—
+mΩ
+VDD = 4.5V, TJ = 105°C
+Battery Discharge Current
+Output Reverse Leakage Current
+IDISCHARGE
+—
+30
+40
+µA
+Shutdown
+(VBAT < VDD < VUVLO)
+—
+30
+40
+µA
+Shutdown (0 < VDD < VBAT)
+—
+30
+40
+µA
+VBAT = Power Out, No Load
+—
+-6
+-13
+µA
+Charge Complete
+Status Indicators - STAT1 (LBO), STAT2, PG
+Sink Current
+ISINK
+—
+16
+35
+mA
+Low Output Voltage
+VOL
+—
+0.4
+1
+V
+ISINK = 4 mA
+Input Leakage Current
+ILK
+—
+0.01
+1
+µA
+High Impedance, VDD on pin
+Low Battery Indicator (LBO)
+Low Battery Detection Threshold
+VLBO
+—
+Disable
+—
+VBAT > VIN, PG = Hi-Z
+2.85
+3.0
+3.15
+V
+TA=-5°C to +55°C
+2.95
+3.1
+3.25
+V
+3.05
+3.2
+3.35
+V
+Low Battery Detection Hysteresis
+VLBO_HYS
+—
+150
+—
+mV
+VBAT Low-to-High
+DC CHARACTERISTICS (CONTINUED)
+Electrical Specifications: Unless otherwise indicated, all limits apply for VIN = VREG + 0.3V to 6V, TA = -40°C to +85°C.
+Typical values are at +25°C, VIN = [VREG (typical) + 1.0V] 
+Parameters
+Sym
+Min
+Typ
+Max
+Units
+Conditions
+Note
+1:
+The value is ensured by design and not production tested.
+2:
+The maximum available charge current is also limited by the value set at PROG1 input.
+
+===PAGE 7===
+© 2009 Microchip Technology Inc.
+DS22090B-page 7
+MCP73871
+PROG1 Input (PROG1)
+Charge Impedance Range
+RPROG
+1
+—
+20
+kΩ
+PROG3 Input (PROG3)
+Termination Impedance Range
+RPROG
+5
+—
+100
+kΩ
+PROG2 Input (PROG2)
+Input High Voltage Level
+VIH
+1.8
+—
+—
+V
+Input Low Voltage Level
+VIL
+—
+—
+0.8
+V
+Input Leakage Current
+ILK
+—
+0.01
+1
+µA
+VPROG2 = VDD
+Timer Enable (TE)
+Input High Voltage Level
+VIH
+1.8
+—
+—
+V
+Note 1
+Input Low Voltage Level
+VIL
+—
+—
+0.8
+V
+Note 1
+Input Leakage Current
+ILK
+—
+0.01
+1
+µA
+VTE = VDD
+Chip Enable (CE)
+Input High Voltage Level
+VIH
+1.8
+—
+—
+V
+Input Low Voltage Level
+VIL
+—
+—
+0.8
+V
+Input Leakage Current
+ILK
+—
+0.01
+1
+µA
+VCE = VDD
+Input Source Selection (SEL)
+Input High Voltage Level
+VIH
+1.8
+—
+—
+V
+Input Low Voltage Level
+VIL
+—
+—
+0.8
+V
+Input Leakage Current
+ILK
+—
+0.01
+1
+µA
+VSEL = VDD
+Thermistor Bias
+Thermistor Current Source
+ITHERM
+47
+50
+53
+µA
+2 kΩ < RTHERM < 50 kΩ
+Thermistor Comparator
+Upper Trip Threshold
+VT1
+1.20
+1.24
+1.26
+V
+VT1 Low-to-High
+Upper Trip Point Hysteresis
+VT1HYS
+—
+-40
+—
+mV
+Lower Trip Threshold
+VT2
+0.23
+0.25
+0.27
+V
+VT2 High-to-Low
+Lower Trip Point Hysteresis
+VT2HYS
+—
+40
+—
+mV
+Thermal Shutdown
+Die Temperature
+TSD
+—
+150
+—
+°C
+Die Temperature Hysteresis
+TSDHYS
+—
+10
+—
+°C
+DC CHARACTERISTICS (CONTINUED)
+Electrical Specifications: Unless otherwise indicated, all limits apply for VIN = VREG + 0.3V to 6V, TA = -40°C to +85°C.
+Typical values are at +25°C, VIN = [VREG (typical) + 1.0V] 
+Parameters
+Sym
+Min
+Typ
+Max
+Units
+Conditions
+Note
+1:
+The value is ensured by design and not production tested.
+2:
+The maximum available charge current is also limited by the value set at PROG1 input.
+
+===PAGE 8===
+MCP73871
+DS22090B-page 8
+© 2009 Microchip Technology Inc.
+AC CHARACTERISTICS
+TEMPERATURE SPECIFICATIONS
+Electrical Specifications: Unless otherwise indicated, all limits apply for VIN = 4.6V to 6V.
+Typical values are at +25°C, VDD = [VREG (typical) + 1.0V] 
+Parameters
+Sym
+Min
+Typ
+Max
+Units
+Conditions
+UVLO Start Delay
+tSTART
+—
+—
+5
+ms
+VDD Low-to-High
+Current Regulation
+Transition Time Out of Precondition
+tDELAY
+—
+—
+10
+ms
+VBAT < VPTH to VBAT > VPTH
+Current Rise Time Out of Precondition
+tRISE
+—
+—
+10
+ms
+IOUT Rising to 90% of IREG
+Precondition Comparator Filter Time
+tPRECON
+0.4
+1.3
+3.2
+ms
+Average VBAT Rise/Fall
+Termination Comparator Filter Time
+tTERM
+0.4
+1.3
+3.2
+ms
+Average IOUT Falling
+Charge Comparator Filter Time
+tCHARGE
+0.4
+1.3
+3.2
+ms
+Average VBAT Falling
+Thermistor Comparator Filter Time
+tTHERM
+0.4
+1.3
+3.2
+ms
+Average THERM Rise/Fall
+Elapsed Timer
+Elapsed Timer Period
+tELAPSED
+—
+0
+—
+Hours
+3.6
+4.0
+4.4
+Hours
+5.4
+6.0
+6.6
+Hours
+7.2
+8.0
+8.8
+Hours
+Status Indicators
+Status Output Turn-off
+tOFF
+—
+—
+500
+µs
+ISINK = 1 mA to 0 mA
+Status Output Turn-on
+tON
+—
+—
+500
+µs
+ISINK = 0 mA to 1 mA
+Note
+1:
+Internal safety timer is tested base on internal oscillator frequency measurement.
+Electrical Specifications: Unless otherwise indicated, all limits apply for VIN = 4.6V to 6V.
+Typical values are at +25°C, VDD = [VREG (typical) + 1.0V] 
+Parameters
+Sym
+Min
+Typ
+Max
+Units
+Conditions
+Temperature Ranges
+Specified Temperature Range
+TA
+-40
+—
++85
+°C
+Operating Temperature Range
+TJ
+-40
+—
++125
+°C
+Storage Temperature Range
+TA
+-65
+—
++150
+°C
+Thermal Package Resistances
+Thermal Resistance, 20LD-QFN, 4x4
+θJA
+—
+35
+—
+°C/W
+4-Layer JC51-7 Standard Board,
+Natural Convection
+
+===PAGE 9===
+© 2009 Microchip Technology Inc.
+DS22090B-page 9
+MCP73871
+2.0
+TYPICAL PERFORMANCE CURVES
+Note: Unless otherwise indicated, VIN = [VREG(typical) + 1V], IOUT = 10 mA and TA= +25°C, Constant-voltage mode.
+FIGURE 2-1:
+Battery Regulation Voltage 
+(VBAT) vs. Supply Voltage (VDD).
+FIGURE 2-2:
+Battery Regulation Voltage 
+(VBAT) vs. Ambient Temperature (TA).
+FIGURE 2-3:
+Charge Current (IOUT) vs. 
+Programming Resistor (RPROG).
+FIGURE 2-4:
+Charge Current (IOUT) vs. 
+Battery Regulation Voltage (VBAT).
+FIGURE 2-5:
+Output Leakage Current 
+(IDISCHARGE) vs. Ambient Temperature (TA).
+FIGURE 2-6:
+Output Leakage Current 
+(IDISCHARGE) vs. Battery Regulation Voltage 
+(VBAT).
+Note:
+The graphs and tables provided following this note are a statistical summary based on a limited number of
+samples and are provided for informational purposes only. The performance characteristics listed herein
+are not tested or guaranteed. In some graphs or tables, the data presented may be outside the specified
+operating range (e.g., outside specified power supply range) and therefore outside the warranted range.
+4.176
+4.184
+4.192
+4.200
+4.208
+4.216
+4.224
+4.232
+4.240
+4.6
+4.9
+5.1
+5.4
+5.6
+5.9
+Supply Voltage (V)
+Battery Regulation Voltage (V)
+Temperature = +25°C
+IOUT= 100 mA
+IOUT= 500 mA
+IOUT= 900 mA
+IOUT= 10 mA
+4.190
+4.198
+4.206
+4.214
+4.222
+4.230
+4.238
+-45
+-30
+-15
+0
+15
+30
+45
+60
+75
+90
+Ambient Temperature (°C)
+Battery Regulation Voltage (V)
+IOUT = 10 mA
+IOUT = 100 mA
+IOUT = 500 mA
+IOUT = 1000 mA
+0
+100
+200
+300
+400
+500
+600
+700
+800
+900
+1000
+1 2 3 4 5 6 7 8 9 1011121314151617181920
+RPROG (kΩ)
+IREG (mA)
+VDD= 5.2V 
+Temperature = +25°C
+4.100
+4.120
+4.140
+4.160
+4.180
+4.200
+4.220
+4.240
+4.260
+4.280
+4.300
+0
+100
+200
+300
+400
+500
+600
+700
+800
+900
+1000
+Charge Current (mA)
+Battery Regulation Voltage 
+(V)
+Temperature = +25°C
+VDD = 5.2V
+10.0
+15.0
+20.0
+25.0
+30.0
+35.0
+40.0
+-45
+-30
+-15
+0
+15
+30
+45
+60
+75
+90
+Temperature (°C)
+Battery Discharge Current 
+(µA)
+VBAT = 4.2V
+VDD= Floating
+0.0
+5.0
+10.0
+15.0
+20.0
+25.0
+30.0
+35.0
+3.0
+3.2
+3.4
+3.6
+3.8
+4.0
+4.2
+Battery Voltage (V)
+Battery Discharge Current 
+(µA)
+VDD= VBAT
+Temperature = +25°C
+
+===PAGE 10===
+MCP73871
+DS22090B-page 10
+© 2009 Microchip Technology Inc.
+Note: Unless otherwise indicated, VIN = [VREG(typical) + 1V], IOUT = 10 mA and TA= +25°C, Constant-voltage mode.
+FIGURE 2-7:
+Output Leakage Current 
+(IDISCHARGE) vs. Battery Voltage (VBAT).
+FIGURE 2-8:
+Charge Current (IOUT) vs. 
+Supply Voltage (VDD).
+FIGURE 2-9:
+Charge Current (IOUT) vs. 
+Supply Voltage (VDD).
+FIGURE 2-10:
+Charge Current (IOUT) vs. 
+Supply Voltage (VDD).
+FIGURE 2-11:
+Charge Current (IOUT) vs. 
+Ambient Temperature (TA).
+FIGURE 2-12:
+Charge Current (IOUT) vs. 
+Ambient Temperature (TA).
+0.0
+5.0
+10.0
+15.0
+20.0
+25.0
+30.0
+35.0
+3.0
+3.2
+3.4
+3.6
+3.8
+4.0
+4.2
+Battery Voltage (V)
+Battery Discharge Current 
+(µA)
+VDD= Floating
+Temperature = +25°C
+800
+830
+860
+890
+920
+950
+980
+1010
+1040
+1070
+1100
+1130
+1160
+1190
+4.5
+4.8
+5.0
+5.3
+5.5
+5.8
+6.0
+Supply Voltage (V)
+IREG (mA)
+RPROG = 1 kΩ
+Temperature = +25°C
+450
+460
+470
+480
+490
+500
+510
+520
+530
+540
+550
+4.5
+4.8
+5.0
+5.3
+5.5
+5.8
+6.0
+Supply Voltage (V)
+IREG (mA)
+RPROG = 2 kΩ
+Temperature = +25°C
+90
+92
+94
+96
+98
+100
+102
+104
+106
+108
+110
+4.5
+4.8
+5.0
+5.3
+5.5
+5.8
+6.0
+Supply Voltage (V)
+IREG (mA)
+RPROG = 10 kΩ
+Temperature = +25°C
+700
+740
+780
+820
+860
+900
+940
+980
+1020
+1060
+1100
+-45
+-30
+-15
+0
+15
+30
+45
+60
+75
+90
+Ambient Temperature (°C)
+Charge Current (mA)
+RPROG = 1 kΩ
+VDD = 5.2V
+90
+92
+94
+96
+98
+100
+102
+104
+106
+108
+110
+-45
+-30
+-15
+0
+15
+30
+45
+60
+75
+90
+Ambient Temperature (°C)
+Charge Current (mA)
+RPROG = 10 kΩ
+VDD = 5.2V
+
+===PAGE 11===
+© 2009 Microchip Technology Inc.
+DS22090B-page 11
+MCP73871
+Note: Unless otherwise indicated, VIN = [VREG(typical) + 1V], IOUT = 10 mA and TA= +25°C, Constant-voltage mode.
+FIGURE 2-13:
+Charge Current (IOUT) vs. 
+Ambient Temperature (TA).
+FIGURE 2-14:
+Charge Current (IOUT) vs. 
+Junction Temperature (TJ).
+FIGURE 2-15:
+Charge Current (IOUT) vs. 
+Junction Temperature (TJ).
+FIGURE 2-16:
+Charge Current (IOUT) vs. 
+Junction Temperature (TJ).
+FIGURE 2-17:
+Thermistor Current (ITHERM) 
+vs. Supply Voltage (VDD).
+FIGURE 2-18:
+Thermistor Current (ITHERM) 
+vs. Ambient Temperature (TA).
+41
+43
+45
+47
+49
+51
+53
+55
+-45
+-30
+-15
+0
+15
+30
+45
+60
+75
+90
+Ambient Temperature (°C)
+Charge Current (mA)
+RPROG = 20 kΩ
+VDD = 5.2V
+0
+200
+400
+600
+800
+1000
+1200
+25
+50
+75
+100
+125
+150
+Ambient Temperature (°C)
+Charge Current (mA)
+VDD = 5.2V
+RPROG = 1 kΩ
+0
+100
+200
+300
+400
+500
+600
+25
+50
+75
+100
+125
+150
+Ambient Temperature (°C)
+Charge Current (mA)
+VDD = 5.2V
+RPROG = 2 kΩ
+0
+20
+40
+60
+80
+100
+120
+25
+50
+75
+100
+125
+150
+Ambient Temperature (°C)
+Charge Current (mA)
+VDD = 5.2V
+RPROG = 10 kΩ
+47.0
+47.5
+48.0
+48.5
+49.0
+49.5
+50.0
+50.5
+51.0
+51.5
+52.0
+4.6
+4.8
+5.0
+5.2
+5.4
+5.6
+5.8
+6.0
+Supply Voltage (V)
+Thermistor Current (µA)
+Temperature = +25°C
+47.0
+47.5
+48.0
+48.5
+49.0
+49.5
+50.0
+50.5
+51.0
+51.5
+52.0
+-45
+-30
+-15
+0
+15
+30
+45
+60
+75
+90
+Ambient Temperature (°C)
+Thermistor Current (µA)
+VDD = 5.2V
+
+===PAGE 12===
+MCP73871
+DS22090B-page 12
+© 2009 Microchip Technology Inc.
+Note: Unless otherwise indicated, VIN = [VREG(typical) + 1V], IOUT = 10 mA and TA= +25°C, Constant-voltage mode.
+FIGURE 2-19:
+Power Supply Ripple 
+Rejection (PSRR).
+ 
+FIGURE 2-20:
+ Line Transient Response. 
+IOUT = 100 mA.
+ 
+FIGURE 2-21:
+ Line Transient Response. 
+IOUT = 500 mA.
+ 
+FIGURE 2-22:
+Load Transient Response. 
+IOUT = 100 mA.
+ 
+FIGURE 2-23:
+Load Transient Response. 
+IOUT = 500 mA.
+FIGURE 2-24:
+Undervoltage Lockout.
+-60
+-50
+-40
+-30
+-20
+-10
+0
+0.01
+0.1
+1
+10
+100
+1000
+Frequency (kHz)
+PSRR (dB)
+IOUT = 10 mA
+4.5
+5
+5.5
+6
+6.5
+7
+7.5
+8
+8.5
+9
+-0.0008 -0.0006 -0.0004 -0.0002
+0
+0.0002
+Time (s)
+Output Voltage (V)
+-0.7
+-0.5
+-0.3
+-0.1
+0.1
+0.3
+Output Current (A)
+IOUT = 100 mA
+4
+4.5
+5
+5.5
+6
+6.5
+7
+7.5
+8
+8.5
+9
+-0.0008 -0.0006 -0.0004 -0.0002
+0
+0.0002
+Time (s)
+Output Voltage (V)
+0
+0.1
+0.2
+0.3
+0.4
+0.5
+0.6
+0.7
+Output Current (A)
+IOUT = 500 mA
+-0.2
+0
+0.2
+0.4
+0.6
+0.8
+1
+1.2
+1.4
+1.6
+1.8
+-0.001
+0
+0.001
+0.002
+0.003
+0.004
+Time (s)
+Output Current (A)
+-0.5
+-0.4
+-0.3
+-0.2
+-0.1
+0
+0.1
+0.2
+Output Ripple (V)
+IOUT = 100 mA
+-0.2
+0
+0.2
+0.4
+0.6
+0.8
+1
+1.2
+1.4
+1.6
+1.8
+0.00075
+0.00115
+0.00155
+0.00195
+0.00235
+0.00275
+Time (s)
+Output Current (A)
+-0.5
+-0.4
+-0.3
+-0.2
+-0.1
+0
+0.1
+0.2
+Output Ripple (V)
+IOUT = 500 mA
+Input Voltage (V)
+UVLO (V)
+Time (ms)
+
+===PAGE 13===
+© 2009 Microchip Technology Inc.
+DS22090B-page 13
+MCP73871
+Note: Unless otherwise indicated, VIN = [VREG(typical) + 1V], IOUT = 10 mA and TA= +25°C, Constant-voltage mode.
+FIGURE 2-25:
+Startup Delay.
+FIGURE 2-26:
+Complete Charge Cycle 
+(130 mAh Li-Ion Battery).
+  
+FIGURE 2-27:
+Complete Charge Cycle 
+(1000 mAh Li-Ion Battery).
+ 
+FIGURE 2-28:
+Typical Charge Profile in 
+Preconditioning (1000 mAh Battery).
+Input Voltage (V)
+Startup Voltage (V)
+Time (ms)
+0
+0.5
+1
+1.5
+2
+2.5
+3
+3.5
+4
+4.5
+0
+0.1
+0.2
+0.3
+0.4
+0.5
+Time (Minutes)
+Charge Voltage (V)
+0
+0.1
+0.2
+0.3
+0.4
+0.5
+Charge Current (A)
+MCP73871
+VDD = 5.2V
+SEL = Low
+PROG2 = Low
+0
+0.5
+1
+1.5
+2
+2.5
+3
+3.5
+4
+4.5
+0
+10
+20
+30
+40
+50
+60
+70
+80
+Time (Minute)
+Charge Voltage (V)
+0
+0.2
+0.4
+0.6
+0.8
+1
+1.2
+1.4
+1.6
+1.8
+2
+Charge Current (A)
+MCP73871
+VDD = 5.2V
+RPROG1 = 1 kΩ
+RPROG3 = 25 kΩ
+0
+0.5
+1
+1.5
+2
+2.5
+3
+3.5
+4
+4.5
+0
+0.2
+0.4
+0.6
+0.8
+1
+Time (Minute)
+Charge Voltage (V)
+0
+0.2
+0.4
+0.6
+0.8
+1
+1.2
+1.4
+1.6
+1.8
+2
+Charge Current (A)
+Preconditioning
+Preconditioning Threshold Voltage
+Fast Charge (Constant Current) 
+MCP73871
+VDD = 5.2V
+RPROG1 = 1 kΩ
+RPROG3 = 25 kΩ
+
+===PAGE 14===
+MCP73871
+DS22090B-page 14
+© 2009 Microchip Technology Inc.
+NOTES:
+
+===PAGE 15===
+© 2009 Microchip Technology Inc.
+DS22090B-page 15
+MCP73871
+3.0
+PIN DESCRIPTION
+The descriptions of the pins are listed in Table 3-1.
+TABLE 3-1:
+PIN FUNCTION TABLES
+3.1
+Power Supply Input (IN)
+A supply voltage of VREG + 0.3V to 6V is
+recommended. Bypass to VSS with a minimum of
+4.7 µF.
+3.2
+System Output Terminal (OUT)
+The MCP73871 device powers the system via output
+terminals while independently charging the battery.
+This feature reduces the charge and discharge cycles
+on the battery, allows for proper charge termination and
+the system to run with an absent or defective battery
+pack. Also, this feature gives the system priority on
+input power, allowing the system to power-up with
+deeply depleted battery packs. Bypass to VSS with a
+minimum of 4.7 µF is recommended.
+3.3
+Voltage Proportional Charge 
+Control (VPCC)
+If the voltage on the IN pin drops to a preset value,
+determined by the threshold established at the VPCC
+input, due to a limited amount of input current or input
+source impedance, the battery charging current is
+reduced. Further demand from the system is supported
+by the battery, if possible. To active this feature, simply
+supply 1.23V or greater to VPCC pin. This feature can
+be disabled by connecting the VPCC pin to IN.
+For example, a system is designed with a 5.5V rated
+DC power supply with ±0.5V tolerance. The worst
+condition of 5V is selected, which is used to calculate
+the VPCC supply voltage with divider.
+Pin 
+Number
+Symbol
+I/O
+Function
+1, 20
+OUT
+O
+System Output Terminal
+2
+VPCC
+I
+Voltage proportional charge control
+3
+SEL
+I
+Input type selection (Low for USB port, High for ac-dc adapter)
+4
+PROG2
+I
+USB port input current limit selection when SEL = Low.
+(Low = 100 mA, High = 500 mA)
+5
+THERM
+I/O
+Thermistor monitoring input and bias current
+6
+PG
+O
+Power-Good Status Output (Open-Drain)
+7
+STAT2
+O
+Charge Status Output 2 (Open-Drain)
+8
+STAT1 / 
+LBO
+O
+Charge Status Output 1 (Open-Drain). Low battery output indicator when 
+VBAT > VIN
+9
+TE
+I
+Timer Enable; Enables Safety Timer when active Low
+10, 11, EP
+VSS
+—
+Battery Management 0V Reference. EP (Exposed Thermal Pad); There is an 
+internal electrical connection between the exposed thermal pad and VSS. The EP 
+must be connected to the same potential as the VSS pin on the Printed Circuit 
+Board (PCB)
+12
+PROG3
+I/O
+Termination set point for both ac-dc adapter and USB port
+13
+PROG1
+I/O
+Fast charge current regulation setting with SEL = High. Preconditioning set point 
+for both USB port and ac-dc adapter.
+14, 15
+VBAT
+I/O
+Battery Positive Input and Output connection
+16
+VBAT_SENSE
+I/O
+Battery Voltage Sense
+17
+CE
+I
+Device Charge Enable; Enabled when CE = High
+18, 19
+IN
+I
+Power Supply Input.
+Legend:
+I = Input, O = Output, I/O = Input/Output
+Note:
+The input pins should always tie to either High or Low, and never allow floating to ensure operation properly.
+
+===PAGE 16===
+MCP73871
+DS22090B-page 16
+© 2009 Microchip Technology Inc.
+The voltage divider equation is shown below:
+The calculated R1 equals to 337.2 kΩ when 110 kΩ is
+selected for R2. The 330 kΩ resistor is selected for R1
+to build the voltage divider for VPCC.
+FIGURE 3-1:
+Voltage Divider Example.
+3.4
+Input Source Type Selection (SEL)
+The input source type selection (SEL) pin is used to
+select input power source for input current limit control
+feature. With the SEL input High, the MCP73871
+device is designed to provide a typical 1.65A to system
+power and charge Li-Ion battery from a regular 5V wall
+adapter. The MCP73871 device limits the input current
+up to 1.8A. When SEL active Low, the input source is
+designed to provide system power and Li-Ion battery
+charging from a USB Port input while adhering to the
+current limits governed by the USB specification.
+3.5
+Battery Management 0V Reference 
+(VSS)
+Connect to negative terminal of battery, system load
+and input supply.
+3.6
+Battery Charge Control Output 
+(VBAT)
+Connect to positive terminal of Li-Ion / Li-Polymer
+batteries. Bypass to VSS with a minimum of 4.7 µF to
+ensure loop stability when the battery is disconnected.
+3.7
+Battery Voltage Sense 
+(VBAT_SENSE)
+Connect to positive terminal of battery. A precision
+internal voltage sense regulates the final voltage on
+this pin to VREG.
+3.8
+Charge Current Regulation Set 
+(PROG1)
+The maximum constant charge current is set by placing
+a resistor from PROG1 to VSS. PROG1 sets the
+maximum constant charge current for both ac-dc
+adapter and USB port. However, the actual charge
+current is based on input source type and system load
+requirement.
+3.9
+USB-Port Current Regulation Set 
+(PROG2)
+The MCP73871 device USB-Port current regulation set
+input (PROG2) is a digital input selection. A logic Low
+selects a 1 unit load input current from USB port
+(100 mA); a logic High selects a 5 unit loads input
+current from USB port (500 mA).
+3.10
+Charge Status Output 1 (STAT1)
+STAT1 is an open-drain logic output for connection to
+an LED for charge status indication. Alternatively, a
+pull-up resistor can be applied for interfacing to a host
+microcontroller. Refer to Table 5-1 for a summary of the
+status output during a charge cycle.
+3.11
+Charge Status Output 2 (STAT2)
+STAT2 is an open-drain logic output for connection to
+an LED for charge status indication. Alternatively, a
+pull-up resistor can be applied for interfacing to a host
+microcontroller. Refer to Table 5-1 for a summary of the
+status output during a charge cycle.
+3.12
+Power-Good (PG)
+The power-good (PG) is an open-drain logic output for
+input power supply indication. The PG output is low
+whenever the input to the MCP73871 device is above
+the UVLO threshold and greater than the battery
+voltage. The PG output can be used as an indication to
+the user via an illuminated LED or to the system via a
+pull-up resistor for interfacing to a host microcontroller
+that an input source other than the battery is supplying
+power. Refer to Table 5-1 for a summary of the status
+output during a charge cycle.
+3.13
+Low Battery Output (LBO)
+STAT1 also serves as low battery output (LBO) if the
+selected MCP73871 is equipped with this feature. It
+reminds the system or end user when the Li-Ion battery
+voltage level is low. The LBO feature enables when the
+system is running from the Li-Ion batteries. The LBO
+indicator can be used as an indication to the user via lit
+up LED or to the system via a pull-up resistor for
+interfacing to a host microcontroller that an input
+source other than the battery is supplying power. Refer
+to Table 5-1 for a summary of the status output during
+a charge cycle.
+VVPCC
+R2
+R1
+R2
++
+------------------
+⎝
+⎠
+⎛
+⎞
+VIN
+1.23V
+=
+×
+=
+1.23V
+110kΩ
+110kΩ
+R1
++
+-----------------------------
+⎝
+⎠
+⎛
+⎞
+5V
+×
+=
+R1
+337.2kΩ
+=
+330 kΩ
+110 kΩ
+VIN
+VPCC
+
+===PAGE 17===
+© 2009 Microchip Technology Inc.
+DS22090B-page 17
+MCP73871
+3.14
+Timer Enable (TE)
+The timer enable (TE) feature is used to enable or
+disable the internal timer. A low signal on this pin
+enables the internal timer and a high signal disables
+the internal timer. The TE input can be used to disable
+the timer when the system load is substantially limiting
+the available supply current to charge the battery. The
+TE input is compatible with 1.8V logic.
+3.15
+Battery Temperature Monitor 
+(THERM)
+The MCP73871 device continuously monitor battery
+temperature during a charge cycle by measuring the
+voltage between the THERM and VSS pins. An internal
+50 µA current source provides the bias for most
+common 
+10 kΩ 
+negative-temperature 
+coefficient
+thermistors (NTC). The MCP73871 device compares
+the voltage at the THERM pin to factory set thresholds
+of 1.24V and 0.25V, typically. Once a voltage outside
+the thresholds is detected during a charge cycle, the
+MCP73871 device immediately suspends the charge
+cycle. The charge cycle resumes when the voltage at
+the THERM pin returns to the normal range. The
+charge temperature window can be set by placing fixed
+value resistors in series-parallel with a thermistor.
+Refer to Section 6.0 “Applications” for calculations
+of resistance values.
+3.16
+Charge Enable (CE)
+With the CE input Low, the Li-Ion battery charger
+feature of the MCP73871 will be disabled. The charger
+feature is enabled when CE is active High. Allowing the
+CE pin to float during the charge cycle may cause
+system instability. The CE input is compatible with 1.8V
+logic. Refer to Section 6.0 “Applications” for various
+applications in designing with CE features.
+3.17
+Exposed Thermal Pad (EP)
+There is an internal electrical connection between the
+Exposed Thermal Pad (EP) and the VSS pin; they must
+be connected to the same potential.
+Note:
+The built-in safety timer is available for the
+following options: 4 HR, 6 HR and 8 HR.
+
+===PAGE 18===
+MCP73871
+DS22090B-page 18
+© 2009 Microchip Technology Inc.
+NOTES:
+
+===PAGE 19===
+© 2009 Microchip Technology Inc.
+DS22090B-page 19
+MCP73871
+4.0
+DEVICE OVERVIEW
+The MCP73871 device is a simple, but fully integrated
+linear charge management controllers with system
+load 
+sharing 
+feature. 
+Figure 4-1 
+depicts 
+the
+operational flow algorithm.
+FIGURE 4-1:
+MCP73871 Device Flow Chart.
+SHUTDOWN MODE *
+ VDD < VUVLO
+ VDD < VBAT
+STAT1 = Hi-Z 
+STAT2 = Hi-Z 
+PG = Hi-Z
+PRECONDITIONING  MODE
+Charge Current = IPREG
+STAT1 = LOW 
+STAT2 = Hi-Z 
+PG = LOW 
+Timer Reset
+CONSTANT VOLTAGE MODE 
+Charge Voltage = VREG
+STAT1 = LOW 
+PG = LOW
+VBAT > VPTH
+CHARGE COMPLETE MODE 
+No Charge Current
+STAT1 = Hi-Z 
+STAT2 = LOW 
+PG = LOW 
+Timer Reset 
+IBAT < ITERM
+Timer Expired
+VBAT < VPTH
+STANDBY MODE * 
+VBAT > (VREG +100 mV)
+CE = LOW 
+STAT1 = Hi-Z 
+STAT2 = Hi-Z 
+PG = LOW
+* Continuously Monitored
+TEMPERATURE FAULT 
+No Charge Current
+STAT1 = LOW 
+STAT2 = LOW 
+PG = LOW 
+Timer Suspended 
+TIMER FAULT 
+No Charge Current
+STAT1 = LOW 
+STAT2 = LOW 
+PG = LOW 
+Timer Expired
+LBO * 
+VIN < VBAT
+STAT1 = LOW 
+STAT2 = Hi-Z 
+PG = Hi-Z 
+VBAT > VPTH
+STAT2 = Hi-Z 
+Timer Reset 
+FAST CHARGE MODE
+Charge Current = IREG
+STAT1 = LOW 
+STAT2 = Hi-Z 
+PG = LOW 
+Timer Enabled
+
+===PAGE 20===
+MCP73871
+DS22090B-page 20
+© 2009 Microchip Technology Inc.
+4.1
+UnderVoltage Lockout (UVLO)
+An internal undervoltage lockout (UVLO) circuit
+monitors the input voltage and keeps the charger in
+shutdown mode until the input supply rises above the
+UVLO threshold.
+In the event a battery is present when the input power
+is applied, the input supply must rise approximately
+100 mV above the battery voltage before the
+MCP73871 device become operational.
+The UVLO circuit places the device in shutdown mode
+if the input supply falls to approximately 100 mV of the
+battery voltage.
+The UVLO circuit is always active. At any time, the
+input supply is below the UVLO threshold or
+approximately 100 mV of the voltage at the VBAT pin,
+the MCP73871 device is placed in a shutdown mode.
+During any UVLO condition, the battery reverse
+discharge current shall be less than 2 µA.
+4.2
+System Load Sharing
+The system load sharing feature gives the system
+priority on input power, allowing the system to
+power-up with deeply depleted battery packs.
+With the SEL input active Low, the MCP73871 device
+is designed to provide system power and Li-Ion battery
+charging from a USB input while adhering to the current
+limits governed by the USB specification.
+With the SEL input active High, the MCP73871 device
+limits the total supply current to 1.8A (system power
+and charge current combined).
+FIGURE 4-2:
+System Load Sharing 
+Diagram.
+4.3
+Charge Qualification
+For a charge cycle to begin, all UVLO conditions must
+be met and a battery or output load must be present.
+A charge current programming resistor must be
+connected from PROG1 to VSS when SEL = High.
+When SEL = Low, PROG2 needs to tie to High or Low
+for proper operation.
+4.4
+Preconditioning
+If the voltage at the VBAT pin is less than the
+preconditioning threshold, the MCP73871 device
+enters a preconditioning mode. The preconditioning
+threshold is factory set. Refer to Section 1.0
+“Electrical 
+Characteristics” 
+for 
+preconditioning
+threshold options.
+In this mode, the MCP73871 device supplies 10% of
+the fast charge current (established with the value of
+the resistor connected to the PROG1 pin) to the
+battery.
+When the voltage at the VBAT pin rises above the
+preconditioning threshold, the MCP73871 device
+enters the constant current (fast charge) mode.
+4.5
+Constant Current Mode - Fast 
+Charge
+During the constant current mode, the programmed
+charge current is supplied to the battery or load. The
+charge current is established using a single resistor
+from PROG1 to VSS. The program resistor and the
+charge current are calculated using the following
+equation:
+EQUATION 4-1:
+Constant current mode is maintained until the voltage
+at the VBAT pin reaches the regulation voltage, VREG.
+When constant current mode is invoked, the internal
+timer is reset.
+4.5.1
+TIMER EXPIRED DURING 
+CONSTANT CURRENT - FAST 
+CHARGE MODE
+If the internal timer expires before the recharge voltage
+threshold is reached, a timer fault is indicated and the
+charge cycle terminates. The MCP73871 device
+remains in this condition until the battery is removed. If
+the battery is removed, the MCP73871 device enters
+the Stand-by mode where it remains until a battery is
+reinserted.
+4.6
+Constant Voltage Mode
+When the voltage at the VBAT pin reaches the
+regulation voltage, VREG, constant voltage regulation
+begins. The regulation voltage is factory set to 4.10V
+or 4.20V with a tolerance of ±0.5%.
+0.2Ω
+Ideal 
+Diode, 
+Synchronous 
+Switch
+Direction
+Control
+0.2Ω
+Current
+Limit
+Direction
+Control
+Charge
+FET
+System 
+Power 
+FET
+VBAT
+IN
+OUT
+Charge
+Control
+IREG
+1000V
+RPROG1
+-------------------
+=
+Where:
+RPROG
+=
+kilo-ohms (kΩ)
+IREG
+=
+milliampere (mA)
+
+===PAGE 21===
+© 2009 Microchip Technology Inc.
+DS22090B-page 21
+MCP73871
+4.7
+Charge Termination
+The charge cycle is terminated when, during constant
+voltage mode, the average charge current diminishes
+below a threshold established with the value of a
+resistor connected from PROG3 to VSS or internal timer
+has expired. A 1 ms filter time on the termination
+comparator ensures that transient load conditions do
+not result in premature charge cycle termination. The
+timer period is factory set and can be disabled. Refer to
+Section 1.0 “Electrical Characteristics” for timer
+period options.
+The program resistor and the charge current are
+calculated using the following equation: 
+EQUATION 4-2:
+The charge current is latched off and the MCP73871
+device enters a charge complete mode. The
+recommended PROG3 resistor values are between
+5 kΩ and 100 kΩ.
+4.8
+Automatic Recharge
+The MCP73871 device continuously monitors the
+voltage at the VBAT pin in the charge complete mode. If
+the voltage drops below the recharge threshold,
+another charge cycle begins and current is once again
+supplied to the battery or load. The recharge threshold
+is factory set. Refer to Section 1.0 “Electrical
+Characteristics” for recharge threshold options.
+4.9
+Thermal Regulation
+The MCP73871 device limits the charge current based
+on the die temperature. The thermal regulation
+optimizes the charge cycle time while maintaining
+device reliability. Figure 4-3 depicts the thermal
+regulation for the MCP73871 device. Refer to
+Section 1.0 “Electrical Characteristics” for thermal
+package resistances and Section 6.1.1.2 “Thermal
+Considerations” for calculating power dissipation.
+.
+FIGURE 4-3:
+Thermal Regulation
+4.10
+Thermal Shutdown
+The MCP73871 device suspends charge if the die
+temperature exceeds 150°C. Charging will resume
+when the die temperature has cooled by approximately
+10°C. The thermal shutdown is a secondary safety
+feature in the event that there is a failure within the
+thermal regulation circuitry.
+4.11
+Temperature Qualification
+The MCP73871 device continuously monitor battery
+temperature during a charge cycle by measuring the
+voltage between the THERM and VSS pins. An internal
+50 µA current source provides the bias for most
+common 
+10 kΩ 
+negative-temperature 
+coefficient
+thermistors (NTC). The MCP73871 device compares
+the voltage at the THERM pin to factory set thresholds
+of 1.24V and 0.25V, typically. Once a voltage outside
+the thresholds is detected during a charge cycle, the
+MCP73871 device immediately suspends the charge
+cycle. The MCP73871 device suspends charge by
+turning off the charge pass transistor and holding the
+timer value. The charge cycle resumes when the
+voltage at the THERM pin returns to the normal range.
+Note:
+Charge 
+termination 
+and 
+automatic
+recharge features avoid constant charging
+Li-Ion batteries to prolong life of Li-Ion
+batteries while keeping their capacity at
+healthy level.
+ITERMINATION
+1000V
+RPROG3
+-------------------
+=
+Where:
+RPROG
+=
+kilo-ohms (kΩ)
+IREG
+=
+milliampere (mA)
+0
+200
+400
+600
+800
+1000
+1200
+25
+50
+75
+100
+125
+150
+Ambient Temperature (°C)
+Charge Current (mA)
+VDD = 5.2V
+RPROG = 1 kΩ
+
+===PAGE 22===
+MCP73871
+DS22090B-page 22
+© 2009 Microchip Technology Inc.
+4.12
+Voltage Proportional Charge 
+Control (VPCC)
+If the voltage on the IN pin drops to a preset value,
+determined by the threshold established at the VPCC
+input, due to a limited amount of input current or input
+source impedance, then the battery charging current is
+reduced. The VPCC control tries to reach a
+steady-state condition where the system load has
+priority and the battery is charged with the remaining
+current. Therefore, if the system demands more
+current than the input can provide, the ideal diode will
+become forward biased and the battery is able to
+supplement the input current to the system load.
+The VPCC sustains the system load as its highest
+priority. It does this by reducing the noncritical charge
+current while maintaining the maximum power output of
+the adapter. Further demand from the system is
+supported by the battery, if possible. 
+The VPCC feature functions identically for USB port or
+ac-dc adapter inputs. This feature can be disabled by
+connecting the VPCC to IN pin.
+4.13
+Input Current Limit Control (ICLC)
+If the input current threshold is reached, then the
+battery charging current is reduced. The ICLC tries to
+reach a steady-state condition where the system load
+has priority and the battery is charged with the
+remaining current. No active control limits the current
+to the system. Therefore, if the system demands more
+current than the input can provide or the input ICLC is
+reached, the ideal diode will become forward biased
+and the battery is able to supplement the input current
+to the system load.
+The ICLC sustains the system load as its highest
+priority. This is done by reducing the non-critical charge
+current while adhering to the current limits governed by
+the USB specification or the maximum ac-dc adapter
+current supported. Further demand from the system is
+supported by the battery, if possible. 
+FIGURE 4-4:
+Input Current Limit Control - 
+USB Port.
+-200
+-100
+0
+100
+200
+300
+400
+500
+600
+700
+0
+100
+200
+300
+400
+500
+600
+700
+Load Current (mA)
+Current (mA)
+Input Current
+Battery Current
+Load Current
+Ideal 
+Diode
+
+===PAGE 23===
+© 2009 Microchip Technology Inc.
+DS22090B-page 23
+MCP73871
+5.0
+DETAILED DESCRIPTION
+5.1
+Analog Circuitry
+5.1.1
+LOAD SHARING AND LI-ION 
+BATTERY MANAGEMENT INPUT 
+SUPPLY (VIN)
+The VIN input is the input supply to the MCP73871
+device. The MCP73871 device can be supplied by
+either AC Adapter (VAC) or USB Port (VUSB) with SEL
+pin. The MCP73871 device automatically powers the
+system with the Li-Ion battery when the VIN input is not
+present.
+5.1.2
+FAST CHARGE CURRENT 
+REGULATION SET (PROG1)
+For the MCP73871 device, the charge current
+regulation can be scaled by placing a programming
+resistor (RPROG1) from the PROG1 pin to VSS. The
+program resistor and the charge current are calculated
+using the following equation:
+EQUATION 5-1:
+The fast charge current is set for maximum charge
+current from ac-dc adapter and USB port. The
+preconditioning current is 10% (0.1C) to the fast
+charge current.
+5.1.3
+BATTERY CHARGE CONTROL 
+OUTPUT (VBAT)
+The battery charge control output is the drain terminal
+of an internal P-channel MOSFET. The MCP73871
+device 
+provides 
+constant 
+current 
+and 
+voltage
+regulation to the battery pack by controlling this
+MOSFET in the linear region. The battery charge
+control output should be connected to the positive
+terminal of the battery pack.
+5.1.4
+TEMPERATURE QUALIFICATION 
+(THERM)
+The MCP73871 device continuously monitors battery
+temperature during a charge cycle by measuring the
+voltage between the THERM and VSS pins. An internal
+50 µA current source provides the bias for most
+common 
+10 kΩ 
+negative-temperature 
+coefficient
+(NTC) or positive-temperature coefficient (PTC)
+thermistors.The current source is controlled, avoiding
+measurement sensitivity to fluctuations in the supply
+voltage (VDD). The MCP73871 device compares the
+voltage at the THERM pin to factory set thresholds of
+1.24V and 0.25V, typically. Once a voltage outside the
+thresholds is detected during a charge cycle, the
+MCP73871 device immediately suspends the charge
+cycle.
+The MCP73871 device suspends charge by turning off
+the pass transistor and holding the timer value. The
+charge cycle resumes when the voltage at the THERM
+pin returns to the normal range.
+If temperature monitoring is not required, place a
+standard 10 kΩ resistor from THERM to VSS.
+5.2
+Digital Circuitry
+5.2.1
+STATUS INDICATORS AND 
+POWER-GOOD (PG)
+The charge status outputs have two different states:
+Low (L), and High Impedance (Hi-Z). The charge status
+outputs can be used to illuminate LEDs. Optionally, the
+charge status outputs can be used as an interface to a
+host microcontroller. Table 5-1 summarizes the state of
+the status outputs during a charge cycle.
+TABLE 5-1:
+STATUS OUTPUTS
+5.2.2
+AC-DC ADAPTER AND USB PORT 
+POWER SOURCE REGULATION 
+SELECT (SEL)
+With the SEL input Low, the MCP73871 device is
+designed to provide system power and Li-Ion battery
+charging from a USB input while adhering to the current
+limits governed by the USB specification. The host
+microcontroller has the option selecting either a
+100 mA (L) or a 500 mA (H) current limit based on the
+PROG2 input. With the SEL input High, the MCP73871
+device limits the input current to 1.8A. The
+programmed charge current is established using a
+single resistor from PROG1 to VSS when driving SEL
+High.
+IREG
+1000V
+RPROG1
+-------------------
+=
+Where:
+RPROG
+=
+kilo-ohms (kΩ)
+IREG
+=
+milliampere (mA)
+CHARGE CYCLE STATE 
+STAT1
+STAT2
+PG
+Shutdown (VDD = VBAT)
+Hi-Z
+Hi-Z
+Hi-Z
+Shutdown (VDD = IN)
+Hi-Z
+Hi-Z
+L
+Preconditioning
+L
+Hi-Z
+L
+Constant Current
+L
+Hi-Z
+L
+Constant Voltage
+L
+Hi-Z
+L
+Charge Complete - Standby
+Hi-Z
+L
+L
+Temperature Fault
+L
+L
+L
+Timer Fault
+L
+L
+L
+Low Battery Output
+L
+Hi-Z
+Hi-Z
+No Battery Present
+Hi-Z
+Hi-Z
+L
+No Input Power Present
+Hi-Z
+Hi-Z
+Hi-Z
+
+===PAGE 24===
+MCP73871
+DS22090B-page 24
+© 2009 Microchip Technology Inc.
+5.2.3
+USB PORT CURRENT 
+REGULATION SELECT (PROG2)
+Driving the PROG2 input to a logic Low selects the low
+USB port source current setting (maximum 100 mA).
+Driving the PROG2 input to a logic High selects the
+high USB port source current setting (Maximum
+500 mA).
+5.2.4
+POWER-GOOD (PG)
+The power-good (PG) option is a pseudo open-drain
+output. The PG output can sink current, but not source
+current. However, there is a diode path back to the
+input, and as such, the output should only be pulled up
+to the input. The PG output is low whenever the input
+to the MCP73871 device is above the UVLO threshold
+and greater than the battery voltage. The PG output
+can be used as an indication to the system that an input
+source other than the battery is supplying power.
+5.2.5
+TIMER ENABLE (TE) OPTION
+The timer enable (TE) input option is used to enable or
+disable the internal timer. A low signal on this pin
+enables the internal timer and a high signal disables
+the internal timer. The TE input can be used to disable
+the timer when the charger is supplying current to
+charge the battery and power the system load. The TE
+input is compatible with 1.8V logic.
+
+===PAGE 25===
+© 2009 Microchip Technology Inc.
+DS22090B-page 25
+MCP73871
+6.0
+APPLICATIONS
+The MCP73871 device is designed to operate in
+conjunction 
+with 
+a 
+host 
+microcontroller 
+or 
+in
+stand-alone applications. The MCP73871 device
+provides the preferred charge algorithm for Lithium-Ion
+and Lithium-Polymer cells Constant-current followed
+by Constant-voltage. Figure 6-1 depicts a typical
+stand-alone MCP73871 application circuit, while
+Figures 6-2 and 6-3 depict the accompanying charge
+profile.
+FIGURE 6-1:
+MCP73871Typical Stand-Alone Application Circuit with VPCC.
+ 
+FIGURE 6-2:
+Typical Charge Profile 
+(1000 mAh Battery).
+ 
+FIGURE 6-3:
+Typical Charge Profile in 
+Preconditioning (1000 mAh Battery).
+STAT1 
+LBO
+IN
+OUT
+PG
+VBAT
+Single-Cell 
+Li-Ion Battery
+7
+MCP73871 Device Typical Application
+1, 20
+8
+18, 19
+10 µF 
+10, 11, EP
+5V AC-DC Adapter 
+or 
+USB Port
+STAT2
+THERM
+VSS
+PROG1
+PROG3 12
+13 RPROG1
+6
+5
+14, 15, 16
+470Ω
+470Ω
+470Ω
+2
+4.7 µF 
+System 
+Load
+SEL
+TE
+PROG2
+Hi
+Low
+Hi
+Low
+Hi
+Low
+3
+4
+9
+RPROG3
+VPCC
+NTC
+10 kΩ
+Hi
+Low
+17 CE
+4.7 µF 
+330 kΩ
+110 kΩ
+0
+0.5
+1
+1.5
+2
+2.5
+3
+3.5
+4
+4.5
+0
+10
+20
+30
+40
+50
+60
+70
+80
+Time (Minute)
+Charge Voltage (V)
+0
+0.2
+0.4
+0.6
+0.8
+1
+1.2
+1.4
+1.6
+1.8
+2
+Charge Current (A)
+MCP73871
+VDD = 5.2V
+RPROG1 = 1 kΩ
+RPROG3 = 25 kΩ
+0
+0.5
+1
+1.5
+2
+2.5
+3
+3.5
+4
+4.5
+0
+0.2
+0.4
+0.6
+0.8
+1
+Time (Minute)
+Charge Voltage (V)
+0
+0.2
+0.4
+0.6
+0.8
+1
+1.2
+1.4
+1.6
+1.8
+2
+Charge Current (A)
+Preconditioning
+Preconditioning Threshold Voltage
+Fast Charge (Constant Current) 
+MCP73871
+VDD = 5.2V
+RPROG1 = 1 kΩ
+RPROG3 = 25 kΩ
+
+===PAGE 26===
+MCP73871
+DS22090B-page 26
+© 2009 Microchip Technology Inc.
+6.1
+Application Circuit Design 
+Due to the low efficiency of linear charging, the most
+important factors are thermal design and cost, which
+are a direct function of the input voltage, output current
+and thermal impedance between the battery charger
+and the ambient cooling air. The worst-case situation is
+when 
+the 
+device 
+has 
+transitioned 
+from 
+the
+Preconditioning mode to the Constant Current mode. In
+this situation, the battery charger has to dissipate the
+maximum power. A trade-off must be made between
+the charge current, cost and thermal requirements of
+the charger.
+6.1.1
+COMPONENT SELECTION
+Selection of the external components in Figure 6-1 is
+crucial to the integrity and reliability of the charging
+system. The following discussion is intended as a guide
+for the component selection process.
+6.1.1.1
+Charge Current 
+The preferred fast charge current for Lithium-Ion cells
+should always follow references and guidances from
+battery manufacturers. For example, a 1000 mAh
+battery pack has a preferred fast charge current of
+0.7C. Charging at 700 mA provides the shortest charge
+cycle times without degradation to the battery pack
+performance or life.
+6.1.1.2
+Thermal Considerations
+The worst-case power dissipation in the battery
+charger occurs when the input voltage is at the
+maximum and the device has transitioned from the
+Preconditioning mode to the Constant-current mode. In
+this case, the power dissipation is:
+EQUATION 6-1:
+For example, power dissipation with a 5V, ±10% input
+voltage source and 500 mA, ±10% fast charge current
+is:
+EXAMPLE 6-1:
+This power dissipation with the battery charger in the
+QFN-20 package will cause thermal regulation to be
+entered as depicted. Alternatively, the 4 mm x 4 mm
+DFN package could be utilized to reduce heat by
+adding vias on the exposed pad.
+6.1.1.3
+External Capacitors
+The MCP73871 device is stable with or without a
+battery load. In order to maintain good AC stability in
+the Constant Voltage mode, a minimum capacitance of
+4.7 µF is recommended to bypass the VBAT pin to VSS.
+This capacitance provides compensation when there is
+no battery load. In addition, the battery and
+interconnections appear inductive at high frequencies.
+These elements are in the control feedback loop during
+Constant Voltage mode. Therefore, the bypass
+capacitance may be necessary to compensate for the
+inductive nature of the battery pack.
+Virtually any good quality output filter capacitor can be
+used, independent of the capacitor’s minimum
+Effective Series Resistance (ESR) value. The actual
+value of the capacitor (and its associated ESR)
+depends on the output load current. A 4.7 µF ceramic,
+tantalum or aluminum electrolytic capacitor at the
+output is usually sufficient to ensure stability for charge
+currents up to a 1000 mA.
+6.1.1.4
+Reverse-Blocking Protection
+The MCP73871 device provides protection from a
+faulted or shorted input. Without the protection, a
+faulted or shorted input would discharge the battery
+pack through the body diode of the internal pass
+transistor.
+6.1.1.5
+Temperature Monitoring
+The charge temperature window can be set by placing
+fixed value resistors in series-parallel with a thermistor.
+The resistance values of RT1 and RT2 can be calculated
+with the following equations in order to set the
+temperature window of interest. 
+For NTC thermistors:
+EQUATION 6-2:
+PowerDissipation
+VDDMAX
+VPTHMIN
+–
+(
+)
+IREGMAX
+×
+=
+Where:
+VDDMAX
+=
+the maximum input voltage
+IREGMAX
+=
+the maximum fast charge current
+VPTHMIN
+=
+the minimum transition threshold 
+voltage
+PowerDissipation
+5.5V
+2.7V
+–
+(
+)
+550mA
+×
+1.54W
+=
+=
+24kΩ
+RT1
+RT2
+RCOLD
+×
+RT2
+R
++
+COLD
+--------------------------------
++
+=
+5kΩ
+RT1
+RT2
+RHOT
+×
+RT2
+R
++
+HOT
+----------------------------
++
+=
+Where:
+RT1
+=
+the fixed series resistance
+RT2
+=
+the fixed parallel resistance
+RCOLD
+=
+the thermistor resistance at the 
+lower temperature of interest 
+RHOT
+=
+the thermistor resistance at the 
+upper temperature of interest 
+
+===PAGE 27===
+© 2009 Microchip Technology Inc.
+DS22090B-page 27
+MCP73871
+For example, by utilizing a 10 kΩ at 25°C NTC
+thermistor with a sensitivity index, β, of 3892, the
+charge temperature range can be set to 0°C - 50°C by
+placing a 1.54 kΩ resistor in series (RT1), and a
+69.8 kΩ resistor in parallel (RT2) with the thermistor.
+6.1.1.6
+Charge Status Interface
+A status output provides information on the state of
+charge. The output can be used to illuminate external
+LEDs or interface to a host microcontroller. Refer to
+Table 5-1 for a summary of the state of the status
+output during a charge cycle.
+6.1.1.7
+System Load Current
+The preferred discharge current for Lithium-Ion cells
+should always follow references and guidance from
+battery manufacturers. Due to the safety concerns
+when 
+using 
+Lithium-Ion 
+batteries 
+and 
+power
+dissipation of linear solutions, the system load when
+design with the MCP73871 device is recommended to
+be less than 1A or the maximum discharge rate of the
+selected Lithium-Ion cell. Whichever is smaller is
+recommended.
+The idea diode between VBAT and OUT is designed to
+drive a maximum current up to 2A. The built-in thermal
+shutdown protection may turn the MCP73871 device
+off with high current.
+6.2
+PCB Layout Issues
+For optimum voltage regulation, place the battery pack
+as close as possible to the device’s VBAT and VSS pins,
+recommended to minimize voltage drops along the
+high current-carrying PCB traces.
+If the PCB layout is used as a heatsink, adding many
+vias in the heatsink pad can help conduct more heat to
+the backplane of the PCB, thus reducing the maximum
+junction temperature.
+
+===PAGE 28===
+MCP73871
+DS22090B-page 28
+© 2009 Microchip Technology Inc.
+NOTES:
+
+===PAGE 29===
+© 2009 Microchip Technology Inc.
+DS22090B-page 29
+MCP73871
+7.0
+PACKAGING
+7.1
+Package Marking Information
+20-Lead QFN
+Example:
+XXXXXX
+XXXXXX
+YWWNNN
+Part Number *
+Marking
+Code
+Part Number *
+Marking
+Code
+MCP73871-1AAI/ML
+1AA
+MCP73871T-1AAI/ML
+1AA
+MCP73871-1CAI/ML
+1CA
+MCP73871T-1CAI/ML
+1CA
+MCP73871-1CCI/ML
+1CC
+MCP73871T-1CCI/ML
+1CC
+MCP73871-2AAI/ML
+2AA
+MCP73871T-2AAI/ML
+2AA
+MCP73871-2CAI/ML
+2CA
+MCP73871T-2CAI/ML
+2CA
+MCP73871-2CCI/ML
+2CC
+MCP73871T-2CCI/ML
+2CC
+MCP73871-3CAI/ML
+3CA
+MCP73871T-3CAI/ML
+3CA
+MCP73871-3CCI/ML
+3CC
+MCP73871T-3CCI/ML
+3CC
+MCP73871-4CAI/ML
+4CA
+MCP73871T-4CAI/ML
+4CA
+MCP73871-4CCI/ML
+4CC
+MCP73871T-4CCI/ML
+4CC
+* Consult Factory for Alternative Device Options.
+Legend:
+XX...X
+Customer-specific information
+Y
+Year code (last digit of calendar year)
+YY
+Year code (last 2 digits of calendar year)
+WW
+Week code (week of January 1 is week ‘01’)
+NNN
+Alphanumeric traceability code
+  
+Pb-free JEDEC designator for Matte Tin (Sn)
+*
+This package is Pb-free. The Pb-free JEDEC designator (     )
+can be found on the outer packaging for this package.
+Note:
+In the event the full Microchip part number cannot be marked on one line, it will
+be carried over to the next line, thus limiting the number of available
+characters for customer-specific information.
+3
+e
+3
+e
+XXXXX
+1AA
+I/ML^^
+919256
+73871
+3
+e
+
+===PAGE 30===
+MCP73871
+DS22090B-page 30
+© 2009 Microchip Technology Inc.
+	
+					
+				  	!"	#$
+%
+  !"#$%!	&	'(!%&! %(
+%")%%%"	
+ *  ) !%"
++ & 
+"%
+		,-.
+/01 / & 
+
+	%#%! 
+))%
+!%%
+	 
+,21 $	& 
+'! !)%
+!%%
+	'$
+	$
+	&%
+!	
+  
+
+%
+2
+	%&
+ %!		%*"	) '  %	
+*$%
+
+%"%
+%%133)))&	
+
+&3*
+4% 
+55,,
+& 
+5&% 
+6
+67
+8
+6!&(	
+$ 
+6
+
+%
+
+./0
+7	9%
+
+:
+
+
+%"
+$$
+
+
+
+.
+0
+%%*  
++
+,2
+7	;"%
+,
+/0
+,#
+ "";"%
+,
+<
+
+:
+7	5%
+
+/0
+,#
+ ""5%
+
+<
+
+:
+0
+%%;"%
+(
+:
+.
++
+0
+%%5%
+5
++
+
+.
+0
+%%%
+,#
+ ""
+=
+
+>
+>
+D
+EXPOSED
+PAD
+E
+E2
+2
+1
+N
+TOP VIEW
+NOTE 1
+N
+L
+K
+b
+e
+D2
+2
+1
+A
+A1
+A3
+BOTTOM VIEW
+	
+ 
+
+ 	) 0</
+
+===PAGE 31===
+© 2009 Microchip Technology Inc.
+DS22090B-page 31
+MCP73871
+ 
+%
+2
+	%&
+ %!		%*"	) '  %	
+*$%
+
+%"%
+%%133)))&	
+
+&3*
+
+===PAGE 32===
+MCP73871
+DS22090B-page 32
+© 2009 Microchip Technology Inc.
+NOTES: 
+
+===PAGE 33===
+© 2009 Microchip Technology Inc.
+DS22090B-page 33
+MCP73871
+APPENDIX A:
+REVISION HISTORY
+Revision B (May 2009)
+The following is the list of modifications:
+1.
+Updated the QFN-20 package drawing.
+2.
+Updated Equation 4-1.
+3.
+Updated Section 4.7 “Charge Termination”
+and Equation 4-2.
+4.
+Updated Equation 5-1.
+Revision A (July 2008)
+• Original Release of this Document.
+
+===PAGE 34===
+MCP73871
+DS22090B-page 34
+© 2009 Microchip Technology Inc.
+NOTES:
+
+===PAGE 35===
+© 2009 Microchip Technology Inc.
+DS22090B-page 35
+MCP73871
+PRODUCT IDENTIFICATION SYSTEM
+To order or obtain information, e.g., on pricing or delivery, refer to the factory or the listed sales office.
+* Operational Output Options
+   
+Device:
+MCP73871:
+USB/AC Battery Charger with PPM
+MCP73871T: USB/AC Battery Charger with PPM
+(Tape and Reel)
+Output Options * *
+* Refer to table below for different operational options.
+* * Consult Factory for Alternative Device Options.
+Temperature:
+I
+= -40°C to +85°C
+Package Type:
+ML
+= Plastic Quad Flat No Lead (QFN)
+(4x4x0.9 mm Body), 20-lead
+PART NO.
+XX
+Output
+Device
+Options*
+X/
+Temp.
+XX
+Package
+Examples: * *
+a)
+MCP73871-1AAI/ML:
+4.10V PPM Battery
+Charger, 20LD QFN
+pkg.
+b)
+MCP73871-1CAI/ML:
+4.10V, PPM Battery
+Charger, 20LD QFN
+pkg.
+c)
+MCP73871-1CCI/ML:
+4.10V, PPM Battery
+Charger, 20LD QFN
+pkg.
+d)
+MCP73871-2AAI/ML:
+4.20V, PPM Battery
+Charger, 20LD QFN
+pkg.
+e)
+MCP73871-2CAI/ML:
+4.20V PPM Battery
+Charger, 20LD QFN
+pkg.
+f)
+MCP73871-2CCI/ML:
+4.20V PPM Battery
+Charger, 20LD QFN
+pkg.
+g)
+MCP73871-3CAI/ML:
+4.35V PPM Battery
+Charger, 20LD QFN
+pkg.
+h)
+MCP73871-3CCI/ML:
+4.35V PPM Battery
+Charger, 20LD QFN
+pkg.
+* * Consult Factory for Alternative Device Options
+Output
+Options
+VREG
+Safety Timer
+Duration (Hours)
+LBO Voltage
+Threshold (V)
+1AA
+4.10V
+Disable
+Disabled
+1CA
+4.10V
+6
+Disabled
+1CC
+4.10V
+6
+3.1
+2AA
+4.20V
+Disable
+Disabled
+2CA
+4.20V
+6
+Disabled
+2CC
+4.20V
+6
+3.1
+3CA
+4.35V
+6
+Disabled
+3CC
+4.35V
+6
+3.1
+4CA
+4.40V
+6
+Disabled
+4CC
+4.40V
+6
+3.1
+* * Consult Factory for Alternative Device Options.
+
+===PAGE 36===
+MCP73871
+DS22090B-page 36
+© 2009 Microchip Technology Inc.
+NOTES:
+
+===PAGE 37===
+© 2009 Microchip Technology Inc.
+DS22090B-page 37
+Information contained in this publication regarding device
+applications and the like is provided only for your convenience
+and may be superseded by updates. It is your responsibility to
+ensure that your application meets with your specifications.
+MICROCHIP 
+MAKES 
+NO 
+REPRESENTATIONS 
+OR
+WARRANTIES OF ANY KIND WHETHER EXPRESS OR
+IMPLIED, 
+WRITTEN 
+OR 
+ORAL, 
+STATUTORY 
+OR
+OTHERWISE, 
+RELATED 
+TO 
+THE 
+INFORMATION,
+INCLUDING BUT NOT LIMITED TO ITS CONDITION,
+QUALITY, 
+PERFORMANCE, 
+MERCHANTABILITY 
+OR
+FITNESS FOR PURPOSE. Microchip disclaims all liability
+arising from this information and its use. Use of Microchip
+devices in life support and/or safety applications is entirely at
+the buyer’s risk, and the buyer agrees to defend, indemnify and
+hold harmless Microchip from any and all damages, claims,
+suits, or expenses resulting from such use. No licenses are
+conveyed, implicitly or otherwise, under any Microchip
+intellectual property rights.
+Trademarks
+The Microchip name and logo, the Microchip logo, Accuron, 
+dsPIC, KEELOQ, KEELOQ logo, MPLAB, PIC, PICmicro, 
+PICSTART, rfPIC, SmartShunt and UNI/O are registered 
+trademarks of Microchip Technology Incorporated in the 
+U.S.A. and other countries.
+FilterLab, Hampshire, Linear Active Thermistor, MXDEV, 
+MXLAB, SEEVAL, SmartSensor and The Embedded Control 
+Solutions Company are registered trademarks of Microchip 
+Technology Incorporated in the U.S.A.
+Analog-for-the-Digital Age, Application Maestro, CodeGuard, 
+dsPICDEM, dsPICDEM.net, dsPICworks, dsSPEAK, ECAN, 
+ECONOMONITOR, FanSense, In-Circuit Serial 
+Programming, ICSP, ICEPIC, Mindi, MiWi, MPASM, MPLAB 
+Certified logo, MPLIB, MPLINK, mTouch, nanoWatt XLP, 
+PICkit, PICDEM, PICDEM.net, PICtail, PIC32 logo, PowerCal, 
+PowerInfo, PowerMate, PowerTool, REAL ICE, rfLAB, Select 
+Mode, Total Endurance, TSHARC, WiperLock and ZENA are 
+trademarks of Microchip Technology Incorporated in the 
+U.S.A. and other countries.
+SQTP is a service mark of Microchip Technology Incorporated 
+in the U.S.A.
+All other trademarks mentioned herein are property of their 
+respective companies.
+© 2009, Microchip Technology Incorporated, Printed in the 
+U.S.A., All Rights Reserved.
+ Printed on recycled paper.
+Note the following details of the code protection feature on Microchip devices:
+•
+Microchip products meet the specification contained in their particular Microchip Data Sheet.
+•
+Microchip believes that its family of products is one of the most secure families of its kind on the market today, when used in the 
+intended manner and under normal conditions.
+•
+There are dishonest and possibly illegal methods used to breach the code protection feature. All of these methods, to our 
+knowledge, require using the Microchip products in a manner outside the operating specifications contained in Microchip’s Data 
+Sheets. Most likely, the person doing so is engaged in theft of intellectual property.
+•
+Microchip is willing to work with the customer who is concerned about the integrity of their code.
+•
+Neither Microchip nor any other semiconductor manufacturer can guarantee the security of their code. Code protection does not 
+mean that we are guaranteeing the product as “unbreakable.”
+Code protection is constantly evolving. We at Microchip are committed to continuously improving the code protection features of our
+products. Attempts to break Microchip’s code protection feature may be a violation of the Digital Millennium Copyright Act. If such acts
+allow unauthorized access to your software or other copyrighted work, you may have a right to sue for relief under that Act.
+Microchip received ISO/TS-16949:2002 certification for its worldwide 
+headquarters, design and wafer fabrication facilities in Chandler and 
+Tempe, Arizona; Gresham, Oregon and design centers in California 
+and India. The Company’s quality system processes and procedures 
+are for its PIC® MCUs and dsPIC® DSCs, KEELOQ® code hopping 
+devices, Serial EEPROMs, microperipherals, nonvolatile memory and 
+analog products. In addition, Microchip’s quality system for the design 
+and manufacture of development systems is ISO 9001:2000 certified.
+
+===PAGE 38===
+DS22090B-page 38
+© 2009 Microchip Technology Inc.
+AMERICAS
+Corporate Office
+2355 West Chandler Blvd.
+Chandler, AZ  85224-6199
+Tel:  480-792-7200  
+Fax:  480-792-7277
+Technical Support: 
+http://support.microchip.com
+Web Address: 
+www.microchip.com
+Atlanta
+Duluth, GA 
+Tel: 678-957-9614 
+Fax: 678-957-1455
+Boston
+Westborough, MA  
+Tel: 774-760-0087 
+Fax: 774-760-0088
+Chicago
+Itasca, IL  
+Tel: 630-285-0071 
+Fax: 630-285-0075
+Cleveland
+Independence, OH 
+Tel: 216-447-0464 
+Fax: 216-447-0643
+Dallas
+Addison, TX 
+Tel: 972-818-7423  
+Fax: 972-818-2924
+Detroit
+Farmington Hills, MI 
+Tel: 248-538-2250
+Fax: 248-538-2260
+Kokomo
+Kokomo, IN 
+Tel: 765-864-8360
+Fax: 765-864-8387
+Los Angeles
+Mission Viejo, CA 
+Tel: 949-462-9523  
+Fax: 949-462-9608
+Santa Clara
+Santa Clara, CA 
+Tel: 408-961-6444
+Fax: 408-961-6445
+Toronto
+Mississauga, Ontario, 
+Canada
+Tel: 905-673-0699  
+Fax:  905-673-6509
+ASIA/PACIFIC
+Asia Pacific Office
+Suites 3707-14, 37th Floor
+Tower 6, The Gateway
+Harbour City, Kowloon
+Hong Kong
+Tel: 852-2401-1200
+Fax: 852-2401-3431
+Australia - Sydney
+Tel: 61-2-9868-6733
+Fax: 61-2-9868-6755
+China - Beijing
+Tel: 86-10-8528-2100 
+Fax: 86-10-8528-2104
+China - Chengdu
+Tel: 86-28-8665-5511
+Fax: 86-28-8665-7889
+China - Hong Kong SAR
+Tel: 852-2401-1200  
+Fax: 852-2401-3431
+China - Nanjing
+Tel: 86-25-8473-2460
+Fax: 86-25-8473-2470
+China - Qingdao
+Tel: 86-532-8502-7355
+Fax: 86-532-8502-7205
+China - Shanghai
+Tel: 86-21-5407-5533  
+Fax: 86-21-5407-5066
+China - Shenyang
+Tel: 86-24-2334-2829
+Fax: 86-24-2334-2393
+China - Shenzhen
+Tel: 86-755-8203-2660 
+Fax: 86-755-8203-1760
+China - Wuhan
+Tel: 86-27-5980-5300
+Fax: 86-27-5980-5118
+China - Xiamen
+Tel: 86-592-2388138 
+Fax: 86-592-2388130
+China - Xian
+Tel: 86-29-8833-7252
+Fax: 86-29-8833-7256
+China - Zhuhai
+Tel: 86-756-3210040 
+Fax: 86-756-3210049
+ASIA/PACIFIC
+India - Bangalore
+Tel: 91-80-3090-4444 
+Fax: 91-80-3090-4080
+India - New Delhi
+Tel: 91-11-4160-8631
+Fax: 91-11-4160-8632
+India - Pune
+Tel: 91-20-2566-1512
+Fax: 91-20-2566-1513
+Japan - Yokohama
+Tel: 81-45-471- 6166  
+Fax: 81-45-471-6122
+Korea - Daegu
+Tel: 82-53-744-4301
+Fax: 82-53-744-4302
+Korea - Seoul
+Tel: 82-2-554-7200
+Fax: 82-2-558-5932 or 
+82-2-558-5934
+Malaysia - Kuala Lumpur
+Tel: 60-3-6201-9857
+Fax: 60-3-6201-9859
+Malaysia - Penang
+Tel: 60-4-227-8870
+Fax: 60-4-227-4068
+Philippines - Manila
+Tel: 63-2-634-9065
+Fax: 63-2-634-9069
+Singapore
+Tel:  65-6334-8870
+Fax: 65-6334-8850
+Taiwan - Hsin Chu
+Tel: 886-3-6578-300
+Fax: 886-3-6578-370
+Taiwan - Kaohsiung
+Tel: 886-7-536-4818
+Fax: 886-7-536-4803
+Taiwan - Taipei
+Tel: 886-2-2500-6610  
+Fax: 886-2-2508-0102
+Thailand - Bangkok
+Tel: 66-2-694-1351
+Fax: 66-2-694-1350
+EUROPE
+Austria - Wels
+Tel: 43-7242-2244-39
+Fax: 43-7242-2244-393
+Denmark - Copenhagen
+Tel: 45-4450-2828 
+Fax: 45-4485-2829
+France - Paris
+Tel: 33-1-69-53-63-20  
+Fax: 33-1-69-30-90-79
+Germany - Munich
+Tel: 49-89-627-144-0 
+Fax: 49-89-627-144-44
+Italy - Milan 
+Tel: 39-0331-742611  
+Fax: 39-0331-466781
+Netherlands - Drunen
+Tel: 31-416-690399 
+Fax: 31-416-690340
+Spain - Madrid
+Tel: 34-91-708-08-90
+Fax: 34-91-708-08-91
+UK - Wokingham
+Tel: 44-118-921-5869
+Fax: 44-118-921-5820
+WORLDWIDE SALES AND SERVICE
+03/26/09
