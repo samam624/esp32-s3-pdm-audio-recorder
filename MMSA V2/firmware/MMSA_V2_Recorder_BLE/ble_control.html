@@ -537,6 +537,9 @@
   // Live status fields, kept in sync from every heartbeat/notification.
   let lastStatusAt = 0;
   let lastBytesWritten = 0;
+  // Seconds of audio in the whole recording, from firmware that splits long recordings into files (16-byte status).
+  // The byte count is per file there, so it restarts at each new file. null = older firmware.
+  let recordingAudioSecs = null;
   let lastBytesChangeAt = 0;
   let freeSpaceMB = 0;
   let sdCardReady = false;
@@ -622,8 +625,8 @@
 
   function updateStatsUi() {
     if (lastBytesWritten > 0 || recording) {
-      const audioSecs = lastBytesWritten / BYTES_PER_SECOND;
-      dataStatValue.textContent = formatDuration(audioSecs) + " · " + formatMB(lastBytesWritten / (1024 * 1024));
+      const audioSecs = recordingAudioSecs !== null ? recordingAudioSecs : lastBytesWritten / BYTES_PER_SECOND;
+      dataStatValue.textContent = formatDuration(audioSecs) + " · " + formatMB(audioSecs * BYTES_PER_SECOND / (1024 * 1024));
     } else {
       dataStatValue.textContent = "—";
     }
@@ -671,7 +674,9 @@
     statusPillText.textContent = isRecording ? "Recording" : "Connected";
 
     if (isRecording) {
-      recordStartedAt = Date.now();
+      // Firmware that reports the recording's total length (16-byte status): start the timer from that, so
+      // connecting to a recording already under way shows its real length, not the time since connecting.
+      recordStartedAt = Date.now() - (recordingAudioSecs !== null ? recordingAudioSecs * 1000 : 0);
       startElapsedTimer();
     } else {
       stopElapsedTimer();
@@ -709,6 +714,7 @@
     const bytesWritten = value.getUint32(1, true);
     const freeMB = value.getUint32(5, true);
     const errCode = value.getUint8(9);
+    recordingAudioSecs = value.byteLength >= 16 ? value.getUint32(12, true) : null;
 
     // Link diagnostics (firmware with a 12-byte payload only).
     if (value.byteLength >= 12) {

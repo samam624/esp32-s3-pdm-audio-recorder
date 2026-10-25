@@ -14,13 +14,37 @@ Tested over serial and from a PC acting as the remote (Python `bleak`):
 - REC hold (1 s) and the LED flashes confirmed working by the user.
 - **Open issues:** see [Known issues](#known-issues): SD card slowdowns lose audio in long recordings (with or without Bluetooth), and the card mounts slowly after a reset.
 
+## Recording files (2026-10-24, tested on board 2)
+
+- **One folder per take.** Each REC press makes a folder, and the take's files go in it:
+
+  ```
+  /MMSA8_0001/MMSA8_0001_01.wav   30:00
+  /MMSA8_0001/MMSA8_0001_02.wav   30:00
+  /MMSA8_0001/MMSA8_0001_03.wav   10:00
+  /MMSA8_0002/MMSA8_0002_01.wav   05:12
+  /BATLOG.CSV
+  ```
+
+  The folder is made at REC start (start to recording takes ~160 ms, and the audio from the press on is kept), so nothing has to happen after the stop. If the folder can't be made, the take goes in the card's root instead. At boot, the next take number skips existing folders and older firmware's root `MMSA8_NNNN.wav` files.
+- **Recordings are continuous.** Every 30 min (`SEGMENT_SECONDS`), the file is finished and the recording carries on in the next part in the same folder. The switch takes ~20 ms and loses no audio, because the pool keeps filling meanwhile. Join a folder's files in order for the full take. A recording ends only on a stop, a full card ("SD card full", remote error 6) or a low battery. Serial shows each switch as `REC continues in …`, and the stop report gives the whole recording's length and file count.
+  - Why: FAT32 caps a file at 4 GiB, which is 93.2 min at 768 KB/s. Before this, the write that hit the cap ended the recording as "SD write failed (card pulled?)". 30-min files (1.38 GB) also stay under the 2 GiB that some WAV readers can't handle. exFAT isn't an option, because this core's FatFs is built without it (`FF_FS_EXFAT 0`), and a standard WAV can't exceed 4 GiB anyway.
+- **Checkpoints every 10 s** (`CHECKPOINT_SECONDS`): the file is synced and its header updated to the length so far (~12–16 ms). A reset, crash or power loss mid-recording leaves a playable file missing at most the last 10 s. Tested: a reset 15 s into a file left a valid 10.0 s WAV. Before, such files were 0 bytes.
+- **The final header is written through a fresh file handle** and read back. After a failed write, the recording's own handle refuses further writes. That's how the 93-minute take of 2026-10-24 ended up with a header saying 0 bytes, which players treat as an empty file.
+- **A failed SD write no longer ends the recording.** The file is finished, the card is remounted only if it needs it, and the recording carries on in the next part, starting with the block that failed (still in memory), so no audio is lost. Serial shows `SD write failed in … recovered in N ms`, and that part is shorter than 30 min. If a second failure comes within 5 s, or the card can't be reached, the recording stops as before ("SD write failed (card pulled?)"). Found by `tools/stress_test.py`: one write failed 1.4 s after the PC connected over Bluetooth, while the card itself remounted at once. The SD driver retries a rejected data block 3 times, but not other errors.
+- **The boot scan is one pass** over the card's root (names only), so the next take number is found quickly however many takes there are. Checking number by number took 2.7 s at 155 takes. The next take is one past the highest number on the card, so a deleted take's number isn't reused out of order.
+- **A stop writes the queued audio first**, so the file runs up to the press. Before, the backlog was dropped (0.9 s on one test stop during an SD slowdown, up to ~5.5 s in a long one).
+- Testing: build with `--build-property "compiler.cpp.extra_flags=-DSEGMENT_SECONDS=20"` (keep the `--wrap` property too) to see the switch every 20 s. A 20 s setting gives 19.989 s files, since files hold whole 16 KB blocks. 1800 s comes out exact.
+
 ## Controls
 
 | Action | What it does |
 |---|---|
-| REC short press | Start / stop recording (acts on release) |
-| REC hold 1 s | Bluetooth on / off. Works while recording too. |
+| REC short press | Start / stop recording (acts on release). The button must be down at least 40 ms; shorter blips (bounce, electrical noise) are ignored and counted (`btnnoise` in the health line). |
+| REC hold 1 s | Bluetooth on / off. Works while recording too, and doesn't stop the recording. After a hold, REC is ignored until it has been released and stayed up for 0.5 s, so letting go never starts or stops a recording, whichever way Bluetooth was switched. (Before 2026-10-24 a recording started after nearly every Bluetooth hold.) |
 | Serial `r` / `b` | Same as a short press / a hold |
+| Serial `h` | Health line now (it also prints every minute): uptime, take/part, recorded seconds, free space, internal heap (free, lowest ever, largest block), PSRAM, deepest backlog and slowest SD write since the last line, audio loss counters, Bluetooth state, SD write errors recovered, button noise. `tools/soak_log.py` trends these. |
+| Serial `F` | Test builds only (`-DSTRESS_HOOKS`): the next SD block write counts as failed, to exercise the recovery. |
 | Serial `s` | SD-crosstalk snapshot test (idle only; this used to be the 1.5 s hold in Recorder8) |
 | Serial `i` | Button monitor (idle): 20 s of live REC pin levels; the REC LED lights while the pin reads pressed |
 | Serial `p` | PSRAM + button check (idle, PSRAM build): 30 s of PSRAM write/read-back with all LEDs lit, while you press REC; reports errors and presses seen |
@@ -54,7 +78,7 @@ Every mode change prints a `MODE:` line over serial.
 
 ## Bluetooth remote
 
-`ble_control.html` (in this folder) is V1's remote page, with the name changed and its "audio saved" duration corrected for 8 channels. Open it as a local file in Chrome or Edge (Bluefy on iPhone), press Connect and pick "MMSA V2". It starts and stops recording and shows live bytes written, free space, signal strength and errors. It also sets the board's clock on connect, so WAV files get the right date.
+`ble_control.html` (in this folder) is V1's remote page, with the name changed and its "audio saved" duration corrected for 8 channels. Its "audio saved" counts the whole recording across files. The status is 16 bytes since 2026-10-24: bytes 12–15 carry the recording's total seconds, while bytes 1–4 now count the current file only. An older copy of the page still works, but its count restarts at each new file. Open it as a local file in Chrome or Edge (Bluefy on iPhone), press Connect and pick "MMSA V2". It starts and stops recording and shows live bytes written, free space, signal strength and errors. It also sets the board's clock on connect, so WAV files get the right date.
 
 The GATT service is the same as V1's (UUIDs `6e400001…`–`6e400004…`). See `ESP32_devkit_test/ESP32_S3_SD_Recorder/README.md` for the status payload.
 
@@ -95,6 +119,8 @@ The same sketch auto-detects PSRAM. Built with `PSRAM=opi` (FQBN as above with `
 - **Tested 2026-10-24:** 3 × 300 s recordings (Bluetooth off, on, switching every 10 s): **0 audio lost**. Two slowdowns were absorbed (backlog peaks 1.02 s and 0.90 s, drained in 4–6 s). The deepest backlog used 19% of the buffer. SD average 1.47–1.50 MB/s.
 
 ## Known issues
+
+(Fixed 2026-10-24: recordings stopping at 93 min, unplayable files after a failed write or a crash, and the stop dropping queued audio. See [Recording files](#recording-files-2026-10-24-tested-on-board-2).)
 
 1. **SD card slowdowns (fixed by the PSRAM build; cause not yet pinned down).** Every 1–4 minutes the card spends 3–5 s unable to keep up with 768 KB/s. The internal-RAM buffer (192 ms) lost 0.7–1.3 s of audio each time, with or without Bluetooth (1 in 726 s with it off, 3 in ~550 s with it on). The SD link averages ~1.5 MB/s (SPI at 20 MHz), only 2× the need; the card's 10 MB/s rating applies to its native SD bus with 4 MB-aligned writes, not SPI. Likely cause: the card's internal housekeeping, provoked by FatFs updating its allocation table as the file grows. **Next to try:** time the writes inside a slowdown (slow writes = card, gaps = ESP), and reserve the file up front with FatFs `f_expand` (enabled in this core) so recording is purely sequential.
 2. **Slow SD mount after a reset.** If the board is reset (flashing, the serial reset, a crash) within a few seconds of a recording, the card can refuse to mount for ~8–12 s. IO40 lights when it's ready, and presses before then are ignored with a serial message. A power cycle avoids it. The wake-up clocks from V1 (now in `mountSd()`) didn't cure it.

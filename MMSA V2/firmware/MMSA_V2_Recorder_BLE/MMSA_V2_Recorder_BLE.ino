@@ -1,12 +1,17 @@
 // MMSA V2: 8-channel WAV recorder with switchable Bluetooth LE, for bench-testing operating modes and current draw.
 // Built from bringup/MMSA_V2_Recorder8 (left unchanged as the bring-up reference). The audio path is identical:
-// hardware PDM->PCM, 48 kHz, 16-bit, 8 mics on 4 data lines, shared clock IO4, writes /MMSA8_0001.wav, ...
+// hardware PDM->PCM, 48 kHz, 16-bit, 8 mics on 4 data lines, shared clock IO4. Each recording (take) goes in its own
+// folder: /MMSA8_0001/MMSA8_0001_01.wav, then /MMSA8_0002/MMSA8_0002_01.wav, ...
 //
 // Controls
 //   REC short press      start / stop recording (acts on release)
 //   REC hold 1 s         Bluetooth on / off (works while recording too)
 //   serial 'r' / 'b'     same as short press / hold;  's' = SD-crosstalk snapshot test (idle only)
 //   Bluetooth remote     ble_control.html in this folder (Chrome/Edge, or Bluefy on iPhone): start/stop + live status
+//
+// Continuous recording: every SEGMENT_SECONDS (30 min) the file is closed and the recording carries on in the next one
+// in the take's folder (MMSA8_0001_02.wav, ...) with no audio lost, so a recording only ends on a stop, a full card or
+// a low battery.
 //
 // Bluetooth switch confirmation (all three LEDs flash together):
 //   2 short flashes = Bluetooth ON     1 long flash = Bluetooth OFF     5 fast flashes = switch FAILED (see serial)
@@ -92,6 +97,27 @@ static const bool MIC_FITTED[8] = {true, true, true, true, true, true, true, tru
 #define BACKLOG_REPORT_BLOCKS 12     // report an SD slowdown once the backlog passes what the internal pool could hold
 #define SD_HZ       20000000
 
+// Continuous recording: a recording is split into files of SEGMENT_SECONDS each (the last one shorter). They join with
+// no gap, because blocks keep queuing in the pool while one file is closed and the next opened. FAT32 caps a file at
+// 4 GiB (93.2 min at 768 KB/s). Before this, the write that hit the cap ended the recording as "SD write failed"
+// (2026-10-24). 30 min = 1.38 GB, under the 2 GiB that some WAV readers can't handle. Override with
+// -DSEGMENT_SECONDS=N (a short value tests the file switch).
+#ifndef SEGMENT_SECONDS
+#define SEGMENT_SECONDS 1800
+#endif
+#define SEGMENT_BYTES ((uint32_t)((uint64_t)SEGMENT_SECONDS * SAMPLE_RATE * FRAME_BYTES / BLOCK_BYTES * BLOCK_BYTES))
+static_assert((uint64_t)SEGMENT_SECONDS * SAMPLE_RATE * FRAME_BYTES < 0xFFFFFFFFull - 44,
+              "SEGMENT_SECONDS is too long for one FAT32 file / WAV");
+static_assert(SEGMENT_BYTES >= BLOCK_BYTES, "SEGMENT_SECONDS is too short");
+
+// Checkpoints: every CHECKPOINT_SECONDS of audio the file is synced (so the card's directory holds its real size) and
+// its header updated to the length so far. A reset, crash or power loss mid-recording then leaves a playable file that
+// is missing at most the last CHECKPOINT_SECONDS. Before this, such files were 0 bytes, or their header said 0 bytes.
+#ifndef CHECKPOINT_SECONDS
+#define CHECKPOINT_SECONDS 10
+#endif
+#define CHECKPOINT_BYTES ((uint32_t)CHECKPOINT_SECONDS * SAMPLE_RATE * FRAME_BYTES)
+
 // RAM budget. The audio pool is sized at boot to leave SD_HEAP_HEADROOM for SD/FS (as in Recorder8) plus
 // BLE_HEAP_RESERVE so Bluetooth can be switched on later. Measured 2026-10-24: the radio controller keeps ~35 KB from
 // the boot warm-up on (see the controller wrap), and switching Bluetooth on takes ~40 KB more (printed each time as
@@ -126,15 +152,16 @@ static const bool MIC_FITTED[8] = {true, true, true, true, true, true, true, tru
 #define BLE_STATUS_MS         500    // status heartbeat to a connected remote
 #define LOW_SPACE_WARN_MB     200
 
-// Status payload (12 bytes, little-endian): [0] flags, [1-4] bytes in current/last recording, [5-8] SD free MB,
-// [9] error code, [10] RSSI dBm (int8, 0 = not measured), [11] HCI reason of the last disconnect (0 = none).
+// Status payload (16 bytes, little-endian): [0] flags, [1-4] bytes in the current/last file, [5-8] SD free MB,
+// [9] error code, [10] RSSI dBm (int8, 0 = not measured), [11] HCI reason of the last disconnect (0 = none),
+// [12-15] seconds of audio in the whole current/last recording (all its files). Older remotes read only the first 12.
 #define STATUS_FLAG_RECORDING 0x01
 #define STATUS_FLAG_SD_READY  0x02
 #define STATUS_FLAG_LOW_SPACE 0x04
 #define STATUS_FLAG_ERROR     0x08
 // Error codes, numbered as the remote page expects.
 enum : uint8_t { RERR_NONE = 0, RERR_SD_NOT_READY = 1, RERR_WRITE_FAILED = 2, RERR_CARD_REMOVED = 3,
-                 RERR_OPEN_FAILED = 5 };
+                 RERR_OPEN_FAILED = 5, RERR_CARD_FULL = 6 };
 enum : uint8_t { CMD_STOP = 0, CMD_START = 1, CMD_TOGGLE = 2 };
 enum : uint8_t { MODE_BLE_OFF = 0, MODE_BLE_ADV = 1, MODE_BLE_CONN = 2 };
 enum : uint8_t { BLERES_NONE = 0, BLERES_ON, BLERES_OFF, BLERES_FAILED };
@@ -154,7 +181,16 @@ static QueueHandle_t freeQ, fullQ;   // queues of block indices
 static File wav;
 static volatile bool recording = false;
 static volatile bool sdReady = false;
-static volatile uint32_t dataBytes = 0;
+static volatile uint32_t dataBytes = 0;        // audio bytes in the current file
+static String currentFile;                       // the file being (or last) written
+static uint64_t sessionBytesDone = 0;          // audio bytes in this recording's earlier files (see SEGMENT_SECONDS)
+static volatile uint32_t sessionSecsDone = 0;  // the same in seconds, for the remote
+static uint32_t sessionFiles = 0;              // files in this recording so far
+static String sessionFirstFile;
+static uint32_t checkpointAt = 0;              // dataBytes at the current file's last checkpoint
+static uint32_t checkpoints = 0, checkpointFails = 0, maxCheckpointUs = 0;
+static int hMinFree = POOL_SLOTS;              // lowest free-block count since the last health line (recording only)
+static uint32_t hWorstWriteUs = 0;             // slowest block write since the last health line
 static uint32_t recStartMs = 0;
 static volatile uint32_t dmaOverflows = 0;
 static volatile uint32_t poolDrops = 0;      // blocks lost because no free block was available
@@ -170,7 +206,16 @@ static bool batlogStopped = false;           // battery below cutoff: SD card no
 static float levelSmoothed = 0.0f;
 static volatile uint8_t errorCode = RERR_NONE;
 static volatile uint32_t freeMb = 0, freeMbAtStart = 0;
-static int nextFileIndex = 1;                // next WAV number to try (see nextName())
+static int nextFileIndex = 1;                // next take number to try (see findNextFreeFile())
+static int takeIndex = 0;                    // number of the current/last take
+static uint32_t stopPressMs = 0;             // when a stop was asked for (see stopRecordingAtPress()), for wall time
+static uint32_t writeErrors = 0;             // failed SD writes recovered from in this recording (see recoverWrite())
+static uint32_t sdErrorsSinceBoot = 0, lastRecoverMs = 0;
+static void scanTakes();
+#ifdef STRESS_HOOKS
+static volatile bool failNextWrite = false;  // serial 'F' (test builds only): the next block write counts as failed
+#endif
+static String takeDir;                       // its folder, "/MMSA8_0001" ("" = card root; see startRecording())
 static void findNextFreeFile();
 
 // Bluetooth state. bleOn is written only by bleTask; the others by the NimBLE host task's callbacks.
@@ -210,9 +255,20 @@ static bool IRAM_ATTR onOverflow(i2s_chan_handle_t h, i2s_event_data_t *e, void 
 // only if the pin had been released for DEBOUNCE_MS (rejects release bounce), and presses are locked out for
 // PRESS_LOCKOUT_MS (rejects press bounce). loop() then times the press to tell a short press from a hold.
 #define PRESS_LOCKOUT_MS 250
+// loop() then decides what the press was (see handleButton()):
+#define MIN_PRESS_MS     40    // down for less than this = a bounce or electrical noise, ignored
+#define RELEASE_MS       30    // up this long (continuously) = released; shorter blips don't end a press
+#define AFTER_HOLD_MS    500   // after a Bluetooth hold: up this long (continuously) before REC counts again
 static volatile bool buttonPressed = false;
 static volatile uint32_t buttonPressCount = 0;  // every accepted press (PSRAM/button check)
 static volatile uint32_t lastRiseMs = 0, lastPressMs = 0;
+static uint32_t buttonNoise = 0;                // presses ignored as too short (HEALTH line)
+enum : uint8_t { BTN_IDLE, BTN_PRESSED, BTN_HELD, BTN_AFTER_HOLD };
+static uint8_t btnState = BTN_IDLE;
+static void resetButton() {  // after the button tests, which use the button themselves
+  buttonPressed = false;
+  btnState = BTN_IDLE;
+}
 static void IRAM_ATTR onButtonEdge() {
   uint32_t now = millis();
   if (gpio_get_level((gpio_num_t)BUTTON_PIN)) {
@@ -289,8 +345,8 @@ static void setSdReady(bool ready) {
     // Scan forward from the current number, never back to 1 within a boot: V1 once overwrote an earlier take when a
     // flaky remount made SD.exists() miss a file and the scan restarted from 1.
     uint32_t t0 = millis();
-    findNextFreeFile();
-    Serial.printf("SD: next recording will be /MMSA8_%04d.wav (%.1f GB free; scan took %lu ms)\n", nextFileIndex,
+    scanTakes();
+    Serial.printf("SD: next recording will go in /MMSA8_%04d/ (%.1f GB free; scan took %lu ms)\n", nextFileIndex,
                   freeMb / 1024.0f, (unsigned long)(millis() - t0));
   }
   if (changed) bleStatusChanged();
@@ -333,7 +389,7 @@ static void updateSdPresence() {
   }
 }
 
-static void writeWavHeader(File &f, uint32_t dataLen) {
+static bool writeWavHeader(File &f, uint32_t dataLen) {
   uint8_t h[44];
   uint32_t byteRate = SAMPLE_RATE * FRAME_BYTES;
   uint16_t blockAlign = FRAME_BYTES, bits = 16, fmt = 1, ch = CHANNELS;
@@ -350,8 +406,47 @@ static void writeWavHeader(File &f, uint32_t dataLen) {
   memcpy(h + 34, &bits, 2);
   memcpy(h + 36, "data", 4);
   memcpy(h + 40, &dataLen, 4);
-  f.seek(0);
-  f.write(h, 44);
+  return f.seek(0) && f.write(h, 44) == 44;
+}
+
+// Writes the header for `bytes` of audio into `path` through a second handle, so the recording handle stays at the end
+// of the file (seeking it back to the end would walk the whole cluster chain of a GB-sized file). With `verify`, reads
+// the header back. The recording handle never caches the header sector: it is long past it.
+static bool patchWavHeader(const String &path, uint32_t bytes, bool verify) {
+  File h = SD.open(path, "r+");
+  if (!h) return false;
+  bool ok = writeWavHeader(h, bytes);
+  h.close();
+  if (!ok || !verify) return ok;
+  h = SD.open(path, FILE_READ);
+  if (!h) return false;
+  uint8_t b[44];
+  uint32_t got = 0;
+  ok = h.read(b, 44) == 44;
+  h.close();
+  memcpy(&got, b + 40, 4);
+  return ok && got == bytes;
+}
+
+// Closes the recording file and writes its final header. The close syncs the file's size to the card even after a
+// failed write, but the failed write leaves the handle refusing further writes. Writing the final header through it
+// is what failed on the 93-minute take of 2026-10-24 (header left saying 0 bytes), so the header goes through a fresh
+// handle.
+static bool finishWav() {
+  wav.close();
+  return patchWavHeader(currentFile, dataBytes, true);
+}
+
+// See CHECKPOINT_SECONDS. Runs between block writes. ~10-30 ms on a fast card; the pool absorbs it.
+static void checkpointWav() {
+  uint32_t t = micros();
+  wav.flush();  // fflush + fsync: the directory entry now holds the size so far
+  bool ok = patchWavHeader(currentFile, dataBytes, false);
+  uint32_t dt = micros() - t;
+  if (dt > maxCheckpointUs) maxCheckpointUs = dt;
+  checkpointAt = dataBytes;
+  checkpoints++;
+  if (!ok && checkpointFails++ == 0) Serial.printf("  WARNING: checkpoint of %s failed\n", currentFile.c_str());
 }
 
 // ---------------- I2S ----------------
@@ -379,19 +474,48 @@ static void startPdm() {
 // ---------------- Recording ----------------
 // File numbering. Each SD.exists() takes ~7 ms, so scanning from 1 at every REC press got slower with every file on
 // the card (~290 ms at 43 files). Instead the scan runs when the card mounts (setSdReady()), and a REC press only
-// re-checks the number found then (one SD.exists()). nextFileIndex is declared with the globals.
+// re-checks the number found then. nextFileIndex is declared with the globals.
+// Each take (REC press) gets a folder, /MMSA8_0001/, holding its files MMSA8_0001_01.wav, _02.wav, ... (one per
+// SEGMENT_SECONDS). A number is taken if its folder exists, or a root /MMSA8_NNNN.wav from older firmware does.
 static void findNextFreeFile() {
   char name[24];
   for (; nextFileIndex < 9999; nextFileIndex++) {
-    snprintf(name, sizeof(name), "/MMSA8_%04d.wav", nextFileIndex);
+    snprintf(name, sizeof(name), "/MMSA8_%04d", nextFileIndex);
+    if (SD.exists(name)) continue;
+    strcat(name, ".wav");
     if (!SD.exists(name)) return;
   }
 }
 
-static String nextName() {
-  findNextFreeFile();
-  char name[24];
-  snprintf(name, sizeof(name), "/MMSA8_%04d.wav", nextFileIndex++);
+// At mount: the next take is one past the highest take number on the card (a folder, or an older firmware's root
+// MMSA8_NNNN.wav), found in one pass over the root's names. Checking number by number got slow: each SD.exists()
+// searches the whole root, so that scan grew with the square of the takes (2.7 s at 155 takes, 2026-10-24). It never
+// goes back within a boot (setSdReady()), and a deleted take's number isn't reused out of order.
+static void scanTakes() {
+  File root = SD.open("/");
+  if (root) {
+    int highest = 0;
+    for (;;) {
+      String n = root.getNextFileName();  // readdir only: doesn't open each entry
+      if (!n.length()) break;
+      int s = n.lastIndexOf('/') + 1;
+      if (n.length() < s + 10 || !n.substring(s, s + 6).equals("MMSA8_")) continue;
+      bool digits = true;
+      for (int i = s + 6; i < s + 10; i++) digits = digits && isDigit(n[i]);
+      if (!digits) continue;  // e.g. an old MMSA8_32k_0001.wav
+      int v = n.substring(s + 6, s + 10).toInt();
+      if (v > highest) highest = v;
+    }
+    root.close();
+    if (highest + 1 > nextFileIndex) nextFileIndex = highest + 1;
+  }
+  findNextFreeFile();  // and confirm that number is free
+}
+
+// Path of file `part` (1, 2, ...) of the current take.
+static String partPath(int part) {
+  char name[48];
+  snprintf(name, sizeof(name), "%s/MMSA8_%04d_%02d.wav", takeDir.c_str(), takeIndex, part);
   return String(name);
 }
 
@@ -410,7 +534,17 @@ static void startRecording() {
     return;
   }
   uint32_t tStart = millis();
-  String name = nextName();
+  // Start at the button press: drop the idle audio queued so far, but keep what arrives while the folder and file are
+  // made (~160 ms), so that goes into the file.
+  drainFullBlocks();
+  findNextFreeFile();
+  takeIndex = nextFileIndex++;
+  char dir[16];
+  snprintf(dir, sizeof(dir), "/MMSA8_%04d", takeIndex);
+  // If the take's folder can't be made, record into the card's root rather than not at all.
+  takeDir = SD.mkdir(dir) ? String(dir) : String("");
+  if (!takeDir.length()) Serial.printf("Could not make folder %s; recording into the card's root.\n", dir);
+  String name = partPath(1);
   wav = SD.open(name, FILE_WRITE);
   if (!wav) {
     Serial.printf("Could not open %s\n", name.c_str());
@@ -421,13 +555,21 @@ static void startRecording() {
   }
   writeWavHeader(wav, 0);
   dataBytes = 0;
+  currentFile = name;
+  sessionBytesDone = 0;
+  sessionSecsDone = 0;
+  sessionFiles = 1;
+  sessionFirstFile = name;
+  checkpointAt = 0;
+  checkpoints = checkpointFails = maxCheckpointUs = 0;
+  writeErrors = 0;
+  stopPressMs = 0;
   maxWriteUs = 0;
   sumWriteUs = 0;
   writes = 0;
   backlogActive = false;
   minFreeBlocks = poolBlocks;
   freeMbAtStart = freeMb;
-  drainFullBlocks();  // start at the button press, not with stale idle audio
   dmaOverflows = 0;
   poolDrops = 0;
   recStartMs = millis();
@@ -470,7 +612,7 @@ static void psramButtonTest() {
   heap_caps_free(buf);
   digitalWrite(LED_SD, sdReady ? HIGH : LOW);  // the other LEDs are rewritten by their updaters
   uint32_t presses = buttonPressCount - presses0;
-  buttonPressed = false;  // don't act on presses made during the test
+  resetButton();  // don't act on presses made during the test
   Serial.printf("PSRAM test done: %lu passes over 1 MB, %lu errors, %lu REC presses seen -> %s\n", (unsigned long)passes,
                 (unsigned long)errors, (unsigned long)presses,
                 errors ? "PSRAM CORRUPTED (button still on a PSRAM line?)"
@@ -502,7 +644,7 @@ static void buttonMonitor() {
     vTaskDelay(pdMS_TO_TICKS(5));
   }
   digitalWrite(LED_REC, LOW);
-  buttonPressed = false;
+  resetButton();  // don't act on presses made during the test
   Serial.printf("Button monitor done: %lu level changes, %lu presses counted by the interrupt\n", (unsigned long)changes,
                 (unsigned long)(buttonPressCount - presses0));
 }
@@ -510,13 +652,28 @@ static void buttonMonitor() {
 static void stopRecording() {
   recording = false;
   digitalWrite(LED_REC, LOW);
-  writeWavHeader(wav, dataBytes);
-  String name = wav.name();
-  wav.close();
+  // wav is already closed if continuing into a new file failed (see rollOver()).
+  bool finished = wav ? finishWav() : true;
   float secs = dataBytes / (float)(SAMPLE_RATE * FRAME_BYTES);
-  float wall = (millis() - recStartMs) / 1000.0f;
-  Serial.printf("REC stop: %s, %.1f s audio (%lu bytes), wall time %.1f s\n", name.c_str(), secs,
-                (unsigned long)dataBytes, wall);
+  // Wall time up to the stop press, not to the end of writing the queued audio (see stopRecordingAtPress()).
+  float wall = ((stopPressMs ? stopPressMs : millis()) - recStartMs) / 1000.0f;
+  stopPressMs = 0;
+  uint64_t totalBytes = sessionBytesDone + dataBytes;
+  if (sessionFiles > 1)
+    Serial.printf("REC stop: %s (%.1f s). Recording: %.1f s audio in %lu files from %s (%.2f GB), wall time %.1f s\n",
+                  currentFile.c_str(), secs, totalBytes / (float)(SAMPLE_RATE * FRAME_BYTES),
+                  (unsigned long)sessionFiles, sessionFirstFile.c_str(), totalBytes / 1073741824.0f, wall);
+  else
+    Serial.printf("REC stop: %s, %.1f s audio (%lu bytes), wall time %.1f s\n", currentFile.c_str(), secs,
+                  (unsigned long)dataBytes, wall);
+  if (!finished)
+    Serial.printf("  WARNING: could not write %s's final header (card gone?). Its last checkpoint covers all but the "
+                  "last %d s.\n", currentFile.c_str(), CHECKPOINT_SECONDS);
+  Serial.printf("  Checkpoints: %lu, worst %.1f ms%s\n", (unsigned long)checkpoints, maxCheckpointUs / 1000.0f,
+                checkpointFails ? ", SOME FAILED" : "");
+  if (writeErrors)
+    Serial.printf("  SD write errors recovered from: %lu (each started a new file, no audio lost)\n",
+                  (unsigned long)writeErrors);
   Serial.printf("  DMA overflows %lu, pool drops %lu, worst SD write %.1f ms, min free blocks %d/%d -> %s\n",
                 (unsigned long)dmaOverflows, (unsigned long)poolDrops, maxWriteUs / 1000.0f, minFreeBlocks, poolBlocks,
                 (dmaOverflows == 0 && poolDrops == 0) ? "NO AUDIO LOST" : "AUDIO WAS LOST");
@@ -528,10 +685,150 @@ static void stopRecording() {
                   (unsigned long)((poolBlocks - minFreeBlocks) * BLOCK_FRAMES * 1000UL / SAMPLE_RATE),
                   poolInPsram ? " (PSRAM pool)" : "");
   // Estimate rather than ask the card: this also runs after a failed write, when the card may be gone.
-  uint32_t usedMb = dataBytes >> 20;
+  uint32_t usedMb = (uint32_t)(totalBytes >> 20);
   freeMb = freeMbAtStart > usedMb ? freeMbAtStart - usedMb : 0;
   printMode();
   bleStatusChanged();
+}
+
+// Continuous recording (see SEGMENT_SECONDS): finishes the full file and carries on in the next one. The reader task
+// keeps filling the pool meanwhile, so no audio is lost unless the switch outlasts the pool (~5.5 s with PSRAM).
+// Returns false if the next file can't be opened; the recording is then stopped, with its files so far complete.
+static bool rollOver() {
+  uint32_t t0 = millis();
+  String closed = currentFile;
+  if (!finishWav()) Serial.printf("  WARNING: could not write %s's final header\n", closed.c_str());
+  String name = partPath(sessionFiles + 1);
+  wav = SD.open(name, FILE_WRITE);
+  if (!wav || !writeWavHeader(wav, 0)) {
+    Serial.printf("Could not open %s to continue the recording, stopping. Files up to %s are complete.\n",
+                  name.c_str(), closed.c_str());
+    if (wav) wav.close();
+    stopRecording();  // reports the file just finished
+    errorCode = RERR_OPEN_FAILED;
+    setSdReady(false);
+    bleStatusChanged();
+    return false;
+  }
+  sessionBytesDone += dataBytes;
+  sessionSecsDone = (uint32_t)(sessionBytesDone / (SAMPLE_RATE * FRAME_BYTES));
+  dataBytes = 0;
+  checkpointAt = 0;
+  currentFile = name;
+  sessionFiles++;
+  Serial.printf("REC continues in %s (finished %s; %.1f s recorded so far; switch took %lu ms)\n", name.c_str(),
+                closed.c_str(), sessionBytesDone / (float)(SAMPLE_RATE * FRAME_BYTES), (unsigned long)(millis() - t0));
+  bleStatusChanged();
+  return true;
+}
+
+// A block write failed but the card isn't full. That has been a one-off SD error, not a pulled card: in a stress test
+// (2026-10-24) one write failed 1.4 s after the PC connected over Bluetooth, and the card remounted at once. The SD
+// driver retries a rejected data block 3 times but not other errors. So: finish the file, remount the card only if it
+// needs it, and carry on in the next part, starting with the block that failed (still in memory), so no audio is lost.
+// The failed file may end with up to a block of extra bytes after its audio; players ignore them. Returns false (the
+// caller stops the recording) if the card can't be reached, or if the previous recovery was under 5 s ago.
+static bool recoverWrite(const uint8_t *src) {
+  uint32_t t0 = millis();
+  if (writeErrors && t0 - lastRecoverMs < 5000) return false;
+  String failed = currentFile;
+  float at = (sessionBytesDone + dataBytes) / (float)(SAMPLE_RATE * FRAME_BYTES);
+  wav.close();  // syncs the size; the handle refuses further writes after the error
+  bool remounted = false, header = patchWavHeader(failed, dataBytes, true);
+  if (!header) {
+    remounted = true;
+    if (!mountSd()) return false;
+    header = patchWavHeader(failed, dataBytes, true);
+  }
+  String name = partPath(sessionFiles + 1);
+  wav = SD.open(name, FILE_WRITE);
+  if (!wav || !writeWavHeader(wav, 0) || wav.write(src, BLOCK_BYTES) != BLOCK_BYTES) {
+    if (wav) wav.close();
+    return false;
+  }
+  sessionBytesDone += dataBytes;
+  sessionSecsDone = (uint32_t)(sessionBytesDone / (SAMPLE_RATE * FRAME_BYTES));
+  dataBytes = 0;
+  checkpointAt = 0;
+  currentFile = name;
+  sessionFiles++;
+  writeErrors++;
+  sdErrorsSinceBoot++;
+  lastRecoverMs = millis();
+  Serial.printf("SD write failed in %s at %.1f s; recovered in %lu ms%s, carrying on in %s with no audio lost%s\n",
+                failed.c_str(), at, (unsigned long)(lastRecoverMs - t0), remounted ? " (card remounted)" : "",
+                name.c_str(), header ? "" : " (the failed file's header couldn't be finalized)");
+  bleStatusChanged();
+  return true;
+}
+
+// Writes one full pool block to the recording, moving on to the next file and checkpointing when due. Returns false if
+// the recording stopped (failed write, or no next file). The caller returns the block to the pool either way.
+static bool recordBlock(int idx) {
+  // Continuous recording: this block would overfill the file, so finish it and carry on in the next one.
+  if (dataBytes + BLOCK_BYTES > SEGMENT_BYTES && !rollOver()) return false;
+  uint32_t t = micros();
+  // Mute unfitted mics (empty pads read back as glitchy floating data).
+  int16_t *fr = (int16_t *)pool[idx];
+  for (int f = 0; f < BLOCK_FRAMES; f++, fr += CHANNELS)
+    for (int c = 0; c < CHANNELS; c++)
+      if (!MIC_FITTED[c]) fr[c] = 0;
+  // A PSRAM block is copied to internal DMA-capable RAM first, so the SD driver gets a buffer it can DMA from.
+  const uint8_t *src = pool[idx];
+  if (poolInPsram) {
+    memcpy(writeBuf, pool[idx], BLOCK_BYTES);
+    src = writeBuf;
+  }
+#ifdef STRESS_HOOKS
+  size_t w = failNextWrite ? 0 : wav.write(src, BLOCK_BYTES);  // a simulated failure writes nothing
+  failNextWrite = false;
+#else
+  size_t w = wav.write(src, BLOCK_BYTES);
+#endif
+  uint32_t dt = micros() - t;
+  if (dt > maxWriteUs) maxWriteUs = dt;
+  if (dt > hWorstWriteUs) hWorstWriteUs = dt;
+  sumWriteUs += dt;
+  writes++;
+  if (w != BLOCK_BYTES) {
+    // A full card fails like a pulled one. Tell them apart by the space there was when the recording began.
+    uint32_t usedMb = (uint32_t)((sessionBytesDone + dataBytes) >> 20);
+    bool full = freeMbAtStart <= usedMb + 32;
+    if (!full && recoverWrite(src)) {
+      dataBytes += BLOCK_BYTES;  // the block went into the new file
+      return true;
+    }
+    Serial.println(full ? "SD card full, stopping. The recording's files are complete."
+                        : "SD write failed (card pulled?), stopping.");
+    stopRecording();
+    SD.end();
+    errorCode = full ? RERR_CARD_FULL : RERR_WRITE_FAILED;
+    setSdReady(false);
+    return false;
+  }
+  dataBytes += BLOCK_BYTES;
+  if (dataBytes - checkpointAt >= CHECKPOINT_BYTES) checkpointWav();
+  return true;
+}
+
+// A stop from REC, serial or the remote: first writes the audio still queued in the pool, so the recording keeps
+// everything up to the press. Plain stopRecording() dropped that backlog: 0.9 s on a test stop during an SD slowdown
+// (2026-10-24), up to the whole pool (~5.5 s) in a long one. The block the reader is still filling (< 21 ms) is lost.
+static void stopRecordingAtPress() {
+  int pending = uxQueueMessagesWaiting(fullQ), written = 0;
+  uint32_t t0 = millis();
+  stopPressMs = t0;
+  int idx;
+  while (pending-- > 0 && recording && xQueueReceive(fullQ, &idx, 0) == pdTRUE) {
+    bool ok = recordBlock(idx);
+    xQueueSend(freeQ, &idx, 0);
+    if (!ok) return;  // a failed write has already stopped the recording
+    written++;
+  }
+  if (written > 3)
+    Serial.printf("REC stop: wrote the %d queued blocks (%lu ms of audio) first, in %lu ms\n", written,
+                  (unsigned long)(written * BLOCK_FRAMES * 1000UL / SAMPLE_RATE), (unsigned long)(millis() - t0));
+  stopRecording();
 }
 
 // ---------------- SD-crosstalk snapshot test (serial 's', idle only) ----------------
@@ -997,24 +1294,27 @@ static int onBleGapEvent(struct ble_gap_event *event, void *) {
 static void bleSendStatus() {
   if (!bleStatusChr) return;
   uint32_t bytes = dataBytes;
+  uint32_t secsDone = sessionSecsDone;
   uint32_t mb = freeMb;
   if (recording) {
-    uint32_t usedMb = bytes >> 20;
+    uint32_t usedMb = (uint32_t)(((uint64_t)secsDone * SAMPLE_RATE * FRAME_BYTES + bytes) >> 20);
     mb = freeMbAtStart > usedMb ? freeMbAtStart - usedMb : 0;
   }
+  uint32_t recSecs = secsDone + bytes / (SAMPLE_RATE * FRAME_BYTES);
   uint8_t err = errorCode;
   uint8_t flags = 0;
   if (recording) flags |= STATUS_FLAG_RECORDING;
   if (sdReady) flags |= STATUS_FLAG_SD_READY;
   if (sdReady && mb < LOW_SPACE_WARN_MB) flags |= STATUS_FLAG_LOW_SPACE;
   if (err != RERR_NONE) flags |= STATUS_FLAG_ERROR;
-  uint8_t p[12];
+  uint8_t p[16];
   p[0] = flags;
   memcpy(p + 1, &bytes, 4);
   memcpy(p + 5, &mb, 4);
   p[9] = err;
   p[10] = (uint8_t)bleRssi;
   p[11] = bleLastDisconnectReason;
+  memcpy(p + 12, &recSecs, 4);
   bleStatusChr->setValue(p, sizeof(p));
   if (bleConnected) bleStatusChr->notify();
 }
@@ -1142,6 +1442,32 @@ static void bleTask(void *) {
   }
 }
 
+// ---------------- Health line (every HEALTH_MS, and serial 'h') ----------------
+// One line for long unattended runs (tools/soak_log.py logs and summarises them): uptime, state, internal heap (free,
+// lowest ever, largest block), PSRAM free, and since the previous line the deepest pool backlog and slowest SD write.
+#define HEALTH_MS 60000
+static void printHealth() {
+  uint32_t secs = sessionSecsDone + dataBytes / (SAMPLE_RATE * FRAME_BYTES);
+  uint32_t mb = freeMb;
+  if (recording) {
+    uint32_t usedMb = (uint32_t)((sessionBytesDone + dataBytes) >> 20);
+    mb = freeMbAtStart > usedMb ? freeMbAtStart - usedMb : 0;
+  }
+  int backlog = poolBlocks - (hMinFree < poolBlocks ? hMinFree : poolBlocks);
+  Serial.printf("HEALTH: up=%lu rec=%d take=%d part=%lu recsecs=%lu free_mb=%lu heap=%u heapmin=%u heapblk=%u "
+                "psram=%u backlog_ms=%lu write_ms=%.1f ovf=%lu drops=%lu ble=%d sd=%d sderr=%lu btnnoise=%lu\n",
+                (unsigned long)(millis() / 1000), recording ? 1 : 0, takeIndex, (unsigned long)sessionFiles,
+                (unsigned long)secs, (unsigned long)mb, (unsigned)heap_caps_get_free_size(MALLOC_CAP_INTERNAL),
+                (unsigned)heap_caps_get_minimum_free_size(MALLOC_CAP_INTERNAL),
+                (unsigned)heap_caps_get_largest_free_block(MALLOC_CAP_INTERNAL),
+                (unsigned)heap_caps_get_free_size(MALLOC_CAP_SPIRAM),
+                (unsigned long)(backlog * BLOCK_FRAMES * 1000UL / SAMPLE_RATE), hWorstWriteUs / 1000.0f,
+                (unsigned long)dmaOverflows, (unsigned long)poolDrops, bleMode(), sdReady ? 1 : 0,
+                (unsigned long)sdErrorsSinceBoot, (unsigned long)buttonNoise);
+  hMinFree = poolBlocks;
+  hWorstWriteUs = 0;
+}
+
 // ---------------- setup / loop ----------------
 void setup() {
   Serial.begin(115200);
@@ -1229,43 +1555,79 @@ void setup() {
   Serial.println("MMSA V2 8-channel recorder with Bluetooth switch.");
   Serial.printf("WAV: %d Hz 16-bit, 8 ch (PDM clock %.3f MHz). ", SAMPLE_RATE, SAMPLE_RATE * 64 / 1e6);
   Serial.println(" mic0-1 IO5, mic2-3 IO6, mic4-5 IO7, mic6-7 IO8 (WAV track N+1 = mic N).");
+  Serial.printf("Files: a folder per take, a new file every %d s, checkpoints every %d s.\n", SEGMENT_SECONDS,
+                CHECKPOINT_SECONDS);
+#ifdef STRESS_HOOKS
+  Serial.println("TEST BUILD: serial F makes the next SD block write count as failed.");
+#endif
   Serial.println("REC: short press = start/stop recording, hold 1 s = Bluetooth on/off.");
   Serial.println("     Flashes on all LEDs: 2 short = Bluetooth ON, 1 long = OFF, 5 fast = failed.");
-  Serial.println("Serial: r = record, b = Bluetooth, s = SD-crosstalk snapshot test, p = PSRAM + button check, i = button monitor.");
+  Serial.println("Serial: r = record, b = Bluetooth, h = health line, s = SD-crosstalk snapshot test, p = PSRAM + button "
+                 "check, i = button monitor.");
   Serial.println("LEDs: IO40 record ready (SD mounted), IO41 loudness, IO42 blinks while recording.");
   if (BLE_ON_AT_BOOT) requestBleToggle();
   printMode();
 }
 
-void loop() {
-  static uint32_t lastStatus = 0, pressAt = 0;
-  static bool pressPending = false, holdHandled = false;
-  bool toggle = false;
-
-  // REC button: a short press toggles recording when released; holding BLE_HOLD_MS switches Bluetooth at once
-  // (while still held) and the release is then ignored.
-  if (buttonPressed) {
-    buttonPressed = false;
-    pressPending = true;
-    holdHandled = false;
-    pressAt = millis();
-  }
-  if (pressPending) {
-    uint32_t held = millis() - pressAt;
-    bool down = digitalRead(BUTTON_PIN) == LOW;
-    if (!holdHandled && down && held >= BLE_HOLD_MS) {
-      holdHandled = true;
-      Serial.println("REC held: switching Bluetooth");
-      requestBleToggle();
-    }
-    if (!down && held > DEBOUNCE_MS) {
-      pressPending = false;
-      if (!holdHandled) {
+// REC button: a short press (down MIN_PRESS_MS or more, released before BLE_HOLD_MS) toggles recording on release.
+// Holding BLE_HOLD_MS switches Bluetooth at once, while still held. After that hold the button is ignored until it
+// has been up for AFTER_HOLD_MS without a break, so the release (and its bounce) can never start or stop a recording,
+// whichever way Bluetooth was switched and whether or not it's recording; only a new full press counts. Before
+// 2026-10-24 any falling edge counted as a press once 50 ms had passed, even if the pin was low for a moment: a
+// recording started after nearly every Bluetooth hold. Press and release times come from the interrupt, so a busy
+// loop() still times them right. Returns true for a short press.
+static bool handleButton() {
+  static uint32_t pressAt = 0, quietFrom = 0;
+  if (!buttonEnabled) return false;  // a PSRAM build with REC on a PSRAM pin: never touch the pin
+  uint32_t now = millis();
+  bool up = digitalRead(BUTTON_PIN) == HIGH;
+  bool released = up && now - lastRiseMs >= RELEASE_MS;  // up continuously since lastRiseMs
+  switch (btnState) {
+    case BTN_IDLE:
+      if (!buttonPressed) return false;
+      buttonPressed = false;
+      pressAt = lastPressMs;
+      btnState = BTN_PRESSED;
+      return false;
+    case BTN_PRESSED:
+      if (released) {
+        btnState = BTN_IDLE;
+        uint32_t downMs = lastRiseMs - pressAt;
+        if (downMs < MIN_PRESS_MS) {
+          buttonNoise++;
+          Serial.printf("REC press ignored: down only %lu ms (bounce or noise)\n", (unsigned long)downMs);
+          return false;
+        }
         Serial.println("REC button");
-        toggle = true;
+        return true;
       }
-    }
+      if (!up && now - pressAt >= BLE_HOLD_MS) {
+        btnState = BTN_HELD;
+        Serial.println("REC held: switching Bluetooth (release REC; it counts again once up for 0.5 s)");
+        requestBleToggle();
+      }
+      return false;
+    case BTN_HELD:
+      if (released) {
+        btnState = BTN_AFTER_HOLD;
+        quietFrom = now;
+      }
+      return false;
+    case BTN_AFTER_HOLD:
+      if (!up || buttonPressed) {  // any press or blip restarts the quiet time
+        buttonPressed = false;
+        quietFrom = now;
+      } else if (now - quietFrom >= AFTER_HOLD_MS) {
+        btnState = BTN_IDLE;
+      }
+      return false;
   }
+  return false;
+}
+
+void loop() {
+  static uint32_t lastStatus = 0;
+  bool toggle = handleButton();
   if (Serial.available()) {
     char c = Serial.read();
     if (c == 'r' || c == 'R') {
@@ -1278,9 +1640,16 @@ void loop() {
     }
     if ((c == 's' || c == 'S') && !recording) snapshotTest();
     if (c == 'p' || c == 'P') psramButtonTest();
+    if (c == 'h' || c == 'H') printHealth();
+#ifdef STRESS_HOOKS
+    if (c == 'F' && recording) {
+      failNextWrite = true;
+      Serial.println("'F' (test build): the next block write counts as failed");
+    }
+#endif
     if ((c == 'i' || c == 'I') && !recording) buttonMonitor();
   }
-  if (toggle) recording ? stopRecording() : startRecording();
+  if (toggle) recording ? stopRecordingAtPress() : startRecording();
   uint8_t cmd;
   while (xQueueReceive(cmdQ, &cmd, 0) == pdTRUE) {
     bool want = cmd == CMD_TOGGLE ? !recording : cmd == CMD_START;
@@ -1289,7 +1658,7 @@ void loop() {
       continue;
     }
     Serial.println("REC via Bluetooth remote");
-    want ? startRecording() : stopRecording();
+    want ? startRecording() : stopRecordingAtPress();
   }
 
   // Bluetooth switch finished: confirm on the LEDs.
@@ -1307,6 +1676,7 @@ void loop() {
     if (recording) {
       int freeNow = uxQueueMessagesWaiting(freeQ);
       if (freeNow < minFreeBlocks) minFreeBlocks = freeNow;
+      if (freeNow < hMinFree) hMinFree = freeNow;
       // SD slowdown report: once the backlog passes what an internal-RAM pool could hold, follow the episode and
       // print it when the backlog has drained (printing during the stall would only add to it).
       int backlog = poolBlocks - freeNow;
@@ -1324,33 +1694,10 @@ void loop() {
                         (unsigned long)(millis() - backlogStartMs));
         }
       }
-      uint32_t t = micros();
-      // Mute unfitted mics (empty pads read back as glitchy floating data).
-      int16_t *fr = (int16_t *)pool[idx];
-      for (int f = 0; f < BLOCK_FRAMES; f++, fr += CHANNELS)
-        for (int c = 0; c < CHANNELS; c++)
-          if (!MIC_FITTED[c]) fr[c] = 0;
-      // A PSRAM block is copied to internal DMA-capable RAM first, so the SD driver gets a buffer it can DMA from.
-      const uint8_t *src = pool[idx];
-      if (poolInPsram) {
-        memcpy(writeBuf, pool[idx], BLOCK_BYTES);
-        src = writeBuf;
-      }
-      size_t w = wav.write(src, BLOCK_BYTES);
-      uint32_t dt = micros() - t;
-      if (dt > maxWriteUs) maxWriteUs = dt;
-      sumWriteUs += dt;
-      writes++;
-      if (w != BLOCK_BYTES) {
+      if (!recordBlock(idx)) {  // the recording stopped (failed write, or no next file)
         xQueueSend(freeQ, &idx, 0);
-        Serial.println("SD write failed (card pulled?), stopping.");
-        stopRecording();
-        SD.end();
-        errorCode = RERR_WRITE_FAILED;
-        setSdReady(false);
         return;
       }
-      dataBytes += BLOCK_BYTES;
     } else {
       accumulateStatus((const int16_t *)pool[idx], BLOCK_FRAMES);
     }
@@ -1376,6 +1723,11 @@ void loop() {
   }
   updateSdPresence();
   batlogUpdate();
+  static uint32_t lastHealth = 0;
+  if (millis() - lastHealth >= HEALTH_MS) {
+    lastHealth = millis();
+    printHealth();
+  }
   if (millis() - lastStatus >= STATUS_MS) {
     lastStatus = millis();
     printStatus();

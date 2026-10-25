@@ -1,0 +1,56 @@
+{
+  "when": "20261024_2252",
+  "seed": 1792907542,
+  "segment_s": 15,
+  "minutes": 4.3,
+  "results": [
+    {
+      "test": "cycles",
+      "passed": true,
+      "details": "12 takes, 69 s audio; heap 223692 -> 223148 (-544 B), lowest ever 214024, largest block 176116",
+      "issues": []
+    },
+    {
+      "test": "rapid",
+      "passed": true,
+      "details": "12 bursts, 15 takes started and stopped",
+      "issues": []
+    },
+    {
+      "test": "ble",
+      "passed": true,
+      "details": "1.5 min take (7 files), 4 switches (0 while connected), 5 connections, 9 status reads; heap 223148 -> 223148 (+0 B), lowest ever 173724, largest block 176116",
+      "issues": []
+    },
+    {
+      "test": "remote",
+      "passed": true,
+      "details": "4 remote start/stop cycles (1 by toggle)",
+      "issues": []
+    },
+    {
+      "test": "resets",
+      "passed": true,
+      "details": "2 resets mid-recording; card mounted 0.6-0.6 s after reset",
+      "issues": []
+    },
+    {
+      "test": "scan",
+      "passed": true,
+      "details": "boot scan of 39 takes took 279 ms (7.2 ms per take), 29.5 GB free",
+      "issues": []
+    }
+  ],
+  "reset_takes": [
+    {
+      "take": 36,
+      "reset_after_s": 15.1
+    },
+    {
+      "take": 38,
+      "reset_after_s": 8.8
+    }
+  ],
+  "port_drops": 0,
+  "log": "stress_20261024_2252.log"
+}

@@ -1,0 +1,39 @@
+{
+  "when": "20261024_2347",
+  "seed": 1792910869,
+  "segment_s": 15,
+  "minutes": 0.9,
+  "results": [
+    {
+      "test": "recover",
+      "passed": true,
+      "details": "4 simulated write failures recovered in one take (5 files); give-up path ok; next take ok",
+      "issues": []
+    }
+  ],
+  "reset_takes": [],
+  "recovered_parts": [
+    {
+      "take": 286,
+      "part": 1
+    },
+    {
+      "take": 286,
+      "part": 2
+    },
+    {
+      "take": 286,
+      "part": 3
+    },
+    {
+      "take": 286,
+      "part": 4
+    },
+    {
+      "take": 287,
+      "part": 1
+    }
+  ],
+  "port_drops": 0,
+  "log": "stress_20261024_2347.log"
+}

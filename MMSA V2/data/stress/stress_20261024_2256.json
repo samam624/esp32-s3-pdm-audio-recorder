@@ -1,0 +1,96 @@
+{
+  "when": "20261024_2256",
+  "seed": 1792907810,
+  "segment_s": 15,
+  "minutes": 17.8,
+  "results": [
+    {
+      "test": "cycles",
+      "passed": false,
+      "details": "48 takes, 289 s audio; heap 223692 -> 223060 (-632 B), lowest ever 213936, largest block 176116",
+      "issues": [
+        "take 32/48 (33.0 s): audio 33.3 s vs wall 33.9 s"
+      ]
+    },
+    {
+      "test": "rapid",
+      "passed": true,
+      "details": "40 bursts, 46 takes started and stopped",
+      "issues": []
+    },
+    {
+      "test": "ble",
+      "passed": false,
+      "details": "6 min take (20 files), 23 switches (4 while connected), 18 connections, 45 status reads; heap 223060 -> 218412 (-4648 B), lowest ever 173640, largest block 172020",
+      "issues": [
+        "status {'len': 16, 'recording': False, 'sd_ready': True, 'low_space': False, 'error': 2, 'file_bytes': 1966080, 'free_mb': 29757, 'rec_secs': 286}",
+        "status {'len': 16, 'recording': False, 'sd_ready': True, 'low_space': False, 'error': 2, 'file_bytes': 1966080, 'free_mb': 29757, 'rec_secs': 286}",
+        "status {'len': 16, 'recording': False, 'sd_ready': True, 'low_space': False, 'error': 2, 'file_bytes': 1966080, 'free_mb': 29757, 'rec_secs': 286}",
+        "status {'len': 16, 'recording': False, 'sd_ready': True, 'low_space': False, 'error': 2, 'file_bytes': 1966080, 'free_mb': 29757, 'rec_secs': 286}",
+        "status {'len': 16, 'recording': False, 'sd_ready': True, 'low_space': False, 'error': 2, 'file_bytes': 1966080, 'free_mb': 29757, 'rec_secs': 286}",
+        "status {'len': 16, 'recording': False, 'sd_ready': True, 'low_space': False, 'error': 2, 'file_bytes': 1966080, 'free_mb': 29757, 'rec_secs': 286}",
+        "status {'len': 16, 'recording': False, 'sd_ready': True, 'low_space': False, 'error': 2, 'file_bytes': 1966080, 'free_mb': 29757, 'rec_secs': 286}",
+        "status {'len': 16, 'recording': False, 'sd_ready': True, 'low_space': False, 'error': 2, 'file_bytes': 1966080, 'free_mb': 29757, 'rec_secs': 286}",
+        "status {'len': 16, 'recording': False, 'sd_ready': True, 'low_space': False, 'error': 2, 'file_bytes': 1966080, 'free_mb': 29757, 'rec_secs': 286}",
+        "status {'len': 16, 'recording': False, 'sd_ready': True, 'low_space': False, 'error': 2, 'file_bytes': 1966080, 'free_mb': 29757, 'rec_secs': 286}",
+        "long take: SD write failed (card pulled?), stopping.",
+        "long take: SD NOT available",
+        "internal heap fell 4648 bytes"
+      ]
+    },
+    {
+      "test": "remote",
+      "passed": false,
+      "details": "12 remote start/stop cycles (3 by toggle)",
+      "issues": [
+        "cycle 1: remote start didn't start a take",
+        "cycle 2: remote start didn't start a take",
+        "cycle 3: remote start didn't start a take",
+        "cycle 4: remote start didn't start a take",
+        "cycle 6: audio 3.8 s vs wall 4.2 s"
+      ]
+    },
+    {
+      "test": "resets",
+      "passed": true,
+      "details": "6 resets mid-recording; card mounted 0.6-0.7 s after reset",
+      "issues": []
+    },
+    {
+      "test": "scan",
+      "passed": false,
+      "details": "boot scan of 155 takes took 2714 ms (17.5 ms per take), 28.9 GB free",
+      "issues": [
+        "boot scan took 2714 ms"
+      ]
+    }
+  ],
+  "reset_takes": [
+    {
+      "take": 144,
+      "reset_after_s": 29.8
+    },
+    {
+      "take": 146,
+      "reset_after_s": 31.8
+    },
+    {
+      "take": 148,
+      "reset_after_s": 23.9
+    },
+    {
+      "take": 150,
+      "reset_after_s": 33.0
+    },
+    {
+      "take": 152,
+      "reset_after_s": 32.2
+    },
+    {
+      "take": 154,
+      "reset_after_s": 20.6
+    }
+  ],
+  "port_drops": 0,
+  "log": "stress_20261024_2256.log"
+}

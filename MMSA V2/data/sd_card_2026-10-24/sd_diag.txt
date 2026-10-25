@@ -1,0 +1,7 @@
+SD diagnostic write at millis=11540
+SD diagnostic write at millis=8250
+SD diagnostic write at millis=11989
+SD diagnostic write at millis=13240
+SD diagnostic write at millis=17354
+SD diagnostic write at millis=252691
+SD diagnostic write at millis=254692

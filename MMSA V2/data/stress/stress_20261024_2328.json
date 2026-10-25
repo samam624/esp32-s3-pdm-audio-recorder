@@ -1,0 +1,108 @@
+{
+  "when": "20261024_2328",
+  "seed": 1792909734,
+  "segment_s": 15,
+  "minutes": 18.0,
+  "results": [
+    {
+      "test": "cycles",
+      "passed": true,
+      "details": "48 takes, 318 s audio; heap 223660 -> 223116 (-544 B), lowest ever 213988, largest block 176116",
+      "issues": []
+    },
+    {
+      "test": "rapid",
+      "passed": true,
+      "details": "40 bursts, 49 takes started and stopped",
+      "issues": []
+    },
+    {
+      "test": "ble",
+      "passed": true,
+      "details": "6 min take (25 files), 27 switches (5 while connected), 14 connections, 37 status reads; heap 223116 -> 223028 (-88 B), lowest ever 173612, largest block 139252",
+      "issues": []
+    },
+    {
+      "test": "remote",
+      "passed": true,
+      "details": "12 remote start/stop cycles (3 by toggle)",
+      "issues": []
+    },
+    {
+      "test": "recover",
+      "passed": false,
+      "details": "4 simulated write failures recovered in one take (5 files); give-up path ok; next take ok",
+      "issues": [
+        "take with 4 failures: 5 files for 46.2 s (expected 8)",
+        "take with 4 failures: 'F' (test build): the next block write counts as failed",
+        "take with 4 failures: 'F' (test build): the next block write counts as failed",
+        "take with 4 failures: 'F' (test build): the next block write counts as failed",
+        "take with 4 failures: 'F' (test build): the next block write counts as failed",
+        "give-up: 'F' (test build): the next block write counts as failed",
+        "give-up: 'F' (test build): the next block write counts as failed"
+      ]
+    },
+    {
+      "test": "resets",
+      "passed": true,
+      "details": "6 resets mid-recording; card mounted 0.6-3.7 s after reset",
+      "issues": []
+    },
+    {
+      "test": "scan",
+      "passed": true,
+      "details": "boot scan of 285 takes took 160 ms (0.6 ms per take), 28.2 GB free",
+      "issues": []
+    }
+  ],
+  "reset_takes": [
+    {
+      "take": 274,
+      "reset_after_s": 6.5
+    },
+    {
+      "take": 276,
+      "reset_after_s": 19.1
+    },
+    {
+      "take": 278,
+      "reset_after_s": 13.5
+    },
+    {
+      "take": 280,
+      "reset_after_s": 28.5
+    },
+    {
+      "take": 282,
+      "reset_after_s": 5.9
+    },
+    {
+      "take": 284,
+      "reset_after_s": 27.9
+    }
+  ],
+  "recovered_parts": [
+    {
+      "take": 271,
+      "part": 1
+    },
+    {
+      "take": 271,
+      "part": 2
+    },
+    {
+      "take": 271,
+      "part": 3
+    },
+    {
+      "take": 271,
+      "part": 4
+    },
+    {
+      "take": 272,
+      "part": 1
+    }
+  ],
+  "port_drops": 0,
+  "log": "stress_20261024_2328.log"
+}

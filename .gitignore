@@ -1,6 +1,11 @@
 # Local Claude Code settings/runtime state (machine-specific)
+.claude/
 .claude/settings.local.json
 .claude/scheduled_tasks.lock
+
+# Python runtime artifacts
+__pycache__/
+*.py[cod]
 
 # OS cruft
 Thumbs.db

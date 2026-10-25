@@ -1,0 +1,1911 @@
+2026-10-24 23:28:54.371 ## stress test start, tests=cycles,rapid,ble,remote,recover,resets,scan, quick=False, seed=1792909734
+2026-10-24 23:28:54.708 ## board reset (DTR/RTS)
+2026-10-24 23:28:54.984 
+2026-10-24 23:28:54.984 Boot, reset reason: other (USB/flash reset)
+2026-10-24 23:28:54.984 REC button on IO21 reads HIGH (released, as expected).
+2026-10-24 23:28:54.984 SD mounted
+2026-10-24 23:28:54.984 SD: next recording will go in /MMSA8_0161/ (28.9 GB free; scan took 90 ms)
+2026-10-24 23:28:54.984 Battery log: /BATLOG.CSV started, VBAT 4014 mV, a line every 30 s, stops below 3400 mV.
+2026-10-24 23:28:55.190 Bluetooth warm-up (controller init + RF calibration) done in 246 ms (1 interrupt setup(s) run directly, bypassing the 1 KB IPC task); Bluetooth is off.
+2026-10-24 23:28:55.395 
+2026-10-24 23:28:55.395 Buffer pool: 256 x 16 KB = 4096 KB (~5461 ms) in PSRAM. Free internal RAM: 247472 before the pool, 228260 after (keeping 28000 for SD + 46000 for Bluetooth)
+2026-10-24 23:28:55.395 MMSA V2 8-channel recorder with Bluetooth switch.
+2026-10-24 23:28:55.395 WAV: 48000 Hz 16-bit, 8 ch (PDM clock 3.072 MHz).  mic0-1 IO5, mic2-3 IO6, mic4-5 IO7, mic6-7 IO8 (WAV track N+1 = mic N).
+2026-10-24 23:28:55.395 Files: a folder per take, a new file every 15 s, checkpoints every 10 s.
+2026-10-24 23:28:55.395 TEST BUILD: serial F makes the next SD block write count as failed.
+2026-10-24 23:28:55.395 REC: short press = start/stop recording, hold 1 s = Bluetooth on/off.
+2026-10-24 23:28:55.395      Flashes on all LEDs: 2 short = Bluetooth ON, 1 long = OFF, 5 fast = failed.
+2026-10-24 23:28:55.395 
+2026-10-24 23:28:55.395 LEDs: IO40 record ready (SD mounted), IO41 loudness, IO42 blinks while recording.
+2026-10-24 23:28:55.395 MODE: idle, Bluetooth off
+2026-10-24 23:28:55.439 ## firmware: a new file every 15 s, checkpoint every 10 s, test hooks on
+2026-10-24 23:28:56.624 HEALTH: up=1 rec=0 take=0 part=0 recsecs=0 free_mb=29556 heap=223660 heapmin=221708 heapblk=180212 psram=4030404 backlog_ms=0 write_ms=0.0 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:28:56.831 'r'
+2026-10-24 23:28:57.037 REC start: /MMSA8_0161/MMSA8_0161_01.wav (8 ch; file opened in 193 ms)
+2026-10-24 23:28:57.037 MODE: RECORDING, Bluetooth off
+2026-10-24 23:28:59.499 HEALTH: up=4 rec=1 take=161 part=1 recsecs=2 free_mb=29554 heap=219024 heapmin=218888 heapblk=176116 psram=4030404 backlog_ms=213 write_ms=23.4 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:28:59.702 'r'
+2026-10-24 23:28:59.703 REC stop: /MMSA8_0161/MMSA8_0161_01.wav, 2.9 s audio (2195456 bytes), wall time 2.7 s
+2026-10-24 23:28:59.703   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:28:59.703   DMA overflows 0, pool drops 0, worst SD write 23.4 ms, min free blocks 246/256 -> NO AUDIO LOST
+2026-10-24 23:28:59.703   SD write speed avg 1469 KB/s (need 750 KB/s); deepest backlog 10 blocks = 213 ms of audio (PSRAM pool)
+2026-10-24 23:28:59.703 MODE: idle, Bluetooth off
+2026-10-24 23:29:00.931 signal dBFS: mic0 -26.3 mic1 -27.9 mic2 -27.5 mic3 -28.1 mic4 -27.8 mic5 -28.0 mic6 -27.5 mic7 -28.3
+2026-10-24 23:29:00.931     DC:      mic0  -1121 mic1   -644 mic2   -753 mic3   -632 mic4   -800 mic5   -842 mic6   -636 mic7   -395
+2026-10-24 23:29:01.136 'r'
+2026-10-24 23:29:01.339 REC start: /MMSA8_0162/MMSA8_0162_01.wav (8 ch; file opened in 194 ms)
+2026-10-24 23:29:01.339 MODE: RECORDING, Bluetooth off
+2026-10-24 23:29:05.445 HEALTH: up=10 rec=1 take=162 part=1 recsecs=4 free_mb=29551 heap=219024 heapmin=218816 heapblk=172020 psram=4030404 backlog_ms=213 write_ms=16.2 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:29:05.651 'r'
+2026-10-24 23:29:05.651 REC stop: /MMSA8_0162/MMSA8_0162_01.wav, 4.5 s audio (3424256 bytes), wall time 4.3 s
+2026-10-24 23:29:05.651   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:29:05.651   DMA overflows 0, pool drops 0, worst SD write 16.2 ms, min free blocks 246/256 -> NO AUDIO LOST
+2026-10-24 23:29:05.651   SD write speed avg 1501 KB/s (need 750 KB/s); deepest backlog 10 blocks = 213 ms of audio (PSRAM pool)
+2026-10-24 23:29:05.652 MODE: idle, Bluetooth off
+2026-10-24 23:29:06.887 signal dBFS: mic0 -67.2 mic1 -67.9 mic2 -68.2 mic3 -68.4 mic4 -66.8 mic5 -68.3 mic6 -68.2 mic7 -69.2
+2026-10-24 23:29:06.887     DC:      mic0    -89 mic1    -50 mic2    -15 mic3    -52 mic4    -84 mic5   -224 mic6     97 mic7    122
+2026-10-24 23:29:07.916 'r'
+2026-10-24 23:29:08.121 REC start: /MMSA8_0163/MMSA8_0163_01.wav (8 ch; file opened in 194 ms)
+2026-10-24 23:29:08.122 MODE: RECORDING, Bluetooth off
+2026-10-24 23:29:12.237 HEALTH: up=17 rec=1 take=163 part=1 recsecs=4 free_mb=29548 heap=219024 heapmin=218816 heapblk=172020 psram=4030404 backlog_ms=213 write_ms=18.7 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:29:12.442 'r'
+2026-10-24 23:29:12.442 REC stop: /MMSA8_0163/MMSA8_0163_01.wav, 4.5 s audio (3424256 bytes), wall time 4.3 s
+2026-10-24 23:29:12.442   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:29:12.442   DMA overflows 0, pool drops 0, worst SD write 18.7 ms, min free blocks 246/256 -> NO AUDIO LOST
+2026-10-24 23:29:12.442   SD write speed avg 1494 KB/s (need 750 KB/s); deepest backlog 10 blocks = 213 ms of audio (PSRAM pool)
+2026-10-24 23:29:12.442 MODE: idle, Bluetooth off
+2026-10-24 23:29:13.059 signal dBFS: mic0 -66.1 mic1 -66.8 mic2 -68.0 mic3 -67.8 mic4 -67.7 mic5 -68.6 mic6 -68.1 mic7 -69.5
+2026-10-24 23:29:13.060     DC:      mic0    -86 mic1    -45 mic2    -14 mic3    -49 mic4    -75 mic5   -214 mic6    106 mic7    129
+2026-10-24 23:29:13.471 'r'
+2026-10-24 23:29:13.678 REC start: /MMSA8_0164/MMSA8_0164_01.wav (8 ch; file opened in 194 ms)
+2026-10-24 23:29:13.678 MODE: RECORDING, Bluetooth off
+2026-10-24 23:29:15.728 HEALTH: up=20 rec=1 take=164 part=1 recsecs=2 free_mb=29547 heap=219024 heapmin=218816 heapblk=172020 psram=4030404 backlog_ms=213 write_ms=16.2 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:29:15.935 'r'
+2026-10-24 23:29:15.935 REC stop: /MMSA8_0164/MMSA8_0164_01.wav, 2.5 s audio (1884160 bytes), wall time 2.3 s
+2026-10-24 23:29:15.935   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:29:15.935   DMA overflows 0, pool drops 0, worst SD write 16.2 ms, min free blocks 246/256 -> NO AUDIO LOST
+2026-10-24 23:29:15.935   SD write speed avg 1485 KB/s (need 750 KB/s); deepest backlog 10 blocks = 213 ms of audio (PSRAM pool)
+2026-10-24 23:29:15.935 MODE: idle, Bluetooth off
+2026-10-24 23:29:16.756 'r'
+2026-10-24 23:29:16.959 REC start: /MMSA8_0165/MMSA8_0165_01.wav (8 ch; file opened in 194 ms)
+2026-10-24 23:29:16.959 MODE: RECORDING, Bluetooth off
+2026-10-24 23:29:19.426 HEALTH: up=24 rec=1 take=165 part=1 recsecs=2 free_mb=29546 heap=219024 heapmin=218816 heapblk=172020 psram=4030404 backlog_ms=213 write_ms=48.0 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:29:19.630 'r'
+2026-10-24 23:29:19.630 REC stop: /MMSA8_0165/MMSA8_0165_01.wav, 2.9 s audio (2195456 bytes), wall time 2.7 s
+2026-10-24 23:29:19.630   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:29:19.630   DMA overflows 0, pool drops 0, worst SD write 48.0 ms, min free blocks 246/256 -> NO AUDIO LOST
+2026-10-24 23:29:19.630   SD write speed avg 1435 KB/s (need 750 KB/s); deepest backlog 10 blocks = 213 ms of audio (PSRAM pool)
+2026-10-24 23:29:19.630 MODE: idle, Bluetooth off
+2026-10-24 23:29:21.066 signal dBFS: mic0 -66.8 mic1 -66.7 mic2 -67.9 mic3 -67.4 mic4 -68.3 mic5 -68.6 mic6 -68.9 mic7 -69.3
+2026-10-24 23:29:21.066     DC:      mic0    -75 mic1    -40 mic2     -7 mic3    -47 mic4    -75 mic5   -213 mic6    114 mic7    131
+2026-10-24 23:29:21.886 'r'
+2026-10-24 23:29:22.090 REC start: /MMSA8_0166/MMSA8_0166_01.wav (8 ch; file opened in 198 ms)
+2026-10-24 23:29:22.090 MODE: RECORDING, Bluetooth off
+2026-10-24 23:29:25.153 VBAT log: 30,4008,3948,4075,1,0
+2026-10-24 23:29:27.193 HEALTH: up=32 rec=1 take=166 part=1 recsecs=5 free_mb=29542 heap=218580 heapmin=214032 heapblk=172020 psram=4030404 backlog_ms=213 write_ms=51.3 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:29:27.398 'r'
+2026-10-24 23:29:27.398 REC stop: /MMSA8_0166/MMSA8_0166_01.wav, 5.5 s audio (4210688 bytes), wall time 5.3 s
+2026-10-24 23:29:27.399   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:29:27.399   DMA overflows 0, pool drops 0, worst SD write 51.3 ms, min free blocks 246/256 -> NO AUDIO LOST
+2026-10-24 23:29:27.399   SD write speed avg 1488 KB/s (need 750 KB/s); deepest backlog 10 blocks = 213 ms of audio (PSRAM pool)
+2026-10-24 23:29:27.399 MODE: idle, Bluetooth off
+2026-10-24 23:29:29.030 signal dBFS: mic0 -64.4 mic1 -66.2 mic2 -66.8 mic3 -67.0 mic4 -67.6 mic5 -67.7 mic6 -66.6 mic7 -67.8
+2026-10-24 23:29:29.030     DC:      mic0    -79 mic1    -39 mic2    -12 mic3    -46 mic4    -87 mic5   -217 mic6    104 mic7    143
+2026-10-24 23:29:29.030 'r'
+2026-10-24 23:29:29.235 REC start: /MMSA8_0167/MMSA8_0167_01.wav (8 ch; file opened in 200 ms)
+2026-10-24 23:29:29.235 MODE: RECORDING, Bluetooth off
+2026-10-24 23:29:34.979 HEALTH: up=40 rec=1 take=167 part=1 recsecs=5 free_mb=29537 heap=218580 heapmin=214032 heapblk=172020 psram=4030404 backlog_ms=213 write_ms=16.3 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:29:35.182 'r'
+2026-10-24 23:29:35.182 REC stop: /MMSA8_0167/MMSA8_0167_01.wav, 6.1 s audio (4685824 bytes), wall time 5.9 s
+2026-10-24 23:29:35.183   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:29:35.183   DMA overflows 0, pool drops 0, worst SD write 16.3 ms, min free blocks 246/256 -> NO AUDIO LOST
+2026-10-24 23:29:35.183   SD write speed avg 1504 KB/s (need 750 KB/s); deepest backlog 10 blocks = 213 ms of audio (PSRAM pool)
+2026-10-24 23:29:35.183 MODE: idle, Bluetooth off
+2026-10-24 23:29:37.017 signal dBFS: mic0 -65.0 mic1 -65.8 mic2 -66.5 mic3 -66.3 mic4 -66.3 mic5 -66.8 mic6 -67.4 mic7 -67.6
+2026-10-24 23:29:37.017     DC:      mic0    -81 mic1    -31 mic2    -15 mic3    -49 mic4    -72 mic5   -210 mic6     99 mic7    142
+2026-10-24 23:29:37.017 'r'
+2026-10-24 23:29:37.222 REC start: /MMSA8_0168/MMSA8_0168_01.wav (8 ch; file opened in 201 ms)
+2026-10-24 23:29:37.222 MODE: RECORDING, Bluetooth off
+2026-10-24 23:29:52.225 REC continues in /MMSA8_0168/MMSA8_0168_02.wav (finished /MMSA8_0168/MMSA8_0168_01.wav; 15.0 s recorded so far; switch took 92 ms)
+2026-10-24 23:29:54.899 HEALTH: up=60 rec=1 take=168 part=2 recsecs=16 free_mb=29524 heap=218576 heapmin=213992 heapblk=172020 psram=4030404 backlog_ms=213 write_ms=53.7 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:29:55.310 VBAT log: 60,4007,3943,4119,1,0
+2026-10-24 23:30:04.956 HEALTH: up=70 rec=1 take=168 part=2 recsecs=26 free_mb=29517 heap=218576 heapmin=213988 heapblk=172020 psram=4030404 backlog_ms=42 write_ms=17.9 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:30:05.161 'r'
+2026-10-24 23:30:05.161 REC stop: /MMSA8_0168/MMSA8_0168_02.wav (13.0 s). Recording: 28.0 s audio in 2 files from /MMSA8_0168/MMSA8_0168_01.wav (0.02 GB), wall time 27.8 s
+2026-10-24 23:30:05.161   Checkpoints: 2, worst 25.4 ms
+2026-10-24 23:30:05.161   DMA overflows 0, pool drops 0, worst SD write 53.7 ms, min free blocks 246/256 -> NO AUDIO LOST
+2026-10-24 23:30:05.161   SD write speed avg 1491 KB/s (need 750 KB/s); deepest backlog 10 blocks = 213 ms of audio (PSRAM pool)
+2026-10-24 23:30:05.162 MODE: idle, Bluetooth off
+2026-10-24 23:30:05.162 signal dBFS: mic0 -66.0 mic1 -67.6 mic2 -67.6 mic3 -67.3 mic4 -67.8 mic5 -68.3 mic6 -68.0 mic7 -68.8
+2026-10-24 23:30:05.162     DC:      mic0    -81 mic1    -27 mic2    -14 mic3    -48 mic4    -81 mic5   -217 mic6     95 mic7    136
+2026-10-24 23:30:07.213 signal dBFS: mic0 -66.4 mic1 -67.9 mic2 -67.7 mic3 -67.6 mic4 -66.6 mic5 -67.6 mic6 -68.1 mic7 -69.3
+2026-10-24 23:30:07.214     DC:      mic0    -86 mic1    -36 mic2     -5 mic3    -49 mic4    -78 mic5   -217 mic6     95 mic7    133
+2026-10-24 23:30:07.214 'r'
+2026-10-24 23:30:07.419 REC start: /MMSA8_0169/MMSA8_0169_01.wav (8 ch; file opened in 201 ms)
+2026-10-24 23:30:07.419 MODE: RECORDING, Bluetooth off
+2026-10-24 23:30:12.762 HEALTH: up=77 rec=1 take=169 part=1 recsecs=5 free_mb=29513 heap=218580 heapmin=213988 heapblk=172020 psram=4030404 backlog_ms=213 write_ms=19.7 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:30:12.966 'r'
+2026-10-24 23:30:12.966 REC stop: /MMSA8_0169/MMSA8_0169_01.wav, 5.6 s audio (4325376 bytes), wall time 5.4 s
+2026-10-24 23:30:12.966   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:30:12.966   DMA overflows 0, pool drops 0, worst SD write 19.7 ms, min free blocks 246/256 -> NO AUDIO LOST
+2026-10-24 23:30:12.966   SD write speed avg 1497 KB/s (need 750 KB/s); deepest backlog 10 blocks = 213 ms of audio (PSRAM pool)
+2026-10-24 23:30:12.966 MODE: idle, Bluetooth off
+2026-10-24 23:30:13.172 signal dBFS: mic0 -65.8 mic1 -66.3 mic2 -67.4 mic3 -68.1 mic4 -68.4 mic5 -68.6 mic6 -69.0 mic7 -69.5
+2026-10-24 23:30:13.172     DC:      mic0    -71 mic1    -19 mic2      1 mic3    -44 mic4    -75 mic5   -209 mic6    108 mic7    138
+2026-10-24 23:30:13.991 'r'
+2026-10-24 23:30:14.195 REC start: /MMSA8_0170/MMSA8_0170_01.wav (8 ch; file opened in 201 ms)
+2026-10-24 23:30:14.195 MODE: RECORDING, Bluetooth off
+2026-10-24 23:30:19.942 HEALTH: up=85 rec=1 take=170 part=1 recsecs=5 free_mb=29509 heap=218580 heapmin=213988 heapblk=172020 psram=4030404 backlog_ms=213 write_ms=16.5 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:30:20.149 'r'
+2026-10-24 23:30:20.149 REC stop: /MMSA8_0170/MMSA8_0170_01.wav, 6.1 s audio (4669440 bytes), wall time 5.9 s
+2026-10-24 23:30:20.149   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:30:20.149   DMA overflows 0, pool drops 0, worst SD write 16.5 ms, min free blocks 246/256 -> NO AUDIO LOST
+2026-10-24 23:30:20.149   SD write speed avg 1500 KB/s (need 750 KB/s); deepest backlog 10 blocks = 213 ms of audio (PSRAM pool)
+2026-10-24 23:30:20.149 MODE: idle, Bluetooth off
+2026-10-24 23:30:21.175 'r'
+2026-10-24 23:30:21.381 REC start: /MMSA8_0171/MMSA8_0171_01.wav (8 ch; file opened in 202 ms)
+2026-10-24 23:30:21.382 MODE: RECORDING, Bluetooth off
+2026-10-24 23:30:23.841 HEALTH: up=88 rec=1 take=171 part=1 recsecs=2 free_mb=29508 heap=218580 heapmin=213988 heapblk=172020 psram=4030404 backlog_ms=213 write_ms=16.3 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:30:24.044 'r'
+2026-10-24 23:30:24.044 REC stop: /MMSA8_0171/MMSA8_0171_01.wav, 2.9 s audio (2195456 bytes), wall time 2.7 s
+2026-10-24 23:30:24.044   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:30:24.044   DMA overflows 0, pool drops 0, worst SD write 16.3 ms, min free blocks 246/256 -> NO AUDIO LOST
+2026-10-24 23:30:24.044   SD write speed avg 1486 KB/s (need 750 KB/s); deepest backlog 10 blocks = 213 ms of audio (PSRAM pool)
+2026-10-24 23:30:24.044 MODE: idle, Bluetooth off
+2026-10-24 23:30:24.661 'r'
+2026-10-24 23:30:24.866 REC start: /MMSA8_0172/MMSA8_0172_01.wav (8 ch; file opened in 204 ms)
+2026-10-24 23:30:24.866 MODE: RECORDING, Bluetooth off
+2026-10-24 23:30:25.482 VBAT log: 90,4009,3946,4096,1,0
+2026-10-24 23:30:26.512 HEALTH: up=91 rec=1 take=172 part=1 recsecs=1 free_mb=29506 heap=218580 heapmin=213988 heapblk=172020 psram=4030404 backlog_ms=213 write_ms=23.7 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:30:26.716 'r'
+2026-10-24 23:30:26.716 REC stop: /MMSA8_0172/MMSA8_0172_01.wav, 1.9 s audio (1490944 bytes), wall time 1.7 s
+2026-10-24 23:30:26.716   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:30:26.716   DMA overflows 0, pool drops 0, worst SD write 23.7 ms, min free blocks 246/256 -> NO AUDIO LOST
+2026-10-24 23:30:26.716   SD write speed avg 1453 KB/s (need 750 KB/s); deepest backlog 10 blocks = 213 ms of audio (PSRAM pool)
+2026-10-24 23:30:26.716 MODE: idle, Bluetooth off
+2026-10-24 23:30:27.331 signal dBFS: mic0 -65.9 mic1 -67.3 mic2 -66.7 mic3 -67.1 mic4 -66.9 mic5 -68.7 mic6 -68.2 mic7 -68.9
+2026-10-24 23:30:27.331     DC:      mic0    -77 mic1    -28 mic2     -4 mic3    -49 mic4    -75 mic5   -211 mic6     99 mic7    134
+2026-10-24 23:30:27.744 'r'
+2026-10-24 23:30:27.948 REC start: /MMSA8_0173/MMSA8_0173_01.wav (8 ch; file opened in 204 ms)
+2026-10-24 23:30:27.948 MODE: RECORDING, Bluetooth off
+2026-10-24 23:30:33.701 HEALTH: up=98 rec=1 take=173 part=1 recsecs=5 free_mb=29503 heap=218580 heapmin=213988 heapblk=172020 psram=4030404 backlog_ms=618 write_ms=72.0 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:30:33.906 'r'
+2026-10-24 23:30:34.729 REC stop: wrote the 31 queued blocks (661 ms of audio) first, in 906 ms
+2026-10-24 23:30:34.934 REC stop: /MMSA8_0173/MMSA8_0173_01.wav, 6.0 s audio (4636672 bytes), wall time 5.8 s
+2026-10-24 23:30:34.934   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:30:34.934   DMA overflows 0, pool drops 0, worst SD write 73.5 ms, min free blocks 227/256 -> NO AUDIO LOST
+2026-10-24 23:30:34.934   SD write speed avg 795 KB/s (need 750 KB/s); deepest backlog 29 blocks = 618 ms of audio (PSRAM pool)
+2026-10-24 23:30:34.934 MODE: idle, Bluetooth off
+2026-10-24 23:30:35.344 signal dBFS: mic0 -66.7 mic1 -66.2 mic2 -67.7 mic3 -66.8 mic4 -66.3 mic5 -67.9 mic6 -68.9 mic7 -69.4
+2026-10-24 23:30:35.344     DC:      mic0    -83 mic1    -41 mic2     -4 mic3    -54 mic4    -86 mic5   -209 mic6    101 mic7    137
+2026-10-24 23:30:35.959 'r'
+2026-10-24 23:30:36.373 REC start: /MMSA8_0174/MMSA8_0174_01.wav (8 ch; file opened in 329 ms)
+2026-10-24 23:30:36.373 MODE: RECORDING, Bluetooth off
+2026-10-24 23:30:36.577   SD slowdown absorbed at +0 ms: backlog peaked at 16 blocks (341 ms of audio), drained after 338 ms
+2026-10-24 23:30:37.606 HEALTH: up=102 rec=1 take=174 part=1 recsecs=1 free_mb=29501 heap=218580 heapmin=213988 heapblk=172020 psram=4030404 backlog_ms=618 write_ms=73.5 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:30:37.811 'r'
+2026-10-24 23:30:37.811 REC stop: /MMSA8_0174/MMSA8_0174_01.wav, 1.8 s audio (1376256 bytes), wall time 1.5 s
+2026-10-24 23:30:37.811   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:30:37.811   DMA overflows 0, pool drops 0, worst SD write 16.4 ms, min free blocks 240/256 -> NO AUDIO LOST
+2026-10-24 23:30:37.811   SD write speed avg 1456 KB/s (need 750 KB/s); deepest backlog 16 blocks = 341 ms of audio (PSRAM pool)
+2026-10-24 23:30:37.811 MODE: idle, Bluetooth off
+2026-10-24 23:30:39.253 'r'
+2026-10-24 23:30:39.458 REC start: /MMSA8_0175/MMSA8_0175_01.wav (8 ch; file opened in 208 ms)
+2026-10-24 23:30:39.458 MODE: RECORDING, Bluetooth off
+2026-10-24 23:30:43.364 HEALTH: up=108 rec=1 take=175 part=1 recsecs=4 free_mb=29498 heap=218580 heapmin=213988 heapblk=172020 psram=4030404 backlog_ms=234 write_ms=16.4 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:30:43.569 'r'
+2026-10-24 23:30:43.569 REC stop: /MMSA8_0175/MMSA8_0175_01.wav, 4.4 s audio (3342336 bytes), wall time 4.1 s
+2026-10-24 23:30:43.569   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:30:43.569   DMA overflows 0, pool drops 0, worst SD write 16.4 ms, min free blocks 245/256 -> NO AUDIO LOST
+2026-10-24 23:30:43.569   SD write speed avg 1496 KB/s (need 750 KB/s); deepest backlog 11 blocks = 234 ms of audio (PSRAM pool)
+2026-10-24 23:30:43.569 MODE: idle, Bluetooth off
+2026-10-24 23:30:45.206 'r'
+2026-10-24 23:30:45.412 REC start: /MMSA8_0176/MMSA8_0176_01.wav (8 ch; file opened in 208 ms)
+2026-10-24 23:30:45.412 MODE: RECORDING, Bluetooth off
+2026-10-24 23:30:54.845 HEALTH: up=120 rec=1 take=176 part=1 recsecs=9 free_mb=29491 heap=218580 heapmin=213988 heapblk=172020 psram=4030404 backlog_ms=234 write_ms=16.5 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:30:55.668 VBAT log: 120,4013,3948,4082,1,0
+2026-10-24 23:31:00.157 REC continues in /MMSA8_0176/MMSA8_0176_02.wav (finished /MMSA8_0176/MMSA8_0176_01.wav; 15.0 s recorded so far; switch took 68 ms)
+2026-10-24 23:31:05.690 HEALTH: up=130 rec=1 take=176 part=2 recsecs=19 free_mb=29484 heap=218576 heapmin=213988 heapblk=172020 psram=4030404 backlog_ms=85 write_ms=19.4 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:31:05.895 'r'
+2026-10-24 23:31:05.895 REC stop: /MMSA8_0176/MMSA8_0176_02.wav (5.7 s). Recording: 20.7 s audio in 2 files from /MMSA8_0176/MMSA8_0176_01.wav (0.01 GB), wall time 20.5 s
+2026-10-24 23:31:05.895   Checkpoints: 1, worst 23.9 ms
+2026-10-24 23:31:05.895   DMA overflows 0, pool drops 0, worst SD write 19.4 ms, min free blocks 245/256 -> NO AUDIO LOST
+2026-10-24 23:31:05.895   SD write speed avg 1511 KB/s (need 750 KB/s); deepest backlog 11 blocks = 234 ms of audio (PSRAM pool)
+2026-10-24 23:31:05.895 MODE: idle, Bluetooth off
+2026-10-24 23:31:06.514 'r'
+2026-10-24 23:31:06.720 REC start: /MMSA8_0177/MMSA8_0177_01.wav (8 ch; file opened in 209 ms)
+2026-10-24 23:31:06.720 MODE: RECORDING, Bluetooth off
+2026-10-24 23:31:10.424 HEALTH: up=135 rec=1 take=177 part=1 recsecs=3 free_mb=29481 heap=218580 heapmin=213988 heapblk=172020 psram=4030404 backlog_ms=234 write_ms=16.2 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:31:10.629 'r'
+2026-10-24 23:31:10.629 REC stop: /MMSA8_0177/MMSA8_0177_01.wav, 4.0 s audio (3063808 bytes), wall time 3.8 s
+2026-10-24 23:31:10.629   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:31:10.629   DMA overflows 0, pool drops 0, worst SD write 16.2 ms, min free blocks 245/256 -> NO AUDIO LOST
+2026-10-24 23:31:10.629   SD write speed avg 1490 KB/s (need 750 KB/s); deepest backlog 11 blocks = 234 ms of audio (PSRAM pool)
+2026-10-24 23:31:10.629 MODE: idle, Bluetooth off
+2026-10-24 23:31:11.449 signal dBFS: mic0 -61.1 mic1 -62.3 mic2 -62.5 mic3 -62.6 mic4 -63.6 mic5 -64.2 mic6 -64.3 mic7 -63.9
+2026-10-24 23:31:11.449     DC:      mic0    -81 mic1    -33 mic2     -3 mic3    -48 mic4    -70 mic5   -209 mic6    100 mic7    136
+2026-10-24 23:31:12.885 'r'
+2026-10-24 23:31:13.092 REC start: /MMSA8_0178/MMSA8_0178_01.wav (8 ch; file opened in 208 ms)
+2026-10-24 23:31:13.092 MODE: RECORDING, Bluetooth off
+2026-10-24 23:31:16.584 HEALTH: up=141 rec=1 take=178 part=1 recsecs=3 free_mb=29479 heap=218580 heapmin=213988 heapblk=172020 psram=4030404 backlog_ms=234 write_ms=47.1 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:31:16.790 'r'
+2026-10-24 23:31:16.791 REC stop: /MMSA8_0178/MMSA8_0178_01.wav, 3.8 s audio (2932736 bytes), wall time 3.6 s
+2026-10-24 23:31:16.791   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:31:16.791   DMA overflows 0, pool drops 0, worst SD write 47.1 ms, min free blocks 245/256 -> NO AUDIO LOST
+2026-10-24 23:31:16.791   SD write speed avg 1463 KB/s (need 750 KB/s); deepest backlog 11 blocks = 234 ms of audio (PSRAM pool)
+2026-10-24 23:31:16.791 MODE: idle, Bluetooth off
+2026-10-24 23:31:17.607 signal dBFS: mic0 -61.1 mic1 -62.4 mic2 -62.8 mic3 -62.6 mic4 -63.5 mic5 -63.5 mic6 -64.3 mic7 -63.6
+2026-10-24 23:31:17.607     DC:      mic0    -81 mic1    -30 mic2      5 mic3    -40 mic4    -72 mic5   -209 mic6    108 mic7    136
+2026-10-24 23:31:18.221 'r'
+2026-10-24 23:31:18.423 REC start: /MMSA8_0179/MMSA8_0179_01.wav (8 ch; file opened in 208 ms)
+2026-10-24 23:31:18.423 MODE: RECORDING, Bluetooth off
+2026-10-24 23:31:24.140 HEALTH: up=149 rec=1 take=179 part=1 recsecs=5 free_mb=29475 heap=218580 heapmin=213988 heapblk=172020 psram=4030404 backlog_ms=234 write_ms=16.2 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:31:24.347 'r'
+2026-10-24 23:31:24.348 REC stop: /MMSA8_0179/MMSA8_0179_01.wav, 6.1 s audio (4669440 bytes), wall time 5.9 s
+2026-10-24 23:31:24.348   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:31:24.348   DMA overflows 0, pool drops 0, worst SD write 16.2 ms, min free blocks 245/256 -> NO AUDIO LOST
+2026-10-24 23:31:24.348   SD write speed avg 1500 KB/s (need 750 KB/s); deepest backlog 11 blocks = 234 ms of audio (PSRAM pool)
+2026-10-24 23:31:24.348 MODE: idle, Bluetooth off
+2026-10-24 23:31:25.583 signal dBFS: mic0 -61.1 mic1 -62.2 mic2 -62.5 mic3 -63.0 mic4 -63.6 mic5 -63.4 mic6 -63.7 mic7 -63.0
+2026-10-24 23:31:25.583     DC:      mic0    -83 mic1    -29 mic2     -1 mic3    -49 mic4    -77 mic5   -209 mic6    100 mic7    134
+2026-10-24 23:31:25.583 VBAT log: 150,4012,3939,4082,0,0
+2026-10-24 23:31:25.995 'r'
+2026-10-24 23:31:26.203 REC start: /MMSA8_0180/MMSA8_0180_01.wav (8 ch; file opened in 207 ms)
+2026-10-24 23:31:26.203 MODE: RECORDING, Bluetooth off
+2026-10-24 23:31:28.663 HEALTH: up=153 rec=1 take=180 part=1 recsecs=2 free_mb=29473 heap=218580 heapmin=213988 heapblk=172020 psram=4030404 backlog_ms=234 write_ms=16.2 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:31:28.868 'r'
+2026-10-24 23:31:28.868 REC stop: /MMSA8_0180/MMSA8_0180_01.wav, 2.9 s audio (2195456 bytes), wall time 2.7 s
+2026-10-24 23:31:28.868   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:31:28.868   DMA overflows 0, pool drops 0, worst SD write 16.2 ms, min free blocks 245/256 -> NO AUDIO LOST
+2026-10-24 23:31:28.868   SD write speed avg 1486 KB/s (need 750 KB/s); deepest backlog 11 blocks = 234 ms of audio (PSRAM pool)
+2026-10-24 23:31:28.868 MODE: idle, Bluetooth off
+2026-10-24 23:31:29.486 signal dBFS: mic0 -61.8 mic1 -63.0 mic2 -63.1 mic3 -63.5 mic4 -63.9 mic5 -64.7 mic6 -64.8 mic7 -64.8
+2026-10-24 23:31:29.486     DC:      mic0    -82 mic1    -30 mic2     -0 mic3    -46 mic4    -69 mic5   -212 mic6    102 mic7    136
+2026-10-24 23:31:29.896 'r'
+2026-10-24 23:31:30.100 REC start: /MMSA8_0181/MMSA8_0181_01.wav (8 ch; file opened in 213 ms)
+2026-10-24 23:31:30.100 MODE: RECORDING, Bluetooth off
+2026-10-24 23:31:36.042 HEALTH: up=161 rec=1 take=181 part=1 recsecs=6 free_mb=29469 heap=218580 heapmin=213988 heapblk=172020 psram=4030404 backlog_ms=234 write_ms=16.5 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:31:36.245 'r'
+2026-10-24 23:31:36.246 REC stop: /MMSA8_0181/MMSA8_0181_01.wav, 6.4 s audio (4898816 bytes), wall time 6.2 s
+2026-10-24 23:31:36.246   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:31:36.246   DMA overflows 0, pool drops 0, worst SD write 16.5 ms, min free blocks 245/256 -> NO AUDIO LOST
+2026-10-24 23:31:36.246   SD write speed avg 1503 KB/s (need 750 KB/s); deepest backlog 11 blocks = 234 ms of audio (PSRAM pool)
+2026-10-24 23:31:36.246 MODE: idle, Bluetooth off
+2026-10-24 23:31:37.477 signal dBFS: mic0 -58.7 mic1 -60.0 mic2 -60.5 mic3 -60.3 mic4 -61.1 mic5 -61.6 mic6 -62.1 mic7 -61.4
+2026-10-24 23:31:37.477     DC:      mic0    -80 mic1    -28 mic2      1 mic3    -49 mic4    -77 mic5   -210 mic6    105 mic7    134
+2026-10-24 23:31:38.095 'r'
+2026-10-24 23:31:38.502 REC start: /MMSA8_0182/MMSA8_0182_01.wav (8 ch; file opened in 313 ms)
+2026-10-24 23:31:38.502 MODE: RECORDING, Bluetooth off
+2026-10-24 23:31:38.705   SD slowdown absorbed at +0 ms: backlog peaked at 16 blocks (341 ms of audio), drained after 335 ms
+2026-10-24 23:31:40.951 HEALTH: up=166 rec=1 take=182 part=1 recsecs=2 free_mb=29467 heap=218580 heapmin=213988 heapblk=172020 psram=4030404 backlog_ms=341 write_ms=16.5 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:31:41.157 'r'
+2026-10-24 23:31:41.157 REC stop: /MMSA8_0182/MMSA8_0182_01.wav, 3.0 s audio (2293760 bytes), wall time 2.7 s
+2026-10-24 23:31:41.157   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:31:41.157   DMA overflows 0, pool drops 0, worst SD write 16.5 ms, min free blocks 240/256 -> NO AUDIO LOST
+2026-10-24 23:31:41.157   SD write speed avg 1479 KB/s (need 750 KB/s); deepest backlog 16 blocks = 341 ms of audio (PSRAM pool)
+2026-10-24 23:31:41.157 MODE: idle, Bluetooth off
+2026-10-24 23:31:41.569 signal dBFS: mic0 -60.4 mic1 -61.8 mic2 -62.3 mic3 -62.8 mic4 -63.3 mic5 -63.5 mic6 -64.0 mic7 -63.7
+2026-10-24 23:31:41.569     DC:      mic0    -82 mic1    -26 mic2     -2 mic3    -45 mic4    -75 mic5   -218 mic6    112 mic7    137
+2026-10-24 23:31:42.186 'r'
+2026-10-24 23:31:42.390 REC start: /MMSA8_0183/MMSA8_0183_01.wav (8 ch; file opened in 213 ms)
+2026-10-24 23:31:42.390 MODE: RECORDING, Bluetooth off
+2026-10-24 23:31:47.503 HEALTH: up=172 rec=1 take=183 part=1 recsecs=5 free_mb=29464 heap=218580 heapmin=213988 heapblk=172020 psram=4030404 backlog_ms=234 write_ms=22.3 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:31:47.707 'r'
+2026-10-24 23:31:47.707 REC stop: /MMSA8_0183/MMSA8_0183_01.wav, 5.4 s audio (4161536 bytes), wall time 5.2 s
+2026-10-24 23:31:47.707   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:31:47.707   DMA overflows 0, pool drops 0, worst SD write 22.3 ms, min free blocks 245/256 -> NO AUDIO LOST
+2026-10-24 23:31:47.707   SD write speed avg 1493 KB/s (need 750 KB/s); deepest backlog 11 blocks = 234 ms of audio (PSRAM pool)
+2026-10-24 23:31:47.707 MODE: idle, Bluetooth off
+2026-10-24 23:31:49.555 'r'
+2026-10-24 23:31:49.761 REC start: /MMSA8_0184/MMSA8_0184_01.wav (8 ch; file opened in 214 ms)
+2026-10-24 23:31:49.761 MODE: RECORDING, Bluetooth off
+2026-10-24 23:31:54.888 HEALTH: up=180 rec=1 take=184 part=1 recsecs=5 free_mb=29461 heap=218580 heapmin=213988 heapblk=172020 psram=4030404 backlog_ms=234 write_ms=16.5 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:31:55.713 VBAT log: 180,4007,3939,4065,1,0
+2026-10-24 23:32:04.549 REC continues in /MMSA8_0184/MMSA8_0184_02.wav (finished /MMSA8_0184/MMSA8_0184_01.wav; 15.0 s recorded so far; switch took 70 ms)
+2026-10-24 23:32:11.528 HEALTH: up=196 rec=1 take=184 part=2 recsecs=21 free_mb=29448 heap=218576 heapmin=213988 heapblk=172020 psram=4030404 backlog_ms=85 write_ms=46.2 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:32:11.734 'r'
+2026-10-24 23:32:11.734 REC stop: /MMSA8_0184/MMSA8_0184_02.wav (7.1 s). Recording: 22.1 s audio in 2 files from /MMSA8_0184/MMSA8_0184_01.wav (0.02 GB), wall time 21.9 s
+2026-10-24 23:32:11.734   Checkpoints: 1, worst 27.2 ms
+2026-10-24 23:32:11.734   DMA overflows 0, pool drops 0, worst SD write 46.2 ms, min free blocks 245/256 -> NO AUDIO LOST
+2026-10-24 23:32:11.734   SD write speed avg 1507 KB/s (need 750 KB/s); deepest backlog 11 blocks = 234 ms of audio (PSRAM pool)
+2026-10-24 23:32:11.734 MODE: idle, Bluetooth off
+2026-10-24 23:32:11.734 signal dBFS: mic0 -65.5 mic1 -66.3 mic2 -66.7 mic3 -66.8 mic4 -67.0 mic5 -67.0 mic6 -68.0 mic7 -68.2
+2026-10-24 23:32:11.734     DC:      mic0    -81 mic1    -24 mic2      6 mic3    -41 mic4    -74 mic5   -211 mic6    103 mic7    133
+2026-10-24 23:32:12.761 'r'
+2026-10-24 23:32:12.965 REC start: /MMSA8_0185/MMSA8_0185_01.wav (8 ch; file opened in 215 ms)
+2026-10-24 23:32:12.965 MODE: RECORDING, Bluetooth off
+2026-10-24 23:32:16.041 HEALTH: up=201 rec=1 take=185 part=1 recsecs=3 free_mb=29446 heap=218580 heapmin=213988 heapblk=172020 psram=4030404 backlog_ms=234 write_ms=21.1 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:32:16.248 'r'
+2026-10-24 23:32:16.248 REC stop: /MMSA8_0185/MMSA8_0185_01.wav, 3.4 s audio (2637824 bytes), wall time 3.2 s
+2026-10-24 23:32:16.248   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:32:16.248   DMA overflows 0, pool drops 0, worst SD write 21.1 ms, min free blocks 245/256 -> NO AUDIO LOST
+2026-10-24 23:32:16.248   SD write speed avg 1482 KB/s (need 750 KB/s); deepest backlog 11 blocks = 234 ms of audio (PSRAM pool)
+2026-10-24 23:32:16.248 MODE: idle, Bluetooth off
+2026-10-24 23:32:17.480 'r'
+2026-10-24 23:32:17.685 REC start: /MMSA8_0186/MMSA8_0186_01.wav (8 ch; file opened in 214 ms)
+2026-10-24 23:32:17.685 MODE: RECORDING, Bluetooth off
+2026-10-24 23:32:19.125 HEALTH: up=204 rec=1 take=186 part=1 recsecs=1 free_mb=29445 heap=218580 heapmin=213988 heapblk=172020 psram=4030404 backlog_ms=234 write_ms=16.4 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:32:19.331 'r'
+2026-10-24 23:32:19.331 REC stop: /MMSA8_0186/MMSA8_0186_01.wav, 1.8 s audio (1392640 bytes), wall time 1.6 s
+2026-10-24 23:32:19.331   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:32:19.331   DMA overflows 0, pool drops 0, worst SD write 16.4 ms, min free blocks 245/256 -> NO AUDIO LOST
+2026-10-24 23:32:19.331   SD write speed avg 1479 KB/s (need 750 KB/s); deepest backlog 11 blocks = 234 ms of audio (PSRAM pool)
+2026-10-24 23:32:19.331 MODE: idle, Bluetooth off
+2026-10-24 23:32:19.743 signal dBFS: mic0 -60.4 mic1 -62.9 mic2 -60.2 mic3 -60.3 mic4 -63.6 mic5 -65.1 mic6 -64.7 mic7 -65.4
+2026-10-24 23:32:19.743     DC:      mic0    -77 mic1    -26 mic2     -1 mic3    -45 mic4    -72 mic5   -211 mic6    104 mic7    135
+2026-10-24 23:32:21.386 'r'
+2026-10-24 23:32:21.592 REC start: /MMSA8_0187/MMSA8_0187_01.wav (8 ch; file opened in 214 ms)
+2026-10-24 23:32:21.592 MODE: RECORDING, Bluetooth off
+2026-10-24 23:32:25.911 VBAT log: 211,4006,3954,4067,1,0
+2026-10-24 23:32:27.761 HEALTH: up=212 rec=1 take=187 part=1 recsecs=6 free_mb=29441 heap=218580 heapmin=213988 heapblk=172020 psram=4030404 backlog_ms=234 write_ms=52.5 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:32:27.966 'r'
+2026-10-24 23:32:27.967 REC stop: /MMSA8_0187/MMSA8_0187_01.wav, 6.6 s audio (5046272 bytes), wall time 6.4 s
+2026-10-24 23:32:27.967   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:32:27.967   DMA overflows 0, pool drops 0, worst SD write 52.5 ms, min free blocks 245/256 -> NO AUDIO LOST
+2026-10-24 23:32:27.967   SD write speed avg 1448 KB/s (need 750 KB/s); deepest backlog 11 blocks = 234 ms of audio (PSRAM pool)
+2026-10-24 23:32:27.967 MODE: idle, Bluetooth off
+2026-10-24 23:32:28.993 'r'
+2026-10-24 23:32:29.199 REC start: /MMSA8_0188/MMSA8_0188_01.wav (8 ch; file opened in 240 ms)
+2026-10-24 23:32:29.199 MODE: RECORDING, Bluetooth off
+2026-10-24 23:32:29.405   SD slowdown absorbed at +1 ms: backlog peaked at 12 blocks (256 ms of audio), drained after 282 ms
+2026-10-24 23:32:31.262 HEALTH: up=216 rec=1 take=188 part=1 recsecs=2 free_mb=29440 heap=218580 heapmin=213988 heapblk=172020 psram=4030404 backlog_ms=256 write_ms=37.1 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:32:31.467 'r'
+2026-10-24 23:32:31.467 REC stop: /MMSA8_0188/MMSA8_0188_01.wav, 2.5 s audio (1884160 bytes), wall time 2.2 s
+2026-10-24 23:32:31.467   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:32:31.467   DMA overflows 0, pool drops 0, worst SD write 37.1 ms, min free blocks 244/256 -> NO AUDIO LOST
+2026-10-24 23:32:31.467   SD write speed avg 1398 KB/s (need 750 KB/s); deepest backlog 12 blocks = 256 ms of audio (PSRAM pool)
+2026-10-24 23:32:31.467 MODE: idle, Bluetooth off
+2026-10-24 23:32:31.878 signal dBFS: mic0 -66.5 mic1 -67.3 mic2 -67.9 mic3 -67.9 mic4 -67.8 mic5 -68.1 mic6 -68.6 mic7 -69.2
+2026-10-24 23:32:31.878     DC:      mic0    -86 mic1    -32 mic2     -0 mic3    -45 mic4    -75 mic5   -208 mic6    103 mic7    138
+2026-10-24 23:32:32.495 'r'
+2026-10-24 23:32:32.700 REC start: /MMSA8_0189/MMSA8_0189_01.wav (8 ch; file opened in 241 ms)
+2026-10-24 23:32:32.700 MODE: RECORDING, Bluetooth off
+2026-10-24 23:32:32.905   SD slowdown absorbed at +0 ms: backlog peaked at 12 blocks (256 ms of audio), drained after 295 ms
+2026-10-24 23:32:35.369 HEALTH: up=220 rec=1 take=189 part=1 recsecs=2 free_mb=29438 heap=218580 heapmin=213988 heapblk=172020 psram=4030404 backlog_ms=256 write_ms=36.4 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:32:35.575 'r'
+2026-10-24 23:32:35.575 REC stop: /MMSA8_0189/MMSA8_0189_01.wav, 3.1 s audio (2359296 bytes), wall time 2.8 s
+2026-10-24 23:32:35.575   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:32:35.575   DMA overflows 0, pool drops 0, worst SD write 36.4 ms, min free blocks 244/256 -> NO AUDIO LOST
+2026-10-24 23:32:35.575   SD write speed avg 1453 KB/s (need 750 KB/s); deepest backlog 12 blocks = 256 ms of audio (PSRAM pool)
+2026-10-24 23:32:35.575 MODE: idle, Bluetooth off
+2026-10-24 23:32:35.986 signal dBFS: mic0 -67.0 mic1 -68.0 mic2 -68.2 mic3 -68.2 mic4 -67.0 mic5 -68.9 mic6 -68.7 mic7 -69.9
+2026-10-24 23:32:35.986     DC:      mic0    -81 mic1    -30 mic2     -5 mic3    -49 mic4    -79 mic5   -208 mic6    105 mic7    133
+2026-10-24 23:32:37.016 'r'
+2026-10-24 23:32:37.220 REC start: /MMSA8_0190/MMSA8_0190_01.wav (8 ch; file opened in 218 ms)
+2026-10-24 23:32:37.220 MODE: RECORDING, Bluetooth off
+2026-10-24 23:32:40.918 HEALTH: up=225 rec=1 take=190 part=1 recsecs=3 free_mb=29436 heap=218580 heapmin=213988 heapblk=172020 psram=4030404 backlog_ms=234 write_ms=16.4 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:32:41.122 'r'
+2026-10-24 23:32:41.122 REC stop: /MMSA8_0190/MMSA8_0190_01.wav, 3.9 s audio (3031040 bytes), wall time 3.7 s
+2026-10-24 23:32:41.122   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:32:41.122   DMA overflows 0, pool drops 0, worst SD write 16.4 ms, min free blocks 245/256 -> NO AUDIO LOST
+2026-10-24 23:32:41.122   SD write speed avg 1497 KB/s (need 750 KB/s); deepest backlog 11 blocks = 234 ms of audio (PSRAM pool)
+2026-10-24 23:32:41.122 MODE: idle, Bluetooth off
+2026-10-24 23:32:41.945 signal dBFS: mic0 -65.5 mic1 -66.6 mic2 -66.4 mic3 -66.7 mic4 -67.7 mic5 -67.9 mic6 -68.2 mic7 -68.9
+2026-10-24 23:32:41.945     DC:      mic0    -93 mic1    -33 mic2     -3 mic3    -48 mic4    -74 mic5   -207 mic6    103 mic7    134
+2026-10-24 23:32:43.384 'r'
+2026-10-24 23:32:43.591 REC start: /MMSA8_0191/MMSA8_0191_01.wav (8 ch; file opened in 222 ms)
+2026-10-24 23:32:43.591 MODE: RECORDING, Bluetooth off
+2026-10-24 23:32:48.113 HEALTH: up=233 rec=1 take=191 part=1 recsecs=4 free_mb=29433 heap=218580 heapmin=213988 heapblk=172020 psram=4030404 backlog_ms=234 write_ms=30.6 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:32:48.318 'r'
+2026-10-24 23:32:48.318 REC stop: /MMSA8_0191/MMSA8_0191_01.wav, 4.9 s audio (3784704 bytes), wall time 4.7 s
+2026-10-24 23:32:48.318   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:32:48.318   DMA overflows 0, pool drops 0, worst SD write 30.6 ms, min free blocks 245/256 -> NO AUDIO LOST
+2026-10-24 23:32:48.318   SD write speed avg 1465 KB/s (need 750 KB/s); deepest backlog 11 blocks = 234 ms of audio (PSRAM pool)
+2026-10-24 23:32:48.318 MODE: idle, Bluetooth off
+2026-10-24 23:32:49.350 'r'
+2026-10-24 23:32:49.555 REC start: /MMSA8_0192/MMSA8_0192_01.wav (8 ch; file opened in 220 ms)
+2026-10-24 23:32:49.555 MODE: RECORDING, Bluetooth off
+2026-10-24 23:32:54.898 HEALTH: up=240 rec=1 take=192 part=1 recsecs=5 free_mb=29429 heap=218580 heapmin=213988 heapblk=172020 psram=4030404 backlog_ms=234 write_ms=31.7 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:32:56.132 VBAT log: 241,4013,3939,4087,1,0
+2026-10-24 23:33:04.549 REC continues in /MMSA8_0192/MMSA8_0192_02.wav (finished /MMSA8_0192/MMSA8_0192_01.wav; 15.0 s recorded so far; switch took 72 ms)
+2026-10-24 23:33:07.616 HEALTH: up=252 rec=1 take=192 part=2 recsecs=17 free_mb=29420 heap=218576 heapmin=213988 heapblk=172020 psram=4030404 backlog_ms=85 write_ms=16.5 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:33:07.820 'r'
+2026-10-24 23:33:07.820 REC stop: /MMSA8_0192/MMSA8_0192_02.wav (3.3 s). Recording: 18.3 s audio in 2 files from /MMSA8_0192/MMSA8_0192_01.wav (0.01 GB), wall time 18.1 s
+2026-10-24 23:33:07.820   Checkpoints: 1, worst 26.9 ms
+2026-10-24 23:33:07.820   DMA overflows 0, pool drops 0, worst SD write 31.7 ms, min free blocks 245/256 -> NO AUDIO LOST
+2026-10-24 23:33:07.820   SD write speed avg 1515 KB/s (need 750 KB/s); deepest backlog 11 blocks = 234 ms of audio (PSRAM pool)
+2026-10-24 23:33:07.820 MODE: idle, Bluetooth off
+2026-10-24 23:33:08.025 signal dBFS: mic0 -65.1 mic1 -66.0 mic2 -64.8 mic3 -65.6 mic4 -66.8 mic5 -66.8 mic6 -67.1 mic7 -67.5
+2026-10-24 23:33:08.025     DC:      mic0    -77 mic1    -28 mic2      1 mic3    -44 mic4    -68 mic5   -210 mic6    105 mic7    138
+2026-10-24 23:33:08.643 'r'
+2026-10-24 23:33:08.850 REC start: /MMSA8_0193/MMSA8_0193_01.wav (8 ch; file opened in 222 ms)
+2026-10-24 23:33:08.850 MODE: RECORDING, Bluetooth off
+2026-10-24 23:33:11.316 HEALTH: up=256 rec=1 take=193 part=1 recsecs=2 free_mb=29419 heap=218580 heapmin=213988 heapblk=172020 psram=4030404 backlog_ms=234 write_ms=16.1 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:33:11.522 'r'
+2026-10-24 23:33:11.522 REC stop: /MMSA8_0193/MMSA8_0193_01.wav, 2.8 s audio (2129920 bytes), wall time 2.6 s
+2026-10-24 23:33:11.522   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:33:11.522   DMA overflows 0, pool drops 0, worst SD write 16.1 ms, min free blocks 245/256 -> NO AUDIO LOST
+2026-10-24 23:33:11.523   SD write speed avg 1484 KB/s (need 750 KB/s); deepest backlog 11 blocks = 234 ms of audio (PSRAM pool)
+2026-10-24 23:33:11.523 MODE: idle, Bluetooth off
+2026-10-24 23:33:12.138 signal dBFS: mic0 -64.8 mic1 -65.8 mic2 -66.1 mic3 -66.4 mic4 -66.3 mic5 -66.5 mic6 -65.8 mic7 -66.7
+2026-10-24 23:33:12.138     DC:      mic0    -78 mic1    -29 mic2     -2 mic3    -42 mic4    -71 mic5   -206 mic6    105 mic7    134
+2026-10-24 23:33:12.961 'r'
+2026-10-24 23:33:13.166 REC start: /MMSA8_0194/MMSA8_0194_01.wav (8 ch; file opened in 222 ms)
+2026-10-24 23:33:13.166 MODE: RECORDING, Bluetooth off
+2026-10-24 23:33:19.335 HEALTH: up=264 rec=1 take=194 part=1 recsecs=6 free_mb=29414 heap=218580 heapmin=213988 heapblk=172020 psram=4030404 backlog_ms=234 write_ms=16.8 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:33:19.539 'r'
+2026-10-24 23:33:19.539 REC stop: /MMSA8_0194/MMSA8_0194_01.wav, 6.6 s audio (5062656 bytes), wall time 6.4 s
+2026-10-24 23:33:19.539   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:33:19.539   DMA overflows 0, pool drops 0, worst SD write 16.8 ms, min free blocks 245/256 -> NO AUDIO LOST
+2026-10-24 23:33:19.539   SD write speed avg 1500 KB/s (need 750 KB/s); deepest backlog 11 blocks = 234 ms of audio (PSRAM pool)
+2026-10-24 23:33:19.539 MODE: idle, Bluetooth off
+2026-10-24 23:33:20.154 signal dBFS: mic0 -65.6 mic1 -66.3 mic2 -66.8 mic3 -67.0 mic4 -66.0 mic5 -67.0 mic6 -67.8 mic7 -68.3
+2026-10-24 23:33:20.154     DC:      mic0    -84 mic1    -25 mic2      1 mic3    -41 mic4    -77 mic5   -208 mic6    113 mic7    137
+2026-10-24 23:33:21.805 'r'
+2026-10-24 23:33:22.010 REC start: /MMSA8_0195/MMSA8_0195_01.wav (8 ch; file opened in 221 ms)
+2026-10-24 23:33:22.010 MODE: RECORDING, Bluetooth off
+2026-10-24 23:33:26.326 VBAT log: 271,4014,3942,4081,1,0
+2026-10-24 23:33:27.355 HEALTH: up=272 rec=1 take=195 part=1 recsecs=5 free_mb=29410 heap=218580 heapmin=213988 heapblk=172020 psram=4030404 backlog_ms=234 write_ms=20.8 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:33:27.561 'r'
+2026-10-24 23:33:27.561 REC stop: /MMSA8_0195/MMSA8_0195_01.wav, 5.7 s audio (4390912 bytes), wall time 5.5 s
+2026-10-24 23:33:27.561   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:33:27.562   DMA overflows 0, pool drops 0, worst SD write 20.8 ms, min free blocks 245/256 -> NO AUDIO LOST
+2026-10-24 23:33:27.562   SD write speed avg 1481 KB/s (need 750 KB/s); deepest backlog 11 blocks = 234 ms of audio (PSRAM pool)
+2026-10-24 23:33:27.562 MODE: idle, Bluetooth off
+2026-10-24 23:33:28.177 signal dBFS: mic0 -65.7 mic1 -66.6 mic2 -67.1 mic3 -66.7 mic4 -66.4 mic5 -67.8 mic6 -67.2 mic7 -68.5
+2026-10-24 23:33:28.177     DC:      mic0    -79 mic1    -29 mic2      3 mic3    -42 mic4    -75 mic5   -212 mic6    106 mic7    135
+2026-10-24 23:33:28.383 'r'
+2026-10-24 23:33:28.588 REC start: /MMSA8_0196/MMSA8_0196_01.wav (8 ch; file opened in 221 ms)
+2026-10-24 23:33:28.588 MODE: RECORDING, Bluetooth off
+2026-10-24 23:33:30.029 HEALTH: up=275 rec=1 take=196 part=1 recsecs=1 free_mb=29409 heap=218580 heapmin=213988 heapblk=172020 psram=4030404 backlog_ms=234 write_ms=16.0 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:33:30.235 'r'
+2026-10-24 23:33:30.235 REC stop: /MMSA8_0196/MMSA8_0196_01.wav, 1.8 s audio (1392640 bytes), wall time 1.6 s
+2026-10-24 23:33:30.235   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:33:30.235   DMA overflows 0, pool drops 0, worst SD write 16.0 ms, min free blocks 245/256 -> NO AUDIO LOST
+2026-10-24 23:33:30.235   SD write speed avg 1477 KB/s (need 750 KB/s); deepest backlog 11 blocks = 234 ms of audio (PSRAM pool)
+2026-10-24 23:33:30.235 MODE: idle, Bluetooth off
+2026-10-24 23:33:30.850 'r'
+2026-10-24 23:33:31.261 REC start: /MMSA8_0197/MMSA8_0197_01.wav (8 ch; file opened in 221 ms)
+2026-10-24 23:33:31.261 MODE: RECORDING, Bluetooth off
+2026-10-24 23:33:36.600 HEALTH: up=281 rec=1 take=197 part=1 recsecs=5 free_mb=29405 heap=218580 heapmin=213988 heapblk=172020 psram=4030404 backlog_ms=234 write_ms=16.2 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:33:36.806 'r'
+2026-10-24 23:33:36.806 REC stop: /MMSA8_0197/MMSA8_0197_01.wav, 5.8 s audio (4423680 bytes), wall time 5.5 s
+2026-10-24 23:33:36.806   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:33:36.806   DMA overflows 0, pool drops 0, worst SD write 16.2 ms, min free blocks 245/256 -> NO AUDIO LOST
+2026-10-24 23:33:36.806   SD write speed avg 1496 KB/s (need 750 KB/s); deepest backlog 11 blocks = 234 ms of audio (PSRAM pool)
+2026-10-24 23:33:36.806 MODE: idle, Bluetooth off
+2026-10-24 23:33:38.039 'r'
+2026-10-24 23:33:38.246 REC start: /MMSA8_0198/MMSA8_0198_01.wav (8 ch; file opened in 225 ms)
+2026-10-24 23:33:38.246 MODE: RECORDING, Bluetooth off
+2026-10-24 23:33:39.686 HEALTH: up=284 rec=1 take=198 part=1 recsecs=1 free_mb=29404 heap=218580 heapmin=213988 heapblk=172020 psram=4030404 backlog_ms=234 write_ms=16.3 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:33:39.892 'r'
+2026-10-24 23:33:39.892 REC stop: /MMSA8_0198/MMSA8_0198_01.wav, 1.8 s audio (1392640 bytes), wall time 1.6 s
+2026-10-24 23:33:39.892   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:33:39.892   DMA overflows 0, pool drops 0, worst SD write 16.3 ms, min free blocks 245/256 -> NO AUDIO LOST
+2026-10-24 23:33:39.892   SD write speed avg 1463 KB/s (need 750 KB/s); deepest backlog 11 blocks = 234 ms of audio (PSRAM pool)
+2026-10-24 23:33:39.892 MODE: idle, Bluetooth off
+2026-10-24 23:33:40.306 signal dBFS: mic0 -66.4 mic1 -67.0 mic2 -66.9 mic3 -66.8 mic4 -67.5 mic5 -67.8 mic6 -68.4 mic7 -68.8
+2026-10-24 23:33:40.306     DC:      mic0    -86 mic1    -33 mic2     -2 mic3    -46 mic4    -79 mic5   -216 mic6    104 mic7    137
+2026-10-24 23:33:41.947 'r'
+2026-10-24 23:33:42.154 REC start: /MMSA8_0199/MMSA8_0199_01.wav (8 ch; file opened in 228 ms)
+2026-10-24 23:33:42.154 MODE: RECORDING, Bluetooth off
+2026-10-24 23:33:42.357   SD slowdown absorbed at +0 ms: backlog peaked at 12 blocks (256 ms of audio), drained after 222 ms
+2026-10-24 23:33:46.053 HEALTH: up=291 rec=1 take=199 part=1 recsecs=4 free_mb=29401 heap=218580 heapmin=213988 heapblk=172020 psram=4030404 backlog_ms=256 write_ms=18.1 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:33:46.259 'r'
+2026-10-24 23:33:46.259 REC stop: /MMSA8_0199/MMSA8_0199_01.wav, 4.3 s audio (3293184 bytes), wall time 4.1 s
+2026-10-24 23:33:46.259   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:33:46.259   DMA overflows 0, pool drops 0, worst SD write 18.1 ms, min free blocks 244/256 -> NO AUDIO LOST
+2026-10-24 23:33:46.259   SD write speed avg 1487 KB/s (need 750 KB/s); deepest backlog 12 blocks = 256 ms of audio (PSRAM pool)
+2026-10-24 23:33:46.259 MODE: idle, Bluetooth off
+2026-10-24 23:33:46.259 signal dBFS: mic0 -65.8 mic1 -65.7 mic2 -65.7 mic3 -66.6 mic4 -67.5 mic5 -67.4 mic6 -68.0 mic7 -68.6
+2026-10-24 23:33:46.259     DC:      mic0    -86 mic1    -33 mic2     -6 mic3    -48 mic4    -75 mic5   -212 mic6    102 mic7    136
+2026-10-24 23:33:47.289 'r'
+2026-10-24 23:33:47.493 REC start: /MMSA8_0200/MMSA8_0200_01.wav (8 ch; file opened in 227 ms)
+2026-10-24 23:33:47.494 MODE: RECORDING, Bluetooth off
+2026-10-24 23:33:47.700   SD slowdown absorbed at +0 ms: backlog peaked at 12 blocks (256 ms of audio), drained after 208 ms
+2026-10-24 23:33:54.897 HEALTH: up=300 rec=1 take=200 part=1 recsecs=7 free_mb=29396 heap=218580 heapmin=213988 heapblk=172020 psram=4030404 backlog_ms=256 write_ms=30.0 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:33:56.341 VBAT log: 301,4011,3944,4061,1,0
+2026-10-24 23:34:02.283 REC continues in /MMSA8_0200/MMSA8_0200_02.wav (finished /MMSA8_0200/MMSA8_0200_01.wav; 15.0 s recorded so far; switch took 74 ms)
+2026-10-24 23:34:17.281 REC continues in /MMSA8_0200/MMSA8_0200_03.wav (finished /MMSA8_0200/MMSA8_0200_02.wav; 30.0 s recorded so far; switch took 75 ms)
+2026-10-24 23:34:17.486 HEALTH: up=322 rec=1 take=200 part=3 recsecs=29 free_mb=29379 heap=218580 heapmin=213988 heapblk=172020 psram=4030404 backlog_ms=106 write_ms=47.0 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:34:17.694 'r'
+2026-10-24 23:34:17.694 REC stop: /MMSA8_0200/MMSA8_0200_03.wav (0.4 s). Recording: 30.4 s audio in 3 files from /MMSA8_0200/MMSA8_0200_01.wav (0.02 GB), wall time 30.2 s
+2026-10-24 23:34:17.694   Checkpoints: 2, worst 25.3 ms
+2026-10-24 23:34:17.694   DMA overflows 0, pool drops 0, worst SD write 47.0 ms, min free blocks 244/256 -> NO AUDIO LOST
+2026-10-24 23:34:17.694   SD write speed avg 1510 KB/s (need 750 KB/s); deepest backlog 12 blocks = 256 ms of audio (PSRAM pool)
+2026-10-24 23:34:17.694 MODE: idle, Bluetooth off
+2026-10-24 23:34:18.312 'r'
+2026-10-24 23:34:18.519 REC start: /MMSA8_0201/MMSA8_0201_01.wav (8 ch; file opened in 228 ms)
+2026-10-24 23:34:18.519 MODE: RECORDING, Bluetooth off
+2026-10-24 23:34:18.725   SD slowdown absorbed at +0 ms: backlog peaked at 12 blocks (256 ms of audio), drained after 208 ms
+2026-10-24 23:34:23.863 HEALTH: up=328 rec=1 take=201 part=1 recsecs=5 free_mb=29376 heap=218580 heapmin=213988 heapblk=172020 psram=4030404 backlog_ms=256 write_ms=16.3 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:34:24.069 'r'
+2026-10-24 23:34:24.069 REC stop: /MMSA8_0201/MMSA8_0201_01.wav, 5.7 s audio (4341760 bytes), wall time 5.4 s
+2026-10-24 23:34:24.069   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:34:24.069   DMA overflows 0, pool drops 0, worst SD write 23.5 ms, min free blocks 244/256 -> NO AUDIO LOST
+2026-10-24 23:34:24.069   SD write speed avg 1485 KB/s (need 750 KB/s); deepest backlog 12 blocks = 256 ms of audio (PSRAM pool)
+2026-10-24 23:34:24.069 MODE: idle, Bluetooth off
+2026-10-24 23:34:24.479 signal dBFS: mic0 -66.3 mic1 -67.3 mic2 -67.6 mic3 -67.6 mic4 -67.3 mic5 -68.0 mic6 -68.2 mic7 -68.2
+2026-10-24 23:34:24.479     DC:      mic0    -82 mic1    -26 mic2      7 mic3    -38 mic4    -70 mic5   -209 mic6    103 mic7    136
+2026-10-24 23:34:25.303 'r'
+2026-10-24 23:34:25.509 REC start: /MMSA8_0202/MMSA8_0202_01.wav (8 ch; file opened in 227 ms)
+2026-10-24 23:34:25.509 MODE: RECORDING, Bluetooth off
+2026-10-24 23:34:25.715   SD slowdown absorbed at +1 ms: backlog peaked at 12 blocks (256 ms of audio), drained after 206 ms
+2026-10-24 23:34:26.539 VBAT log: 331,4010,3937,4076,1,0
+2026-10-24 23:34:29.213 HEALTH: up=334 rec=1 take=202 part=1 recsecs=3 free_mb=29373 heap=218580 heapmin=213988 heapblk=172020 psram=4030404 backlog_ms=256 write_ms=23.5 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:34:29.417 'r'
+2026-10-24 23:34:29.417 REC stop: /MMSA8_0202/MMSA8_0202_01.wav, 4.1 s audio (3129344 bytes), wall time 3.8 s
+2026-10-24 23:34:29.417   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:34:29.417   DMA overflows 0, pool drops 0, worst SD write 16.1 ms, min free blocks 244/256 -> NO AUDIO LOST
+2026-10-24 23:34:29.417   SD write speed avg 1501 KB/s (need 750 KB/s); deepest backlog 12 blocks = 256 ms of audio (PSRAM pool)
+2026-10-24 23:34:29.417 MODE: idle, Bluetooth off
+2026-10-24 23:34:30.656 signal dBFS: mic0 -66.5 mic1 -67.5 mic2 -67.3 mic3 -67.5 mic4 -67.5 mic5 -68.7 mic6 -68.9 mic7 -69.0
+2026-10-24 23:34:30.656     DC:      mic0    -79 mic1    -31 mic2     -4 mic3    -51 mic4    -76 mic5   -208 mic6    109 mic7    132
+2026-10-24 23:34:31.272 'r'
+2026-10-24 23:34:31.479 REC start: /MMSA8_0203/MMSA8_0203_01.wav (8 ch; file opened in 229 ms)
+2026-10-24 23:34:31.479 MODE: RECORDING, Bluetooth off
+2026-10-24 23:34:31.685   SD slowdown absorbed at +0 ms: backlog peaked at 12 blocks (256 ms of audio), drained after 243 ms
+2026-10-24 23:34:36.819 HEALTH: up=341 rec=1 take=203 part=1 recsecs=5 free_mb=29369 heap=218580 heapmin=213988 heapblk=172020 psram=4030404 backlog_ms=256 write_ms=19.4 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:34:37.024 'r'
+2026-10-24 23:34:37.024 REC stop: /MMSA8_0203/MMSA8_0203_01.wav, 5.7 s audio (4358144 bytes), wall time 5.5 s
+2026-10-24 23:34:37.024   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:34:37.024   DMA overflows 0, pool drops 0, worst SD write 19.4 ms, min free blocks 244/256 -> NO AUDIO LOST
+2026-10-24 23:34:37.024   SD write speed avg 1488 KB/s (need 750 KB/s); deepest backlog 12 blocks = 256 ms of audio (PSRAM pool)
+2026-10-24 23:34:37.024 MODE: idle, Bluetooth off
+2026-10-24 23:34:38.670 signal dBFS: mic0 -66.2 mic1 -67.5 mic2 -66.3 mic3 -67.0 mic4 -67.7 mic5 -68.5 mic6 -65.1 mic7 -68.5
+2026-10-24 23:34:38.670     DC:      mic0    -75 mic1    -24 mic2     -1 mic3    -49 mic4    -79 mic5   -215 mic6    104 mic7    132
+2026-10-24 23:34:39.082 'r'
+2026-10-24 23:34:39.286 REC start: /MMSA8_0204/MMSA8_0204_01.wav (8 ch; file opened in 229 ms)
+2026-10-24 23:34:39.286 MODE: RECORDING, Bluetooth off
+2026-10-24 23:34:39.492   SD slowdown absorbed at +0 ms: backlog peaked at 12 blocks (256 ms of audio), drained after 209 ms
+2026-10-24 23:34:41.539 HEALTH: up=346 rec=1 take=204 part=1 recsecs=2 free_mb=29368 heap=218580 heapmin=213988 heapblk=172020 psram=4030404 backlog_ms=256 write_ms=47.2 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:34:41.745 'r'
+2026-10-24 23:34:41.745 REC stop: /MMSA8_0204/MMSA8_0204_01.wav, 2.6 s audio (1998848 bytes), wall time 2.4 s
+2026-10-24 23:34:41.745   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:34:41.745   DMA overflows 0, pool drops 0, worst SD write 47.2 ms, min free blocks 244/256 -> NO AUDIO LOST
+2026-10-24 23:34:41.745   SD write speed avg 1458 KB/s (need 750 KB/s); deepest backlog 12 blocks = 256 ms of audio (PSRAM pool)
+2026-10-24 23:34:41.745 MODE: idle, Bluetooth off
+2026-10-24 23:34:42.568 signal dBFS: mic0 -66.6 mic1 -67.9 mic2 -67.3 mic3 -67.9 mic4 -68.2 mic5 -67.4 mic6 -68.3 mic7 -69.3
+2026-10-24 23:34:42.568     DC:      mic0    -84 mic1    -26 mic2      1 mic3    -44 mic4    -77 mic5   -213 mic6    108 mic7    128
+2026-10-24 23:34:43.599 'r'
+2026-10-24 23:34:43.803 REC start: /MMSA8_0205/MMSA8_0205_01.wav (8 ch; file opened in 229 ms)
+2026-10-24 23:34:43.803 MODE: RECORDING, Bluetooth off
+2026-10-24 23:34:44.010   SD slowdown absorbed at +0 ms: backlog peaked at 12 blocks (256 ms of audio), drained after 246 ms
+2026-10-24 23:34:49.558 HEALTH: up=354 rec=1 take=205 part=1 recsecs=5 free_mb=29364 heap=218580 heapmin=213988 heapblk=172020 psram=4030404 backlog_ms=256 write_ms=16.8 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:34:49.762 'r'
+2026-10-24 23:34:49.762 REC stop: /MMSA8_0205/MMSA8_0205_01.wav, 6.2 s audio (4767744 bytes), wall time 6.0 s
+2026-10-24 23:34:49.762   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:34:49.762   DMA overflows 0, pool drops 0, worst SD write 16.8 ms, min free blocks 244/256 -> NO AUDIO LOST
+2026-10-24 23:34:49.762   SD write speed avg 1495 KB/s (need 750 KB/s); deepest backlog 12 blocks = 256 ms of audio (PSRAM pool)
+2026-10-24 23:34:49.762 MODE: idle, Bluetooth off
+2026-10-24 23:34:50.589 signal dBFS: mic0 -66.9 mic1 -67.5 mic2 -66.1 mic3 -67.7 mic4 -67.2 mic5 -68.6 mic6 -68.7 mic7 -69.1
+2026-10-24 23:34:50.589     DC:      mic0    -80 mic1    -31 mic2     -8 mic3    -51 mic4    -78 mic5   -216 mic6    100 mic7    135
+2026-10-24 23:34:51.612 'r'
+2026-10-24 23:34:51.817 REC start: /MMSA8_0206/MMSA8_0206_01.wav (8 ch; file opened in 232 ms)
+2026-10-24 23:34:51.817 MODE: RECORDING, Bluetooth off
+2026-10-24 23:34:52.024   SD slowdown absorbed at +0 ms: backlog peaked at 12 blocks (256 ms of audio), drained after 205 ms
+2026-10-24 23:34:54.902 HEALTH: up=360 rec=1 take=206 part=1 recsecs=3 free_mb=29362 heap=218580 heapmin=213988 heapblk=172020 psram=4030404 backlog_ms=256 write_ms=31.2 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:34:56.756 VBAT log: 361,4006,3937,4059,1,0
+2026-10-24 23:34:56.756 HEALTH: up=361 rec=1 take=206 part=1 recsecs=5 free_mb=29361 heap=218580 heapmin=213988 heapblk=172020 psram=4030404 backlog_ms=42 write_ms=16.6 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:34:56.960 'r'
+2026-10-24 23:34:56.960 REC stop: /MMSA8_0206/MMSA8_0206_01.wav, 5.3 s audio (4063232 bytes), wall time 5.1 s
+2026-10-24 23:34:56.960   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:34:56.960   DMA overflows 0, pool drops 0, worst SD write 31.2 ms, min free blocks 244/256 -> NO AUDIO LOST
+2026-10-24 23:34:56.960   SD write speed avg 1491 KB/s (need 750 KB/s); deepest backlog 12 blocks = 256 ms of audio (PSRAM pool)
+2026-10-24 23:34:56.960 MODE: idle, Bluetooth off
+2026-10-24 23:34:58.403 'r'
+2026-10-24 23:34:58.610 REC start: /MMSA8_0207/MMSA8_0207_01.wav (8 ch; file opened in 234 ms)
+2026-10-24 23:34:58.610 MODE: RECORDING, Bluetooth off
+2026-10-24 23:34:58.815   SD slowdown absorbed at +0 ms: backlog peaked at 12 blocks (256 ms of audio), drained after 218 ms
+2026-10-24 23:35:03.536 HEALTH: up=368 rec=1 take=207 part=1 recsecs=5 free_mb=29358 heap=218580 heapmin=213988 heapblk=172020 psram=4030404 backlog_ms=256 write_ms=16.4 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:35:03.739 'r'
+2026-10-24 23:35:03.739 REC stop: /MMSA8_0207/MMSA8_0207_01.wav, 5.3 s audio (4046848 bytes), wall time 5.0 s
+2026-10-24 23:35:03.739   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:35:03.739   DMA overflows 0, pool drops 0, worst SD write 16.4 ms, min free blocks 244/256 -> NO AUDIO LOST
+2026-10-24 23:35:03.739   SD write speed avg 1496 KB/s (need 750 KB/s); deepest backlog 12 blocks = 256 ms of audio (PSRAM pool)
+2026-10-24 23:35:03.739 MODE: idle, Bluetooth off
+2026-10-24 23:35:04.762 signal dBFS: mic0 -66.6 mic1 -67.5 mic2 -67.9 mic3 -67.9 mic4 -67.8 mic5 -67.3 mic6 -67.6 mic7 -69.0
+2026-10-24 23:35:04.762     DC:      mic0    -83 mic1    -30 mic2      2 mic3    -44 mic4    -69 mic5   -212 mic6    102 mic7    135
+2026-10-24 23:35:05.379 'r'
+2026-10-24 23:35:05.584 REC start: /MMSA8_0208/MMSA8_0208_01.wav (8 ch; file opened in 235 ms)
+2026-10-24 23:35:05.584 MODE: RECORDING, Bluetooth off
+2026-10-24 23:35:05.789   SD slowdown absorbed at +0 ms: backlog peaked at 12 blocks (256 ms of audio), drained after 224 ms
+2026-10-24 23:35:20.355 REC continues in /MMSA8_0208/MMSA8_0208_02.wav (finished /MMSA8_0208/MMSA8_0208_01.wav; 15.0 s recorded so far; switch took 77 ms)
+2026-10-24 23:35:24.666 HEALTH: up=389 rec=1 take=208 part=2 recsecs=18 free_mb=29344 heap=218576 heapmin=213988 heapblk=172020 psram=4030404 backlog_ms=256 write_ms=65.8 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:35:24.871 'r'
+2026-10-24 23:35:24.871 REC stop: /MMSA8_0208/MMSA8_0208_02.wav (4.5 s). Recording: 19.5 s audio in 2 files from /MMSA8_0208/MMSA8_0208_01.wav (0.01 GB), wall time 19.3 s
+2026-10-24 23:35:24.871   Checkpoints: 1, worst 28.3 ms
+2026-10-24 23:35:24.871   DMA overflows 0, pool drops 0, worst SD write 65.8 ms, min free blocks 244/256 -> NO AUDIO LOST
+2026-10-24 23:35:24.871   SD write speed avg 1470 KB/s (need 750 KB/s); deepest backlog 12 blocks = 256 ms of audio (PSRAM pool)
+2026-10-24 23:35:24.871 MODE: idle, Bluetooth off
+2026-10-24 23:35:26.715 HEALTH: up=391 rec=0 take=208 part=2 recsecs=18 free_mb=29344 heap=223116 heapmin=213988 heapblk=176116 psram=4030404 backlog_ms=42 write_ms=14.3 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:35:26.716 VBAT log: 391,4013,3941,4081,0,0
+2026-10-24 23:35:26.716 signal dBFS: mic0 -59.1 mic1 -60.4 mic2 -60.9 mic3 -61.0 mic4 -61.5 mic5 -61.7 mic6 -62.3 mic7 -61.5
+2026-10-24 23:35:26.716     DC:      mic0    -79 mic1    -29 mic2     -3 mic3    -48 mic4    -74 mic5   -212 mic6     99 mic7    130
+2026-10-24 23:35:26.921 'r'
+2026-10-24 23:35:27.126 REC start: /MMSA8_0209/MMSA8_0209_01.wav (8 ch; file opened in 234 ms)
+2026-10-24 23:35:27.127 MODE: RECORDING, Bluetooth off
+2026-10-24 23:35:27.127 'r'
+2026-10-24 23:35:27.127 REC stop: wrote the 10 queued blocks (213 ms of audio) first, in 113 ms
+2026-10-24 23:35:27.331 REC stop: /MMSA8_0209/MMSA8_0209_01.wav, 0.2 s audio (180224 bytes), wall time 0.0 s
+2026-10-24 23:35:27.331   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:35:27.331   DMA overflows 0, pool drops 0, worst SD write 13.2 ms, min free blocks 244/256 -> NO AUDIO LOST
+2026-10-24 23:35:27.331   SD write speed avg 1417 KB/s (need 750 KB/s); deepest backlog 12 blocks = 256 ms of audio (PSRAM pool)
+2026-10-24 23:35:27.331 MODE: idle, Bluetooth off
+2026-10-24 23:35:27.538 HEALTH: up=392 rec=0 take=209 part=1 recsecs=0 free_mb=29344 heap=223116 heapmin=213988 heapblk=176116 psram=4030404 backlog_ms=256 write_ms=13.2 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:35:27.742 'r'
+2026-10-24 23:35:27.948 REC start: /MMSA8_0210/MMSA8_0210_01.wav (8 ch; file opened in 235 ms)
+2026-10-24 23:35:27.948 MODE: RECORDING, Bluetooth off
+2026-10-24 23:35:27.948 'r'
+2026-10-24 23:35:28.155 REC stop: wrote the 11 queued blocks (234 ms of audio) first, in 128 ms
+2026-10-24 23:35:28.155 REC stop: /MMSA8_0210/MMSA8_0210_01.wav, 0.3 s audio (196608 bytes), wall time 0.0 s
+2026-10-24 23:35:28.155   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:35:28.155   DMA overflows 0, pool drops 0, worst SD write 13.0 ms, min free blocks 244/256 -> NO AUDIO LOST
+2026-10-24 23:35:28.155   SD write speed avg 1383 KB/s (need 750 KB/s); deepest backlog 12 blocks = 256 ms of audio (PSRAM pool)
+2026-10-24 23:35:28.155 MODE: idle, Bluetooth off
+2026-10-24 23:35:28.360 HEALTH: up=393 rec=0 take=210 part=1 recsecs=0 free_mb=29344 heap=223116 heapmin=213988 heapblk=176116 psram=4030404 backlog_ms=256 write_ms=13.0 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:35:28.565 'r'
+2026-10-24 23:35:28.769 REC start: /MMSA8_0211/MMSA8_0211_01.wav (8 ch; file opened in 235 ms)
+2026-10-24 23:35:28.769 MODE: RECORDING, Bluetooth off
+2026-10-24 23:35:28.769 'r'
+2026-10-24 23:35:28.769 REC stop: wrote the 11 queued blocks (234 ms of audio) first, in 128 ms
+2026-10-24 23:35:28.972 REC stop: /MMSA8_0211/MMSA8_0211_01.wav, 0.3 s audio (196608 bytes), wall time 0.0 s
+2026-10-24 23:35:28.972   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:35:28.972   DMA overflows 0, pool drops 0, worst SD write 13.1 ms, min free blocks 244/256 -> NO AUDIO LOST
+2026-10-24 23:35:28.972   SD write speed avg 1379 KB/s (need 750 KB/s); deepest backlog 12 blocks = 256 ms of audio (PSRAM pool)
+2026-10-24 23:35:28.972 MODE: idle, Bluetooth off
+2026-10-24 23:35:28.972 signal dBFS: mic0 -59.8 mic1 -61.1 mic2 -61.8 mic3 -61.9 mic4 -62.3 mic5 -62.9 mic6 -63.4 mic7 -62.6
+2026-10-24 23:35:28.972     DC:      mic0    -81 mic1    -35 mic2      1 mic3    -41 mic4    -80 mic5   -207 mic6    110 mic7    132
+2026-10-24 23:35:29.176 HEALTH: up=394 rec=0 take=211 part=1 recsecs=0 free_mb=29344 heap=223116 heapmin=213988 heapblk=176116 psram=4030404 backlog_ms=256 write_ms=13.1 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:35:29.382 'r'
+2026-10-24 23:35:29.586 REC start: /MMSA8_0212/MMSA8_0212_01.wav (8 ch; file opened in 235 ms)
+2026-10-24 23:35:29.586 MODE: RECORDING, Bluetooth off
+2026-10-24 23:35:29.586 'r'
+2026-10-24 23:35:29.790 REC stop: wrote the 11 queued blocks (234 ms of audio) first, in 132 ms
+2026-10-24 23:35:29.790 REC stop: /MMSA8_0212/MMSA8_0212_01.wav, 0.3 s audio (196608 bytes), wall time 0.0 s
+2026-10-24 23:35:29.790   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:35:29.790   DMA overflows 0, pool drops 0, worst SD write 16.8 ms, min free blocks 244/256 -> NO AUDIO LOST
+2026-10-24 23:35:29.790   SD write speed avg 1343 KB/s (need 750 KB/s); deepest backlog 12 blocks = 256 ms of audio (PSRAM pool)
+2026-10-24 23:35:29.790 MODE: idle, Bluetooth off
+2026-10-24 23:35:29.994 HEALTH: up=395 rec=0 take=212 part=1 recsecs=0 free_mb=29344 heap=223116 heapmin=213988 heapblk=176116 psram=4030404 backlog_ms=256 write_ms=16.8 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:35:30.199 'r'
+2026-10-24 23:35:30.401 REC start: /MMSA8_0213/MMSA8_0213_01.wav (8 ch; file opened in 235 ms)
+2026-10-24 23:35:30.401 MODE: RECORDING, Bluetooth off
+2026-10-24 23:35:30.401 'r'
+2026-10-24 23:35:30.604 REC stop: wrote the 11 queued blocks (234 ms of audio) first, in 126 ms
+2026-10-24 23:35:30.604 REC stop: /MMSA8_0213/MMSA8_0213_01.wav, 0.3 s audio (196608 bytes), wall time 0.0 s
+2026-10-24 23:35:30.604   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:35:30.604   DMA overflows 0, pool drops 0, worst SD write 13.1 ms, min free blocks 244/256 -> NO AUDIO LOST
+2026-10-24 23:35:30.604   SD write speed avg 1398 KB/s (need 750 KB/s); deepest backlog 12 blocks = 256 ms of audio (PSRAM pool)
+2026-10-24 23:35:30.604 MODE: idle, Bluetooth off
+2026-10-24 23:35:30.604 'r'
+2026-10-24 23:35:30.808 REC start: /MMSA8_0214/MMSA8_0214_01.wav (8 ch; file opened in 239 ms)
+2026-10-24 23:35:30.808 MODE: RECORDING, Bluetooth off
+2026-10-24 23:35:30.808 'r'
+2026-10-24 23:35:31.011 REC stop: wrote the 11 queued blocks (234 ms of audio) first, in 124 ms
+2026-10-24 23:35:31.011 REC stop: /MMSA8_0214/MMSA8_0214_01.wav, 0.3 s audio (196608 bytes), wall time 0.0 s
+2026-10-24 23:35:31.011   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:35:31.011   DMA overflows 0, pool drops 0, worst SD write 12.9 ms, min free blocks 244/256 -> NO AUDIO LOST
+2026-10-24 23:35:31.011   SD write speed avg 1423 KB/s (need 750 KB/s); deepest backlog 12 blocks = 256 ms of audio (PSRAM pool)
+2026-10-24 23:35:31.011 MODE: idle, Bluetooth off
+2026-10-24 23:35:31.011 signal dBFS: mic0 -58.6 mic1 -59.8 mic2 -60.2 mic3 -60.7 mic4 -61.2 mic5 -61.5 mic6 -61.8 mic7 -60.8
+2026-10-24 23:35:31.011     DC:      mic0    -78 mic1    -25 mic2     -2 mic3    -46 mic4    -71 mic5   -207 mic6    106 mic7    134
+2026-10-24 23:35:31.216 HEALTH: up=396 rec=0 take=214 part=1 recsecs=0 free_mb=29344 heap=223116 heapmin=213988 heapblk=176116 psram=4030404 backlog_ms=256 write_ms=13.1 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:35:31.420 'r'
+2026-10-24 23:35:31.624 REC start: /MMSA8_0215/MMSA8_0215_01.wav (8 ch; file opened in 242 ms)
+2026-10-24 23:35:31.624 MODE: RECORDING, Bluetooth off
+2026-10-24 23:35:31.828   SD slowdown absorbed at +1 ms: backlog peaked at 12 blocks (256 ms of audio), drained after 231 ms
+2026-10-24 23:35:31.828 'r'
+2026-10-24 23:35:31.828 REC stop: /MMSA8_0215/MMSA8_0215_01.wav, 0.5 s audio (376832 bytes), wall time 0.3 s
+2026-10-24 23:35:31.828   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:35:31.828   DMA overflows 0, pool drops 0, worst SD write 13.0 ms, min free blocks 244/256 -> NO AUDIO LOST
+2026-10-24 23:35:31.828   SD write speed avg 1392 KB/s (need 750 KB/s); deepest backlog 12 blocks = 256 ms of audio (PSRAM pool)
+2026-10-24 23:35:31.828 MODE: idle, Bluetooth off
+2026-10-24 23:35:32.444 HEALTH: up=397 rec=0 take=215 part=1 recsecs=0 free_mb=29344 heap=223116 heapmin=213988 heapblk=176116 psram=4030404 backlog_ms=256 write_ms=13.0 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:35:32.649 'r'
+2026-10-24 23:35:32.853 REC start: /MMSA8_0216/MMSA8_0216_01.wav (8 ch; file opened in 244 ms)
+2026-10-24 23:35:32.853 MODE: RECORDING, Bluetooth off
+2026-10-24 23:35:32.853 'r'
+2026-10-24 23:35:33.056 REC stop: wrote the 11 queued blocks (234 ms of audio) first, in 128 ms
+2026-10-24 23:35:33.056 REC stop: /MMSA8_0216/MMSA8_0216_01.wav, 0.3 s audio (196608 bytes), wall time 0.0 s
+2026-10-24 23:35:33.056   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:35:33.056   DMA overflows 0, pool drops 0, worst SD write 13.0 ms, min free blocks 244/256 -> NO AUDIO LOST
+2026-10-24 23:35:33.056   SD write speed avg 1378 KB/s (need 750 KB/s); deepest backlog 12 blocks = 256 ms of audio (PSRAM pool)
+2026-10-24 23:35:33.056 MODE: idle, Bluetooth off
+2026-10-24 23:35:33.056 signal dBFS: mic0 -66.1 mic1 -67.3 mic2 -67.3 mic3 -67.2 mic4 -67.2 mic5 -67.5 mic6 -67.3 mic7 -67.7
+2026-10-24 23:35:33.056     DC:      mic0    -79 mic1    -28 mic2      0 mic3    -50 mic4    -74 mic5   -214 mic6    106 mic7    135
+2026-10-24 23:35:33.261 HEALTH: up=398 rec=0 take=216 part=1 recsecs=0 free_mb=29344 heap=223116 heapmin=213988 heapblk=176116 psram=4030404 backlog_ms=256 write_ms=13.0 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:35:33.466 'r'
+2026-10-24 23:35:33.673 REC start: /MMSA8_0217/MMSA8_0217_01.wav (8 ch; file opened in 242 ms)
+2026-10-24 23:35:33.673 MODE: RECORDING, Bluetooth off
+2026-10-24 23:35:33.673 'r'
+2026-10-24 23:35:33.673 REC stop: wrote the 11 queued blocks (234 ms of audio) first, in 128 ms
+2026-10-24 23:35:33.877 REC stop: /MMSA8_0217/MMSA8_0217_01.wav, 0.3 s audio (196608 bytes), wall time 0.0 s
+2026-10-24 23:35:33.877   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:35:33.877   DMA overflows 0, pool drops 0, worst SD write 12.9 ms, min free blocks 244/256 -> NO AUDIO LOST
+2026-10-24 23:35:33.877   SD write speed avg 1380 KB/s (need 750 KB/s); deepest backlog 12 blocks = 256 ms of audio (PSRAM pool)
+2026-10-24 23:35:33.877 MODE: idle, Bluetooth off
+2026-10-24 23:35:34.081 HEALTH: up=399 rec=0 take=217 part=1 recsecs=0 free_mb=29344 heap=223116 heapmin=213988 heapblk=176116 psram=4030404 backlog_ms=256 write_ms=12.9 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:35:34.284 'r'
+2026-10-24 23:35:34.489 REC start: /MMSA8_0218/MMSA8_0218_01.wav (8 ch; file opened in 242 ms)
+2026-10-24 23:35:34.489 MODE: RECORDING, Bluetooth off
+2026-10-24 23:35:34.489 'r'
+2026-10-24 23:35:34.489 REC stop: wrote the 11 queued blocks (234 ms of audio) first, in 126 ms
+2026-10-24 23:35:34.694 REC stop: /MMSA8_0218/MMSA8_0218_01.wav, 0.3 s audio (196608 bytes), wall time 0.0 s
+2026-10-24 23:35:34.694   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:35:34.694   DMA overflows 0, pool drops 0, worst SD write 13.1 ms, min free blocks 244/256 -> NO AUDIO LOST
+2026-10-24 23:35:34.694   SD write speed avg 1399 KB/s (need 750 KB/s); deepest backlog 12 blocks = 256 ms of audio (PSRAM pool)
+2026-10-24 23:35:34.694 MODE: idle, Bluetooth off
+2026-10-24 23:35:34.899 HEALTH: up=399 rec=0 take=218 part=1 recsecs=0 free_mb=29344 heap=223116 heapmin=213988 heapblk=176116 psram=4030404 backlog_ms=256 write_ms=13.1 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:35:35.104 'r'
+2026-10-24 23:35:35.307 REC start: /MMSA8_0219/MMSA8_0219_01.wav (8 ch; file opened in 242 ms)
+2026-10-24 23:35:35.307 MODE: RECORDING, Bluetooth off
+2026-10-24 23:35:35.307 'r'
+2026-10-24 23:35:35.307 REC stop: wrote the 11 queued blocks (234 ms of audio) first, in 124 ms
+2026-10-24 23:35:35.511 REC stop: /MMSA8_0219/MMSA8_0219_01.wav, 0.3 s audio (196608 bytes), wall time 0.0 s
+2026-10-24 23:35:35.511   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:35:35.511   DMA overflows 0, pool drops 0, worst SD write 12.9 ms, min free blocks 244/256 -> NO AUDIO LOST
+2026-10-24 23:35:35.511   SD write speed avg 1423 KB/s (need 750 KB/s); deepest backlog 12 blocks = 256 ms of audio (PSRAM pool)
+2026-10-24 23:35:35.511 MODE: idle, Bluetooth off
+2026-10-24 23:35:35.719 HEALTH: up=400 rec=0 take=219 part=1 recsecs=0 free_mb=29344 heap=223116 heapmin=213988 heapblk=176116 psram=4030404 backlog_ms=256 write_ms=12.9 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:35:35.924 'r'
+2026-10-24 23:35:36.129 REC start: /MMSA8_0220/MMSA8_0220_01.wav (8 ch; file opened in 245 ms)
+2026-10-24 23:35:36.129 MODE: RECORDING, Bluetooth off
+2026-10-24 23:35:36.129 'r'
+2026-10-24 23:35:36.333 REC stop: wrote the 11 queued blocks (234 ms of audio) first, in 126 ms
+2026-10-24 23:35:36.333 REC stop: /MMSA8_0220/MMSA8_0220_01.wav, 0.3 s audio (196608 bytes), wall time 0.0 s
+2026-10-24 23:35:36.334   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:35:36.334   DMA overflows 0, pool drops 0, worst SD write 13.2 ms, min free blocks 244/256 -> NO AUDIO LOST
+2026-10-24 23:35:36.334   SD write speed avg 1408 KB/s (need 750 KB/s); deepest backlog 12 blocks = 256 ms of audio (PSRAM pool)
+2026-10-24 23:35:36.334 MODE: idle, Bluetooth off
+2026-10-24 23:35:36.537 HEALTH: up=401 rec=0 take=220 part=1 recsecs=0 free_mb=29344 heap=223116 heapmin=213988 heapblk=176116 psram=4030404 backlog_ms=256 write_ms=13.2 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:35:36.742 'r'
+2026-10-24 23:35:36.947 REC start: /MMSA8_0221/MMSA8_0221_01.wav (8 ch; file opened in 242 ms)
+2026-10-24 23:35:36.947 MODE: RECORDING, Bluetooth off
+2026-10-24 23:35:36.947 'r'
+2026-10-24 23:35:37.152 REC stop: wrote the 11 queued blocks (234 ms of audio) first, in 128 ms
+2026-10-24 23:35:37.152 REC stop: /MMSA8_0221/MMSA8_0221_01.wav, 0.3 s audio (196608 bytes), wall time 0.0 s
+2026-10-24 23:35:37.152   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:35:37.152   DMA overflows 0, pool drops 0, worst SD write 13.0 ms, min free blocks 244/256 -> NO AUDIO LOST
+2026-10-24 23:35:37.152   SD write speed avg 1384 KB/s (need 750 KB/s); deepest backlog 12 blocks = 256 ms of audio (PSRAM pool)
+2026-10-24 23:35:37.152 MODE: idle, Bluetooth off
+2026-10-24 23:35:37.357 signal dBFS: mic0 -65.8 mic1 -65.9 mic2 -65.0 mic3 -66.7 mic4 -67.6 mic5 -67.9 mic6 -68.0 mic7 -68.7
+2026-10-24 23:35:37.358     DC:      mic0    -81 mic1    -29 mic2     -0 mic3    -46 mic4    -74 mic5   -211 mic6    105 mic7    136
+2026-10-24 23:35:37.358 HEALTH: up=402 rec=0 take=221 part=1 recsecs=0 free_mb=29344 heap=223116 heapmin=213988 heapblk=176116 psram=4030404 backlog_ms=256 write_ms=13.0 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:35:37.563 'r'
+2026-10-24 23:35:37.768 REC start: /MMSA8_0222/MMSA8_0222_01.wav (8 ch; file opened in 245 ms)
+2026-10-24 23:35:37.768 MODE: RECORDING, Bluetooth off
+2026-10-24 23:35:37.768 'r'
+2026-10-24 23:35:37.974 REC stop: wrote the 11 queued blocks (234 ms of audio) first, in 128 ms
+2026-10-24 23:35:37.974 REC stop: /MMSA8_0222/MMSA8_0222_01.wav, 0.3 s audio (196608 bytes), wall time 0.0 s
+2026-10-24 23:35:37.974   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:35:37.974   DMA overflows 0, pool drops 0, worst SD write 13.0 ms, min free blocks 244/256 -> NO AUDIO LOST
+2026-10-24 23:35:37.974   SD write speed avg 1381 KB/s (need 750 KB/s); deepest backlog 12 blocks = 256 ms of audio (PSRAM pool)
+2026-10-24 23:35:37.974 MODE: idle, Bluetooth off
+2026-10-24 23:35:37.974 'r'
+2026-10-24 23:35:38.178 REC start: /MMSA8_0223/MMSA8_0223_01.wav (8 ch; file opened in 248 ms)
+2026-10-24 23:35:38.178 MODE: RECORDING, Bluetooth off
+2026-10-24 23:35:38.178 'r'
+2026-10-24 23:35:38.383 REC stop: wrote the 11 queued blocks (234 ms of audio) first, in 146 ms
+2026-10-24 23:35:38.384 REC stop: /MMSA8_0223/MMSA8_0223_01.wav, 0.3 s audio (196608 bytes), wall time 0.0 s
+2026-10-24 23:35:38.384   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:35:38.384   DMA overflows 0, pool drops 0, worst SD write 24.6 ms, min free blocks 244/256 -> NO AUDIO LOST
+2026-10-24 23:35:38.384   SD write speed avg 1219 KB/s (need 750 KB/s); deepest backlog 12 blocks = 256 ms of audio (PSRAM pool)
+2026-10-24 23:35:38.384 MODE: idle, Bluetooth off
+2026-10-24 23:35:38.590 HEALTH: up=403 rec=0 take=223 part=1 recsecs=0 free_mb=29344 heap=223116 heapmin=213988 heapblk=176116 psram=4030404 backlog_ms=256 write_ms=24.6 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:35:38.795 'r'
+2026-10-24 23:35:39.001 REC start: /MMSA8_0224/MMSA8_0224_01.wav (8 ch; file opened in 251 ms)
+2026-10-24 23:35:39.001 MODE: RECORDING, Bluetooth off
+2026-10-24 23:35:39.001 'r'
+2026-10-24 23:35:39.204 REC stop: wrote the 11 queued blocks (234 ms of audio) first, in 127 ms
+2026-10-24 23:35:39.205 REC stop: /MMSA8_0224/MMSA8_0224_01.wav, 0.3 s audio (196608 bytes), wall time 0.0 s
+2026-10-24 23:35:39.205   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:35:39.205   DMA overflows 0, pool drops 0, worst SD write 13.0 ms, min free blocks 243/256 -> NO AUDIO LOST
+2026-10-24 23:35:39.205   SD write speed avg 1391 KB/s (need 750 KB/s); deepest backlog 13 blocks = 277 ms of audio (PSRAM pool)
+2026-10-24 23:35:39.205 MODE: idle, Bluetooth off
+2026-10-24 23:35:39.205 'r'
+2026-10-24 23:35:39.408 REC start: /MMSA8_0225/MMSA8_0225_01.wav (8 ch; file opened in 248 ms)
+2026-10-24 23:35:39.410 MODE: RECORDING, Bluetooth off
+2026-10-24 23:35:39.410 'r'
+2026-10-24 23:35:39.613 REC stop: wrote the 11 queued blocks (234 ms of audio) first, in 124 ms
+2026-10-24 23:35:39.613 REC stop: /MMSA8_0225/MMSA8_0225_01.wav, 0.3 s audio (196608 bytes), wall time 0.0 s
+2026-10-24 23:35:39.613   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:35:39.613   DMA overflows 0, pool drops 0, worst SD write 13.1 ms, min free blocks 243/256 -> NO AUDIO LOST
+2026-10-24 23:35:39.613   SD write speed avg 1423 KB/s (need 750 KB/s); deepest backlog 13 blocks = 277 ms of audio (PSRAM pool)
+2026-10-24 23:35:39.613 MODE: idle, Bluetooth off
+2026-10-24 23:35:39.819 HEALTH: up=404 rec=0 take=225 part=1 recsecs=0 free_mb=29344 heap=223116 heapmin=213988 heapblk=176116 psram=4030404 backlog_ms=277 write_ms=13.1 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:35:40.022 'r'
+2026-10-24 23:35:40.226 REC start: /MMSA8_0226/MMSA8_0226_01.wav (8 ch; file opened in 249 ms)
+2026-10-24 23:35:40.226 MODE: RECORDING, Bluetooth off
+2026-10-24 23:35:40.226 'r'
+2026-10-24 23:35:40.433 REC stop: wrote the 11 queued blocks (234 ms of audio) first, in 126 ms
+2026-10-24 23:35:40.433 REC stop: /MMSA8_0226/MMSA8_0226_01.wav, 0.3 s audio (196608 bytes), wall time 0.0 s
+2026-10-24 23:35:40.433   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:35:40.433   DMA overflows 0, pool drops 0, worst SD write 13.0 ms, min free blocks 243/256 -> NO AUDIO LOST
+2026-10-24 23:35:40.433   SD write speed avg 1407 KB/s (need 750 KB/s); deepest backlog 13 blocks = 277 ms of audio (PSRAM pool)
+2026-10-24 23:35:40.433 MODE: idle, Bluetooth off
+2026-10-24 23:35:40.639 HEALTH: up=405 rec=0 take=226 part=1 recsecs=0 free_mb=29344 heap=223116 heapmin=213988 heapblk=176116 psram=4030404 backlog_ms=277 write_ms=13.0 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:35:40.845 'r'
+2026-10-24 23:35:41.048 REC start: /MMSA8_0227/MMSA8_0227_01.wav (8 ch; file opened in 252 ms)
+2026-10-24 23:35:41.048 MODE: RECORDING, Bluetooth off
+2026-10-24 23:35:41.048 'r'
+2026-10-24 23:35:41.254 REC stop: wrote the 11 queued blocks (234 ms of audio) first, in 128 ms
+2026-10-24 23:35:41.254 REC stop: /MMSA8_0227/MMSA8_0227_01.wav, 0.3 s audio (196608 bytes), wall time 0.0 s
+2026-10-24 23:35:41.254   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:35:41.254   DMA overflows 0, pool drops 0, worst SD write 13.0 ms, min free blocks 243/256 -> NO AUDIO LOST
+2026-10-24 23:35:41.254   SD write speed avg 1384 KB/s (need 750 KB/s); deepest backlog 13 blocks = 277 ms of audio (PSRAM pool)
+2026-10-24 23:35:41.254 MODE: idle, Bluetooth off
+2026-10-24 23:35:41.254 'r'
+2026-10-24 23:35:41.457 REC start: /MMSA8_0228/MMSA8_0228_01.wav (8 ch; file opened in 248 ms)
+2026-10-24 23:35:41.457 MODE: RECORDING, Bluetooth off
+2026-10-24 23:35:41.457 'r'
+2026-10-24 23:35:41.663 REC stop: wrote the 11 queued blocks (234 ms of audio) first, in 128 ms
+2026-10-24 23:35:41.663 REC stop: /MMSA8_0228/MMSA8_0228_01.wav, 0.3 s audio (196608 bytes), wall time 0.0 s
+2026-10-24 23:35:41.663   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:35:41.663   DMA overflows 0, pool drops 0, worst SD write 12.9 ms, min free blocks 243/256 -> NO AUDIO LOST
+2026-10-24 23:35:41.663   SD write speed avg 1385 KB/s (need 750 KB/s); deepest backlog 13 blocks = 277 ms of audio (PSRAM pool)
+2026-10-24 23:35:41.663 MODE: idle, Bluetooth off
+2026-10-24 23:35:41.868 HEALTH: up=407 rec=0 take=228 part=1 recsecs=0 free_mb=29344 heap=223116 heapmin=213988 heapblk=176116 psram=4030404 backlog_ms=277 write_ms=13.0 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:35:42.073 'r'
+2026-10-24 23:35:42.279 REC start: /MMSA8_0229/MMSA8_0229_01.wav (8 ch; file opened in 249 ms)
+2026-10-24 23:35:42.279 MODE: RECORDING, Bluetooth off
+2026-10-24 23:35:42.279 'r'
+2026-10-24 23:35:42.482 REC stop: wrote the 11 queued blocks (234 ms of audio) first, in 128 ms
+2026-10-24 23:35:42.482 REC stop: /MMSA8_0229/MMSA8_0229_01.wav, 0.3 s audio (196608 bytes), wall time 0.0 s
+2026-10-24 23:35:42.482   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:35:42.483   DMA overflows 0, pool drops 0, worst SD write 13.2 ms, min free blocks 243/256 -> NO AUDIO LOST
+2026-10-24 23:35:42.483   SD write speed avg 1380 KB/s (need 750 KB/s); deepest backlog 13 blocks = 277 ms of audio (PSRAM pool)
+2026-10-24 23:35:42.483 MODE: idle, Bluetooth off
+2026-10-24 23:35:42.483 'r'
+2026-10-24 23:35:42.688 REC start: /MMSA8_0230/MMSA8_0230_01.wav (8 ch; file opened in 253 ms)
+2026-10-24 23:35:42.688 MODE: RECORDING, Bluetooth off
+2026-10-24 23:35:42.688 'r'
+2026-10-24 23:35:42.893 REC stop: wrote the 11 queued blocks (234 ms of audio) first, in 126 ms
+2026-10-24 23:35:42.893 REC stop: /MMSA8_0230/MMSA8_0230_01.wav, 0.3 s audio (196608 bytes), wall time 0.0 s
+2026-10-24 23:35:42.893   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:35:42.893   DMA overflows 0, pool drops 0, worst SD write 12.9 ms, min free blocks 243/256 -> NO AUDIO LOST
+2026-10-24 23:35:42.893   SD write speed avg 1400 KB/s (need 750 KB/s); deepest backlog 13 blocks = 277 ms of audio (PSRAM pool)
+2026-10-24 23:35:42.893 MODE: idle, Bluetooth off
+2026-10-24 23:35:43.099 HEALTH: up=408 rec=0 take=230 part=1 recsecs=0 free_mb=29344 heap=223116 heapmin=213988 heapblk=176116 psram=4030404 backlog_ms=277 write_ms=13.2 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:35:43.302 'r'
+2026-10-24 23:35:43.507 REC start: /MMSA8_0231/MMSA8_0231_01.wav (8 ch; file opened in 258 ms)
+2026-10-24 23:35:43.509 MODE: RECORDING, Bluetooth off
+2026-10-24 23:35:43.509 'r'
+2026-10-24 23:35:43.710 REC stop: wrote the 12 queued blocks (256 ms of audio) first, in 137 ms
+2026-10-24 23:35:43.710 REC stop: /MMSA8_0231/MMSA8_0231_01.wav, 0.3 s audio (212992 bytes), wall time 0.0 s
+2026-10-24 23:35:43.710   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:35:43.710   DMA overflows 0, pool drops 0, worst SD write 13.0 ms, min free blocks 243/256 -> NO AUDIO LOST
+2026-10-24 23:35:43.710   SD write speed avg 1407 KB/s (need 750 KB/s); deepest backlog 13 blocks = 277 ms of audio (PSRAM pool)
+2026-10-24 23:35:43.710 MODE: idle, Bluetooth off
+2026-10-24 23:35:43.916 HEALTH: up=408 rec=0 take=231 part=1 recsecs=0 free_mb=29344 heap=223116 heapmin=213988 heapblk=176116 psram=4030404 backlog_ms=277 write_ms=13.0 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:35:44.120 'r'
+2026-10-24 23:35:44.324 REC start: /MMSA8_0232/MMSA8_0232_01.wav (8 ch; file opened in 256 ms)
+2026-10-24 23:35:44.324 MODE: RECORDING, Bluetooth off
+2026-10-24 23:35:44.324 'r'
+2026-10-24 23:35:44.529 REC stop: wrote the 11 queued blocks (234 ms of audio) first, in 133 ms
+2026-10-24 23:35:44.529 REC stop: /MMSA8_0232/MMSA8_0232_01.wav, 0.3 s audio (196608 bytes), wall time 0.0 s
+2026-10-24 23:35:44.529   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:35:44.529   DMA overflows 0, pool drops 0, worst SD write 18.7 ms, min free blocks 243/256 -> NO AUDIO LOST
+2026-10-24 23:35:44.529   SD write speed avg 1340 KB/s (need 750 KB/s); deepest backlog 13 blocks = 277 ms of audio (PSRAM pool)
+2026-10-24 23:35:44.529 MODE: idle, Bluetooth off
+2026-10-24 23:35:44.734 HEALTH: up=409 rec=0 take=232 part=1 recsecs=0 free_mb=29344 heap=223116 heapmin=213988 heapblk=176116 psram=4030404 backlog_ms=277 write_ms=18.7 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:35:44.938 'r'
+2026-10-24 23:35:45.141 REC start: /MMSA8_0233/MMSA8_0233_01.wav (8 ch; file opened in 255 ms)
+2026-10-24 23:35:45.141 MODE: RECORDING, Bluetooth off
+2026-10-24 23:35:45.141 'r'
+2026-10-24 23:35:45.346 REC stop: wrote the 11 queued blocks (234 ms of audio) first, in 125 ms
+2026-10-24 23:35:45.346 REC stop: /MMSA8_0233/MMSA8_0233_01.wav, 0.3 s audio (196608 bytes), wall time 0.0 s
+2026-10-24 23:35:45.346   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:35:45.346   DMA overflows 0, pool drops 0, worst SD write 13.0 ms, min free blocks 243/256 -> NO AUDIO LOST
+2026-10-24 23:35:45.346   SD write speed avg 1407 KB/s (need 750 KB/s); deepest backlog 13 blocks = 277 ms of audio (PSRAM pool)
+2026-10-24 23:35:45.346 MODE: idle, Bluetooth off
+2026-10-24 23:35:45.346 'r'
+2026-10-24 23:35:45.553 REC start: /MMSA8_0234/MMSA8_0234_01.wav (8 ch; file opened in 256 ms)
+2026-10-24 23:35:45.553 MODE: RECORDING, Bluetooth off
+2026-10-24 23:35:45.553 'r'
+2026-10-24 23:35:45.758 REC stop: wrote the 12 queued blocks (256 ms of audio) first, in 162 ms
+2026-10-24 23:35:45.758 REC stop: /MMSA8_0234/MMSA8_0234_01.wav, 0.3 s audio (212992 bytes), wall time 0.0 s
+2026-10-24 23:35:45.758   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:35:45.758   DMA overflows 0, pool drops 0, worst SD write 32.1 ms, min free blocks 243/256 -> NO AUDIO LOST
+2026-10-24 23:35:45.758   SD write speed avg 1202 KB/s (need 750 KB/s); deepest backlog 13 blocks = 277 ms of audio (PSRAM pool)
+2026-10-24 23:35:45.758 MODE: idle, Bluetooth off
+2026-10-24 23:35:45.961 HEALTH: up=411 rec=0 take=234 part=1 recsecs=0 free_mb=29344 heap=223116 heapmin=213988 heapblk=176116 psram=4030404 backlog_ms=277 write_ms=32.1 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:35:46.167 'r'
+2026-10-24 23:35:46.371 REC start: /MMSA8_0235/MMSA8_0235_01.wav (8 ch; file opened in 254 ms)
+2026-10-24 23:35:46.372 MODE: RECORDING, Bluetooth off
+2026-10-24 23:35:46.372 'r'
+2026-10-24 23:35:46.372 REC stop: wrote the 11 queued blocks (234 ms of audio) first, in 127 ms
+2026-10-24 23:35:46.576 REC stop: /MMSA8_0235/MMSA8_0235_01.wav, 0.3 s audio (196608 bytes), wall time 0.0 s
+2026-10-24 23:35:46.576   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:35:46.576   DMA overflows 0, pool drops 0, worst SD write 13.0 ms, min free blocks 243/256 -> NO AUDIO LOST
+2026-10-24 23:35:46.576   SD write speed avg 1387 KB/s (need 750 KB/s); deepest backlog 13 blocks = 277 ms of audio (PSRAM pool)
+2026-10-24 23:35:46.576 MODE: idle, Bluetooth off
+2026-10-24 23:35:46.783 HEALTH: up=411 rec=0 take=235 part=1 recsecs=0 free_mb=29344 heap=223116 heapmin=213988 heapblk=176116 psram=4030404 backlog_ms=277 write_ms=13.0 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:35:46.990 'r'
+2026-10-24 23:35:47.196 REC start: /MMSA8_0236/MMSA8_0236_01.wav (8 ch; file opened in 255 ms)
+2026-10-24 23:35:47.196 MODE: RECORDING, Bluetooth off
+2026-10-24 23:35:47.196 'r'
+2026-10-24 23:35:47.402 REC stop: wrote the 11 queued blocks (234 ms of audio) first, in 128 ms
+2026-10-24 23:35:47.402 REC stop: /MMSA8_0236/MMSA8_0236_01.wav, 0.3 s audio (196608 bytes), wall time 0.0 s
+2026-10-24 23:35:47.402   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:35:47.402   DMA overflows 0, pool drops 0, worst SD write 13.0 ms, min free blocks 243/256 -> NO AUDIO LOST
+2026-10-24 23:35:47.402   SD write speed avg 1383 KB/s (need 750 KB/s); deepest backlog 13 blocks = 277 ms of audio (PSRAM pool)
+2026-10-24 23:35:47.402 MODE: idle, Bluetooth off
+2026-10-24 23:35:47.608 HEALTH: up=412 rec=0 take=236 part=1 recsecs=0 free_mb=29344 heap=223116 heapmin=213988 heapblk=176116 psram=4030404 backlog_ms=277 write_ms=13.0 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:35:47.608 signal dBFS: mic0 -65.7 mic1 -66.5 mic2 -66.8 mic3 -67.0 mic4 -66.4 mic5 -67.1 mic6 -67.8 mic7 -68.4
+2026-10-24 23:35:47.608     DC:      mic0    -80 mic1    -31 mic2      1 mic3    -45 mic4    -76 mic5   -213 mic6    105 mic7    134
+2026-10-24 23:35:47.814 'r'
+2026-10-24 23:35:48.021 REC start: /MMSA8_0237/MMSA8_0237_01.wav (8 ch; file opened in 254 ms)
+2026-10-24 23:35:48.021 MODE: RECORDING, Bluetooth off
+2026-10-24 23:35:48.021 'r'
+2026-10-24 23:35:48.227 REC stop: wrote the 12 queued blocks (256 ms of audio) first, in 138 ms
+2026-10-24 23:35:48.227 REC stop: /MMSA8_0237/MMSA8_0237_01.wav, 0.3 s audio (212992 bytes), wall time 0.0 s
+2026-10-24 23:35:48.227   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:35:48.227   DMA overflows 0, pool drops 0, worst SD write 13.0 ms, min free blocks 243/256 -> NO AUDIO LOST
+2026-10-24 23:35:48.227   SD write speed avg 1379 KB/s (need 750 KB/s); deepest backlog 13 blocks = 277 ms of audio (PSRAM pool)
+2026-10-24 23:35:48.227 MODE: idle, Bluetooth off
+2026-10-24 23:35:48.432 HEALTH: up=413 rec=0 take=237 part=1 recsecs=0 free_mb=29344 heap=223116 heapmin=213988 heapblk=176116 psram=4030404 backlog_ms=277 write_ms=13.0 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:35:48.637 'r'
+2026-10-24 23:35:48.842 REC start: /MMSA8_0238/MMSA8_0238_01.wav (8 ch; file opened in 260 ms)
+2026-10-24 23:35:48.843 MODE: RECORDING, Bluetooth off
+2026-10-24 23:35:48.843 'r'
+2026-10-24 23:35:49.048 REC stop: wrote the 12 queued blocks (256 ms of audio) first, in 143 ms
+2026-10-24 23:35:49.048 REC stop: /MMSA8_0238/MMSA8_0238_01.wav, 0.3 s audio (212992 bytes), wall time 0.0 s
+2026-10-24 23:35:49.048   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:35:49.048   DMA overflows 0, pool drops 0, worst SD write 14.8 ms, min free blocks 243/256 -> NO AUDIO LOST
+2026-10-24 23:35:49.048   SD write speed avg 1354 KB/s (need 750 KB/s); deepest backlog 13 blocks = 277 ms of audio (PSRAM pool)
+2026-10-24 23:35:49.048 MODE: idle, Bluetooth off
+2026-10-24 23:35:49.252 HEALTH: up=414 rec=0 take=238 part=1 recsecs=0 free_mb=29344 heap=223116 heapmin=213988 heapblk=176116 psram=4030404 backlog_ms=277 write_ms=14.8 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:35:49.460 'r'
+2026-10-24 23:35:49.666 REC start: /MMSA8_0239/MMSA8_0239_01.wav (8 ch; file opened in 262 ms)
+2026-10-24 23:35:49.666 MODE: RECORDING, Bluetooth off
+2026-10-24 23:35:49.666 'r'
+2026-10-24 23:35:49.871 REC stop: wrote the 10 queued blocks (213 ms of audio) first, in 117 ms
+2026-10-24 23:35:49.871 REC stop: /MMSA8_0239/MMSA8_0239_01.wav, 0.3 s audio (229376 bytes), wall time 0.0 s
+2026-10-24 23:35:49.871   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:35:49.871   DMA overflows 0, pool drops 0, worst SD write 12.9 ms, min free blocks 243/256 -> NO AUDIO LOST
+2026-10-24 23:35:49.871   SD write speed avg 1400 KB/s (need 750 KB/s); deepest backlog 13 blocks = 277 ms of audio (PSRAM pool)
+2026-10-24 23:35:49.871 MODE: idle, Bluetooth off
+2026-10-24 23:35:50.283 HEALTH: up=415 rec=0 take=239 part=1 recsecs=0 free_mb=29344 heap=223116 heapmin=213988 heapblk=176116 psram=4030404 backlog_ms=277 write_ms=12.9 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:35:50.490 'r'
+2026-10-24 23:35:50.696 REC start: /MMSA8_0240/MMSA8_0240_01.wav (8 ch; file opened in 262 ms)
+2026-10-24 23:35:50.696 MODE: RECORDING, Bluetooth off
+2026-10-24 23:35:50.696 'r'
+2026-10-24 23:35:50.899 REC stop: wrote the 12 queued blocks (256 ms of audio) first, in 138 ms
+2026-10-24 23:35:50.899 REC stop: /MMSA8_0240/MMSA8_0240_01.wav, 0.3 s audio (212992 bytes), wall time 0.0 s
+2026-10-24 23:35:50.899   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:35:50.899   DMA overflows 0, pool drops 0, worst SD write 13.0 ms, min free blocks 243/256 -> NO AUDIO LOST
+2026-10-24 23:35:50.899   SD write speed avg 1392 KB/s (need 750 KB/s); deepest backlog 13 blocks = 277 ms of audio (PSRAM pool)
+2026-10-24 23:35:50.899 MODE: idle, Bluetooth off
+2026-10-24 23:35:51.104 HEALTH: up=416 rec=0 take=240 part=1 recsecs=0 free_mb=29344 heap=223116 heapmin=213988 heapblk=176116 psram=4030404 backlog_ms=277 write_ms=13.0 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:35:51.310 'r'
+2026-10-24 23:35:51.517 REC start: /MMSA8_0241/MMSA8_0241_01.wav (8 ch; file opened in 263 ms)
+2026-10-24 23:35:51.517 MODE: RECORDING, Bluetooth off
+2026-10-24 23:35:51.517 'r'
+2026-10-24 23:35:51.721 REC stop: wrote the 10 queued blocks (213 ms of audio) first, in 115 ms
+2026-10-24 23:35:51.721 REC stop: /MMSA8_0241/MMSA8_0241_01.wav, 0.3 s audio (262144 bytes), wall time 0.1 s
+2026-10-24 23:35:51.721   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:35:51.721   DMA overflows 0, pool drops 0, worst SD write 16.8 ms, min free blocks 243/256 -> NO AUDIO LOST
+2026-10-24 23:35:51.721   SD write speed avg 1325 KB/s (need 750 KB/s); deepest backlog 13 blocks = 277 ms of audio (PSRAM pool)
+2026-10-24 23:35:51.721 MODE: idle, Bluetooth off
+2026-10-24 23:35:51.721 signal dBFS: mic0 -65.7 mic1 -67.4 mic2 -66.7 mic3 -66.4 mic4 -67.6 mic5 -68.2 mic6 -68.8 mic7 -69.3
+2026-10-24 23:35:51.721     DC:      mic0    -80 mic1    -35 mic2     -5 mic3    -47 mic4    -77 mic5   -210 mic6    104 mic7    137
+2026-10-24 23:35:52.134 HEALTH: up=417 rec=0 take=241 part=1 recsecs=0 free_mb=29344 heap=223116 heapmin=213988 heapblk=176116 psram=4030404 backlog_ms=277 write_ms=16.8 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:35:52.341 'r'
+2026-10-24 23:35:52.544 REC start: /MMSA8_0242/MMSA8_0242_01.wav (8 ch; file opened in 278 ms)
+2026-10-24 23:35:52.544 MODE: RECORDING, Bluetooth off
+2026-10-24 23:35:52.544 'r'
+2026-10-24 23:35:52.749 REC stop: wrote the 13 queued blocks (277 ms of audio) first, in 150 ms
+2026-10-24 23:35:52.750 REC stop: /MMSA8_0242/MMSA8_0242_01.wav, 0.3 s audio (229376 bytes), wall time 0.0 s
+2026-10-24 23:35:52.750   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:35:52.750   DMA overflows 0, pool drops 0, worst SD write 12.9 ms, min free blocks 242/256 -> NO AUDIO LOST
+2026-10-24 23:35:52.750   SD write speed avg 1392 KB/s (need 750 KB/s); deepest backlog 14 blocks = 298 ms of audio (PSRAM pool)
+2026-10-24 23:35:52.750 MODE: idle, Bluetooth off
+2026-10-24 23:35:52.952 HEALTH: up=418 rec=0 take=242 part=1 recsecs=0 free_mb=29344 heap=223116 heapmin=213988 heapblk=176116 psram=4030404 backlog_ms=298 write_ms=12.9 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:35:53.157 'r'
+2026-10-24 23:35:53.362 REC start: /MMSA8_0243/MMSA8_0243_01.wav (8 ch; file opened in 263 ms)
+2026-10-24 23:35:53.362 MODE: RECORDING, Bluetooth off
+2026-10-24 23:35:53.362 'r'
+2026-10-24 23:35:53.567 REC stop: wrote the 12 queued blocks (256 ms of audio) first, in 138 ms
+2026-10-24 23:35:53.567 REC stop: /MMSA8_0243/MMSA8_0243_01.wav, 0.3 s audio (212992 bytes), wall time 0.0 s
+2026-10-24 23:35:53.567   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:35:53.567   DMA overflows 0, pool drops 0, worst SD write 13.0 ms, min free blocks 243/256 -> NO AUDIO LOST
+2026-10-24 23:35:53.567   SD write speed avg 1388 KB/s (need 750 KB/s); deepest backlog 13 blocks = 277 ms of audio (PSRAM pool)
+2026-10-24 23:35:53.567 MODE: idle, Bluetooth off
+2026-10-24 23:35:53.772 HEALTH: up=418 rec=0 take=243 part=1 recsecs=0 free_mb=29344 heap=223116 heapmin=213988 heapblk=176116 psram=4030404 backlog_ms=277 write_ms=13.0 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:35:53.772 signal dBFS: mic0 -65.6 mic1 -66.1 mic2 -66.7 mic3 -66.5 mic4 -67.1 mic5 -67.0 mic6 -67.6 mic7 -67.5
+2026-10-24 23:35:53.772     DC:      mic0    -77 mic1    -25 mic2      4 mic3    -45 mic4    -73 mic5   -210 mic6     97 mic7    135
+2026-10-24 23:35:53.977 'r'
+2026-10-24 23:35:54.180 REC start: /MMSA8_0244/MMSA8_0244_01.wav (8 ch; file opened in 263 ms)
+2026-10-24 23:35:54.181 MODE: RECORDING, Bluetooth off
+2026-10-24 23:35:54.181 'r'
+2026-10-24 23:35:54.386 REC stop: wrote the 12 queued blocks (256 ms of audio) first, in 138 ms
+2026-10-24 23:35:54.386 REC stop: /MMSA8_0244/MMSA8_0244_01.wav, 0.3 s audio (212992 bytes), wall time 0.0 s
+2026-10-24 23:35:54.386   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:35:54.386   DMA overflows 0, pool drops 0, worst SD write 13.0 ms, min free blocks 243/256 -> NO AUDIO LOST
+2026-10-24 23:35:54.386   SD write speed avg 1386 KB/s (need 750 KB/s); deepest backlog 13 blocks = 277 ms of audio (PSRAM pool)
+2026-10-24 23:35:54.386 MODE: idle, Bluetooth off
+2026-10-24 23:35:54.386 'r'
+2026-10-24 23:35:54.591 REC start: /MMSA8_0245/MMSA8_0245_01.wav (8 ch; file opened in 263 ms)
+2026-10-24 23:35:54.591 MODE: RECORDING, Bluetooth off
+2026-10-24 23:35:54.592 'r'
+2026-10-24 23:35:54.798 REC stop: wrote the 12 queued blocks (256 ms of audio) first, in 138 ms
+2026-10-24 23:35:54.798 REC stop: /MMSA8_0245/MMSA8_0245_01.wav, 0.3 s audio (212992 bytes), wall time 0.0 s
+2026-10-24 23:35:54.798   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:35:54.798   DMA overflows 0, pool drops 0, worst SD write 12.9 ms, min free blocks 243/256 -> NO AUDIO LOST
+2026-10-24 23:35:54.798   SD write speed avg 1389 KB/s (need 750 KB/s); deepest backlog 13 blocks = 277 ms of audio (PSRAM pool)
+2026-10-24 23:35:54.798 MODE: idle, Bluetooth off
+2026-10-24 23:35:55.002 HEALTH: up=420 rec=0 take=245 part=1 recsecs=0 free_mb=29344 heap=223116 heapmin=213988 heapblk=176116 psram=4030404 backlog_ms=277 write_ms=13.0 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:35:55.003 HEALTH: up=420 rec=0 take=245 part=1 recsecs=0 free_mb=29344 heap=223116 heapmin=213988 heapblk=176116 psram=4030404 backlog_ms=0 write_ms=0.0 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:35:55.207 'r'
+2026-10-24 23:35:55.413 REC start: /MMSA8_0246/MMSA8_0246_01.wav (8 ch; file opened in 267 ms)
+2026-10-24 23:35:55.413 MODE: RECORDING, Bluetooth off
+2026-10-24 23:35:55.413 'r'
+2026-10-24 23:35:55.618 REC stop: wrote the 12 queued blocks (256 ms of audio) first, in 138 ms
+2026-10-24 23:35:55.618 REC stop: /MMSA8_0246/MMSA8_0246_01.wav, 0.3 s audio (212992 bytes), wall time 0.0 s
+2026-10-24 23:35:55.618   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:35:55.618   DMA overflows 0, pool drops 0, worst SD write 13.0 ms, min free blocks 243/256 -> NO AUDIO LOST
+2026-10-24 23:35:55.618   SD write speed avg 1387 KB/s (need 750 KB/s); deepest backlog 13 blocks = 277 ms of audio (PSRAM pool)
+2026-10-24 23:35:55.618 MODE: idle, Bluetooth off
+2026-10-24 23:35:55.821 HEALTH: up=420 rec=0 take=246 part=1 recsecs=0 free_mb=29344 heap=223116 heapmin=213988 heapblk=176116 psram=4030404 backlog_ms=277 write_ms=13.0 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:35:55.821 signal dBFS: mic0 -66.3 mic1 -67.9 mic2 -67.7 mic3 -68.0 mic4 -68.2 mic5 -68.4 mic6 -67.7 mic7 -69.3
+2026-10-24 23:35:55.821     DC:      mic0    -92 mic1    -32 mic2     -2 mic3    -44 mic4    -77 mic5   -204 mic6    106 mic7    133
+2026-10-24 23:35:56.029 'r'
+2026-10-24 23:35:56.235 REC start: /MMSA8_0247/MMSA8_0247_01.wav (8 ch; file opened in 269 ms)
+2026-10-24 23:35:56.235 MODE: RECORDING, Bluetooth off
+2026-10-24 23:35:56.235 'r'
+2026-10-24 23:35:56.441 REC stop: wrote the 12 queued blocks (256 ms of audio) first, in 139 ms
+2026-10-24 23:35:56.441 REC stop: /MMSA8_0247/MMSA8_0247_01.wav, 0.3 s audio (212992 bytes), wall time 0.0 s
+2026-10-24 23:35:56.441   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:35:56.441   DMA overflows 0, pool drops 0, worst SD write 13.0 ms, min free blocks 242/256 -> NO AUDIO LOST
+2026-10-24 23:35:56.441   SD write speed avg 1387 KB/s (need 750 KB/s); deepest backlog 14 blocks = 298 ms of audio (PSRAM pool)
+2026-10-24 23:35:56.441 MODE: idle, Bluetooth off
+2026-10-24 23:35:56.646 HEALTH: up=421 rec=0 take=247 part=1 recsecs=0 free_mb=29344 heap=223116 heapmin=213988 heapblk=176116 psram=4030404 backlog_ms=298 write_ms=13.0 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:35:56.852 'r'
+2026-10-24 23:35:57.055 REC start: /MMSA8_0248/MMSA8_0248_01.wav (8 ch; file opened in 270 ms)
+2026-10-24 23:35:57.055 MODE: RECORDING, Bluetooth off
+2026-10-24 23:35:57.055 VBAT log: 422,4010,3957,4072,1,0
+2026-10-24 23:35:57.055 'r'
+2026-10-24 23:35:57.258 REC stop: wrote the 13 queued blocks (277 ms of audio) first, in 150 ms
+2026-10-24 23:35:57.258 REC stop: /MMSA8_0248/MMSA8_0248_01.wav, 0.3 s audio (229376 bytes), wall time 0.0 s
+2026-10-24 23:35:57.258   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:35:57.258   DMA overflows 0, pool drops 0, worst SD write 13.1 ms, min free blocks 242/256 -> NO AUDIO LOST
+2026-10-24 23:35:57.258   SD write speed avg 1388 KB/s (need 750 KB/s); deepest backlog 14 blocks = 298 ms of audio (PSRAM pool)
+2026-10-24 23:35:57.258 MODE: idle, Bluetooth off
+2026-10-24 23:35:57.258 'r'
+2026-10-24 23:35:57.668 REC start: /MMSA8_0249/MMSA8_0249_01.wav (8 ch; file opened in 269 ms)
+2026-10-24 23:35:57.668 MODE: RECORDING, Bluetooth off
+2026-10-24 23:35:57.668 'r'
+2026-10-24 23:35:57.668 REC stop: wrote the 12 queued blocks (256 ms of audio) first, in 150 ms
+2026-10-24 23:35:57.873 REC stop: /MMSA8_0249/MMSA8_0249_01.wav, 0.3 s audio (212992 bytes), wall time 0.0 s
+2026-10-24 23:35:57.874   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:35:57.874   DMA overflows 0, pool drops 0, worst SD write 18.2 ms, min free blocks 243/256 -> NO AUDIO LOST
+2026-10-24 23:35:57.874   SD write speed avg 1289 KB/s (need 750 KB/s); deepest backlog 13 blocks = 277 ms of audio (PSRAM pool)
+2026-10-24 23:35:57.874 MODE: idle, Bluetooth off
+2026-10-24 23:35:57.874 signal dBFS: mic0 -65.7 mic1 -67.0 mic2 -66.9 mic3 -67.4 mic4 -67.0 mic5 -67.9 mic6 -68.1 mic7 -69.0
+2026-10-24 23:35:57.874     DC:      mic0    -83 mic1    -29 mic2     -5 mic3    -48 mic4    -80 mic5   -213 mic6    107 mic7    138
+2026-10-24 23:35:57.874 HEALTH: up=423 rec=0 take=249 part=1 recsecs=0 free_mb=29344 heap=223116 heapmin=213988 heapblk=176116 psram=4030404 backlog_ms=298 write_ms=18.2 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:35:58.076 'r'
+2026-10-24 23:35:58.285 REC start: /MMSA8_0250/MMSA8_0250_01.wav (8 ch; file opened in 269 ms)
+2026-10-24 23:35:58.285 MODE: RECORDING, Bluetooth off
+2026-10-24 23:35:58.285 'r'
+2026-10-24 23:35:58.490 REC stop: wrote the 12 queued blocks (256 ms of audio) first, in 139 ms
+2026-10-24 23:35:58.492 REC stop: /MMSA8_0250/MMSA8_0250_01.wav, 0.3 s audio (212992 bytes), wall time 0.0 s
+2026-10-24 23:35:58.492   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:35:58.492   DMA overflows 0, pool drops 0, worst SD write 13.1 ms, min free blocks 242/256 -> NO AUDIO LOST
+2026-10-24 23:35:58.492   SD write speed avg 1384 KB/s (need 750 KB/s); deepest backlog 14 blocks = 298 ms of audio (PSRAM pool)
+2026-10-24 23:35:58.492 MODE: idle, Bluetooth off
+2026-10-24 23:35:58.695 HEALTH: up=423 rec=0 take=250 part=1 recsecs=0 free_mb=29344 heap=223116 heapmin=213988 heapblk=176116 psram=4030404 backlog_ms=298 write_ms=13.1 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:35:58.901 'r'
+2026-10-24 23:35:59.105 REC start: /MMSA8_0251/MMSA8_0251_01.wav (8 ch; file opened in 269 ms)
+2026-10-24 23:35:59.105 MODE: RECORDING, Bluetooth off
+2026-10-24 23:35:59.105 'r'
+2026-10-24 23:35:59.309 REC stop: wrote the 12 queued blocks (256 ms of audio) first, in 139 ms
+2026-10-24 23:35:59.309 REC stop: /MMSA8_0251/MMSA8_0251_01.wav, 0.3 s audio (212992 bytes), wall time 0.0 s
+2026-10-24 23:35:59.309   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:35:59.309   DMA overflows 0, pool drops 0, worst SD write 13.2 ms, min free blocks 242/256 -> NO AUDIO LOST
+2026-10-24 23:35:59.309   SD write speed avg 1385 KB/s (need 750 KB/s); deepest backlog 14 blocks = 298 ms of audio (PSRAM pool)
+2026-10-24 23:35:59.309 MODE: idle, Bluetooth off
+2026-10-24 23:35:59.719 HEALTH: up=424 rec=0 take=251 part=1 recsecs=0 free_mb=29344 heap=223116 heapmin=213988 heapblk=176116 psram=4030404 backlog_ms=298 write_ms=13.2 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:35:59.719 signal dBFS: mic0 -66.4 mic1 -66.7 mic2 -67.1 mic3 -66.9 mic4 -66.9 mic5 -67.9 mic6 -68.5 mic7 -69.1
+2026-10-24 23:35:59.719     DC:      mic0    -81 mic1    -28 mic2      3 mic3    -47 mic4    -76 mic5   -204 mic6    103 mic7    134
+2026-10-24 23:35:59.923 'r'
+2026-10-24 23:36:00.129 REC start: /MMSA8_0252/MMSA8_0252_01.wav (8 ch; file opened in 269 ms)
+2026-10-24 23:36:00.129 MODE: RECORDING, Bluetooth off
+2026-10-24 23:36:00.129 'r'
+2026-10-24 23:36:00.334 REC stop: wrote the 12 queued blocks (256 ms of audio) first, in 139 ms
+2026-10-24 23:36:00.334 REC stop: /MMSA8_0252/MMSA8_0252_01.wav, 0.3 s audio (212992 bytes), wall time 0.0 s
+2026-10-24 23:36:00.334   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:36:00.334   DMA overflows 0, pool drops 0, worst SD write 13.1 ms, min free blocks 242/256 -> NO AUDIO LOST
+2026-10-24 23:36:00.334   SD write speed avg 1385 KB/s (need 750 KB/s); deepest backlog 14 blocks = 298 ms of audio (PSRAM pool)
+2026-10-24 23:36:00.334 MODE: idle, Bluetooth off
+2026-10-24 23:36:00.541 HEALTH: up=425 rec=0 take=252 part=1 recsecs=0 free_mb=29344 heap=223116 heapmin=213988 heapblk=176116 psram=4030404 backlog_ms=298 write_ms=13.1 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:36:00.748 'r'
+2026-10-24 23:36:00.954 REC start: /MMSA8_0253/MMSA8_0253_01.wav (8 ch; file opened in 272 ms)
+2026-10-24 23:36:00.954 MODE: RECORDING, Bluetooth off
+2026-10-24 23:36:00.954 'r'
+2026-10-24 23:36:01.160 REC stop: wrote the 12 queued blocks (256 ms of audio) first, in 143 ms
+2026-10-24 23:36:01.160 REC stop: /MMSA8_0253/MMSA8_0253_01.wav, 0.3 s audio (212992 bytes), wall time 0.0 s
+2026-10-24 23:36:01.160   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:36:01.160   DMA overflows 0, pool drops 0, worst SD write 15.9 ms, min free blocks 242/256 -> NO AUDIO LOST
+2026-10-24 23:36:01.160   SD write speed avg 1351 KB/s (need 750 KB/s); deepest backlog 14 blocks = 298 ms of audio (PSRAM pool)
+2026-10-24 23:36:01.160 MODE: idle, Bluetooth off
+2026-10-24 23:36:01.364 HEALTH: up=426 rec=0 take=253 part=1 recsecs=0 free_mb=29344 heap=223116 heapmin=213988 heapblk=176116 psram=4030404 backlog_ms=298 write_ms=15.9 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:36:01.569 'r'
+2026-10-24 23:36:01.774 REC start: /MMSA8_0254/MMSA8_0254_01.wav (8 ch; file opened in 319 ms)
+2026-10-24 23:36:01.774 MODE: RECORDING, Bluetooth off
+2026-10-24 23:36:01.774 'r'
+2026-10-24 23:36:01.979 REC stop: wrote the 15 queued blocks (320 ms of audio) first, in 173 ms
+2026-10-24 23:36:01.979 REC stop: /MMSA8_0254/MMSA8_0254_01.wav, 0.3 s audio (262144 bytes), wall time 0.0 s
+2026-10-24 23:36:01.979   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:36:01.979   DMA overflows 0, pool drops 0, worst SD write 13.4 ms, min free blocks 240/256 -> NO AUDIO LOST
+2026-10-24 23:36:01.979   SD write speed avg 1383 KB/s (need 750 KB/s); deepest backlog 16 blocks = 341 ms of audio (PSRAM pool)
+2026-10-24 23:36:01.979 MODE: idle, Bluetooth off
+2026-10-24 23:36:01.979 signal dBFS: mic0 -64.9 mic1 -66.2 mic2 -67.4 mic3 -67.9 mic4 -68.2 mic5 -67.8 mic6 -68.7 mic7 -68.8
+2026-10-24 23:36:01.979     DC:      mic0    -90 mic1    -41 mic2     -8 mic3    -42 mic4    -70 mic5   -215 mic6     98 mic7    137
+2026-10-24 23:36:01.979 HEALTH: up=427 rec=0 take=254 part=1 recsecs=0 free_mb=29344 heap=223116 heapmin=213988 heapblk=176116 psram=4030404 backlog_ms=341 write_ms=13.4 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:36:02.183 'r'
+2026-10-24 23:36:02.389 REC start: /MMSA8_0255/MMSA8_0255_01.wav (8 ch; file opened in 284 ms)
+2026-10-24 23:36:02.389 MODE: RECORDING, Bluetooth off
+2026-10-24 23:36:02.389 'r'
+2026-10-24 23:36:02.595 REC stop: wrote the 13 queued blocks (277 ms of audio) first, in 149 ms
+2026-10-24 23:36:02.595 REC stop: /MMSA8_0255/MMSA8_0255_01.wav, 0.3 s audio (229376 bytes), wall time 0.0 s
+2026-10-24 23:36:02.595   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:36:02.595   DMA overflows 0, pool drops 0, worst SD write 13.0 ms, min free blocks 241/256 -> NO AUDIO LOST
+2026-10-24 23:36:02.595   SD write speed avg 1392 KB/s (need 750 KB/s); deepest backlog 15 blocks = 320 ms of audio (PSRAM pool)
+2026-10-24 23:36:02.595 MODE: idle, Bluetooth off
+2026-10-24 23:36:02.595 'r'
+2026-10-24 23:36:03.003 REC start: /MMSA8_0256/MMSA8_0256_01.wav (8 ch; file opened in 288 ms)
+2026-10-24 23:36:03.003 MODE: RECORDING, Bluetooth off
+2026-10-24 23:36:03.003 'r'
+2026-10-24 23:36:03.003 REC stop: wrote the 13 queued blocks (277 ms of audio) first, in 149 ms
+2026-10-24 23:36:03.207 REC stop: /MMSA8_0256/MMSA8_0256_01.wav, 0.3 s audio (229376 bytes), wall time 0.0 s
+2026-10-24 23:36:03.207   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:36:03.208   DMA overflows 0, pool drops 0, worst SD write 13.2 ms, min free blocks 241/256 -> NO AUDIO LOST
+2026-10-24 23:36:03.208   SD write speed avg 1391 KB/s (need 750 KB/s); deepest backlog 15 blocks = 320 ms of audio (PSRAM pool)
+2026-10-24 23:36:03.208 MODE: idle, Bluetooth off
+2026-10-24 23:36:03.208 HEALTH: up=428 rec=0 take=256 part=1 recsecs=0 free_mb=29344 heap=223116 heapmin=213988 heapblk=176116 psram=4030404 backlog_ms=320 write_ms=13.2 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:36:03.412 'r'
+2026-10-24 23:36:03.618 REC start: /MMSA8_0257/MMSA8_0257_01.wav (8 ch; file opened in 284 ms)
+2026-10-24 23:36:03.618 MODE: RECORDING, Bluetooth off
+2026-10-24 23:36:03.618 'r'
+2026-10-24 23:36:03.824 REC stop: wrote the 12 queued blocks (256 ms of audio) first, in 148 ms
+2026-10-24 23:36:03.824 REC stop: /MMSA8_0257/MMSA8_0257_01.wav, 0.3 s audio (245760 bytes), wall time 0.0 s
+2026-10-24 23:36:03.824   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:36:03.825   DMA overflows 0, pool drops 0, worst SD write 18.5 ms, min free blocks 242/256 -> NO AUDIO LOST
+2026-10-24 23:36:03.825   SD write speed avg 1333 KB/s (need 750 KB/s); deepest backlog 14 blocks = 298 ms of audio (PSRAM pool)
+2026-10-24 23:36:03.825 MODE: idle, Bluetooth off
+2026-10-24 23:36:04.030 signal dBFS: mic0 -65.9 mic1 -66.7 mic2 -67.1 mic3 -67.0 mic4 -68.0 mic5 -68.0 mic6 -68.2 mic7 -68.9
+2026-10-24 23:36:04.030     DC:      mic0    -88 mic1    -33 mic2      3 mic3    -46 mic4    -72 mic5   -208 mic6    104 mic7    137
+2026-10-24 23:36:04.235 HEALTH: up=429 rec=0 take=257 part=1 recsecs=0 free_mb=29344 heap=223116 heapmin=213988 heapblk=176116 psram=4030404 backlog_ms=298 write_ms=18.5 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:36:04.441 HEALTH: up=429 rec=0 take=257 part=1 recsecs=0 free_mb=29344 heap=223116 heapmin=213988 heapblk=176116 psram=4030404 backlog_ms=0 write_ms=0.0 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:36:04.647 'r'
+2026-10-24 23:36:04.852 REC start: /MMSA8_0258/MMSA8_0258_01.wav (8 ch; file opened in 284 ms)
+2026-10-24 23:36:04.852 MODE: RECORDING, Bluetooth off
+2026-10-24 23:36:05.057   SD slowdown absorbed at +0 ms: backlog peaked at 14 blocks (298 ms of audio), drained after 280 ms
+2026-10-24 23:36:10.170 HEALTH: up=435 rec=1 take=258 part=1 recsecs=5 free_mb=29340 heap=218580 heapmin=213988 heapblk=172020 psram=4030404 backlog_ms=298 write_ms=16.4 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:36:10.374 'b': switching Bluetooth
+2026-10-24 23:36:10.579 Bluetooth ON: advertising as "MMSA V2" (227 ms; uses 39892 bytes of RAM, 178688 still free)
+2026-10-24 23:36:10.579 MODE: RECORDING, Bluetooth advertising
+2026-10-24 23:36:18.364 HEALTH: up=443 rec=1 take=258 part=1 recsecs=13 free_mb=29334 heap=178688 heapmin=174100 heapblk=135156 psram=4030404 backlog_ms=42 write_ms=20.5 ovf=0 drops=0 ble=1 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:36:18.977 Bluetooth link up: interval 60.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-24 23:36:18.977 Bluetooth: remote connected
+2026-10-24 23:36:18.977 MODE: RECORDING, Bluetooth connected
+2026-10-24 23:36:19.592 REC continues in /MMSA8_0258/MMSA8_0258_02.wav (finished /MMSA8_0258/MMSA8_0258_01.wav; 15.0 s recorded so far; switch took 92 ms)
+2026-10-24 23:36:20.415 Bluetooth link params: interval 15.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-24 23:36:22.268 Bluetooth link params: interval 60.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-24 23:36:22.471 'b': switching Bluetooth
+2026-10-24 23:36:22.677 Bluetooth link down: reason 0x16 (closed by this device (firmware)), last RSSI -58 dBm
+2026-10-24 23:36:22.677 Bluetooth OFF: stack shut down, radio off (139 ms; 218580 bytes of RAM free, 0 lost over 1 on/off cycles)
+2026-10-24 23:36:22.677 MODE: RECORDING, Bluetooth off
+2026-10-24 23:36:27.200 VBAT log: 452,4010,3956,4075,1,0
+2026-10-24 23:36:29.051 HEALTH: up=454 rec=1 take=258 part=2 recsecs=23 free_mb=29326 heap=218580 heapmin=174100 heapblk=131060 psram=4030404 backlog_ms=106 write_ms=16.3 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:36:29.258 'b': switching Bluetooth
+2026-10-24 23:36:29.463 Bluetooth ON: advertising as "MMSA V2" (226 ms; uses 39880 bytes of RAM, 178700 still free)
+2026-10-24 23:36:29.463 MODE: RECORDING, Bluetooth advertising
+2026-10-24 23:36:34.590 REC continues in /MMSA8_0258/MMSA8_0258_03.wav (finished /MMSA8_0258/MMSA8_0258_02.wav; 30.0 s recorded so far; switch took 92 ms)
+2026-10-24 23:36:38.910 HEALTH: up=464 rec=1 take=258 part=3 recsecs=32 free_mb=29320 heap=178692 heapmin=174100 heapblk=135156 psram=4030404 backlog_ms=917 write_ms=100.7 ovf=0 drops=0 ble=1 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:36:39.115 'b': switching Bluetooth
+2026-10-24 23:36:39.115 Bluetooth OFF: stack shut down, radio off (52 ms; 218572 bytes of RAM free, 8 lost over 2 on/off cycles)
+2026-10-24 23:36:39.115 MODE: RECORDING, Bluetooth off
+2026-10-24 23:36:41.158   SD slowdown absorbed at +30895 ms: backlog peaked at 53 blocks (1130 ms of audio), drained after 5353 ms
+2026-10-24 23:36:45.662 HEALTH: up=470 rec=1 take=258 part=3 recsecs=40 free_mb=29314 heap=218572 heapmin=174100 heapblk=135156 psram=4030404 backlog_ms=1130 write_ms=62.4 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:36:45.865 'b': switching Bluetooth
+2026-10-24 23:36:46.069 Bluetooth ON: advertising as "MMSA V2" (228 ms; uses 39888 bytes of RAM, 178684 still free)
+2026-10-24 23:36:46.069 MODE: RECORDING, Bluetooth advertising
+2026-10-24 23:36:49.754 REC continues in /MMSA8_0258/MMSA8_0258_04.wav (finished /MMSA8_0258/MMSA8_0258_03.wav; 45.0 s recorded so far; switch took 92 ms)
+2026-10-24 23:36:52.007 HEALTH: up=477 rec=1 take=258 part=4 recsecs=46 free_mb=29310 heap=178688 heapmin=174100 heapblk=135156 psram=4030404 backlog_ms=106 write_ms=50.9 ovf=0 drops=0 ble=1 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:36:52.416 Bluetooth link up: interval 60.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-24 23:36:52.416 Bluetooth: remote connected
+2026-10-24 23:36:52.416 MODE: RECORDING, Bluetooth connected
+2026-10-24 23:36:53.850 Bluetooth link params: interval 15.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-24 23:36:54.876 HEALTH: up=480 rec=1 take=258 part=4 recsecs=49 free_mb=29308 heap=178368 heapmin=174100 heapblk=135156 psram=4030404 backlog_ms=42 write_ms=16.3 ovf=0 drops=0 ble=2 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:36:55.492 Bluetooth link params: interval 60.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-24 23:36:57.137 'b': switching Bluetooth
+2026-10-24 23:36:57.137 Bluetooth link down: reason 0x16 (closed by this device (firmware)), last RSSI -53 dBm
+2026-10-24 23:36:57.342 Bluetooth OFF: stack shut down, radio off (96 ms; 218576 bytes of RAM free, 4 lost over 3 on/off cycles)
+2026-10-24 23:36:57.342 MODE: RECORDING, Bluetooth off
+2026-10-24 23:36:57.342 VBAT log: 482,4010,3942,4066,1,0
+2026-10-24 23:37:03.093 HEALTH: up=488 rec=1 take=258 part=4 recsecs=57 free_mb=29302 heap=218576 heapmin=174100 heapblk=135156 psram=4030404 backlog_ms=64 write_ms=55.1 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:37:03.298 'b': switching Bluetooth
+2026-10-24 23:37:03.503 Bluetooth ON: advertising as "MMSA V2" (227 ms; uses 39896 bytes of RAM, 178680 still free)
+2026-10-24 23:37:03.503 MODE: RECORDING, Bluetooth advertising
+2026-10-24 23:37:04.731 REC continues in /MMSA8_0258/MMSA8_0258_05.wav (finished /MMSA8_0258/MMSA8_0258_04.wav; 60.0 s recorded so far; switch took 121 ms)
+2026-10-24 23:37:11.281 HEALTH: up=496 rec=1 take=258 part=5 recsecs=65 free_mb=29296 heap=178676 heapmin=174100 heapblk=135156 psram=4030404 backlog_ms=149 write_ms=44.8 ovf=0 drops=0 ble=1 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:37:13.736 Bluetooth link up: interval 60.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-24 23:37:13.736 Bluetooth: remote connected
+2026-10-24 23:37:13.736 MODE: RECORDING, Bluetooth connected
+2026-10-24 23:37:14.967 Bluetooth link params: interval 15.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-24 23:37:16.809 Bluetooth link params: interval 60.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-24 23:37:19.675 REC continues in /MMSA8_0258/MMSA8_0258_06.wav (finished /MMSA8_0258/MMSA8_0258_05.wav; 75.0 s recorded so far; switch took 99 ms)
+2026-10-24 23:37:22.128 Bluetooth link down: reason 0x13 (closed by the computer/browser), last RSSI -60 dBm
+2026-10-24 23:37:22.128 Bluetooth: remote disconnected, advertising again
+2026-10-24 23:37:22.128 MODE: RECORDING, Bluetooth advertising
+2026-10-24 23:37:27.472 VBAT log: 512,4012,3950,4080,1,1
+2026-10-24 23:37:28.085 HEALTH: up=513 rec=1 take=258 part=6 recsecs=82 free_mb=29283 heap=178332 heapmin=173736 heapblk=131060 psram=4030404 backlog_ms=128 write_ms=22.6 ovf=0 drops=0 ble=1 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:37:28.292 'b': switching Bluetooth
+2026-10-24 23:37:28.292 Bluetooth OFF: stack shut down, radio off (60 ms; 218580 bytes of RAM free, 0 lost over 4 on/off cycles)
+2026-10-24 23:37:28.292 MODE: RECORDING, Bluetooth off
+2026-10-24 23:37:34.666 REC continues in /MMSA8_0258/MMSA8_0258_07.wav (finished /MMSA8_0258/MMSA8_0258_06.wav; 90.0 s recorded so far; switch took 98 ms)
+2026-10-24 23:37:35.487 HEALTH: up=520 rec=1 take=258 part=7 recsecs=89 free_mb=29278 heap=218580 heapmin=173736 heapblk=172020 psram=4030404 backlog_ms=128 write_ms=32.4 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:37:35.693 'b': switching Bluetooth
+2026-10-24 23:37:35.895 Bluetooth ON: advertising as "MMSA V2" (227 ms; uses 39892 bytes of RAM, 178688 still free)
+2026-10-24 23:37:35.895 MODE: RECORDING, Bluetooth advertising
+2026-10-24 23:37:45.326 HEALTH: up=530 rec=1 take=258 part=7 recsecs=99 free_mb=29271 heap=178688 heapmin=173736 heapblk=135156 psram=4030404 backlog_ms=64 write_ms=19.3 ovf=0 drops=0 ble=1 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:37:46.554 Bluetooth link up: interval 60.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-24 23:37:46.554 Bluetooth: remote connected
+2026-10-24 23:37:46.554 MODE: RECORDING, Bluetooth connected
+2026-10-24 23:37:48.183 Bluetooth link params: interval 15.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-24 23:37:49.613 REC continues in /MMSA8_0258/MMSA8_0258_08.wav (finished /MMSA8_0258/MMSA8_0258_07.wav; 105.0 s recorded so far; switch took 99 ms)
+2026-10-24 23:37:49.819 Bluetooth link params: interval 60.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-24 23:37:50.434 'b': switching Bluetooth
+2026-10-24 23:37:50.434 Bluetooth link down: reason 0x16 (closed by this device (firmware)), last RSSI -62 dBm
+2026-10-24 23:37:50.434 Bluetooth OFF: stack shut down, radio off (75 ms; 218572 bytes of RAM free, 8 lost over 5 on/off cycles)
+2026-10-24 23:37:50.434 MODE: RECORDING, Bluetooth off
+2026-10-24 23:37:54.954 HEALTH: up=540 rec=1 take=258 part=8 recsecs=109 free_mb=29264 heap=218572 heapmin=173736 heapblk=131060 psram=4030404 backlog_ms=128 write_ms=21.9 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:37:57.834 VBAT log: 542,4013,3956,4085,1,0
+2026-10-24 23:38:00.910 HEALTH: up=546 rec=1 take=258 part=8 recsecs=115 free_mb=29259 heap=218572 heapmin=173736 heapblk=131060 psram=4030404 backlog_ms=64 write_ms=20.8 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:38:01.115 'b': switching Bluetooth
+2026-10-24 23:38:01.320 Bluetooth ON: advertising as "MMSA V2" (228 ms; uses 39888 bytes of RAM, 178684 still free)
+2026-10-24 23:38:01.320 MODE: RECORDING, Bluetooth advertising
+2026-10-24 23:38:04.613 REC continues in /MMSA8_0258/MMSA8_0258_09.wav (finished /MMSA8_0258/MMSA8_0258_08.wav; 120.0 s recorded so far; switch took 99 ms)
+2026-10-24 23:38:10.755 HEALTH: up=555 rec=1 take=258 part=9 recsecs=125 free_mb=29252 heap=178680 heapmin=173736 heapblk=135156 psram=4030404 backlog_ms=128 write_ms=50.1 ovf=0 drops=0 ble=1 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:38:11.981 Bluetooth link up: interval 60.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-24 23:38:11.981 Bluetooth: remote connected
+2026-10-24 23:38:11.981 MODE: RECORDING, Bluetooth connected
+2026-10-24 23:38:13.212 Bluetooth link params: interval 15.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-24 23:38:15.059 Bluetooth link params: interval 60.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-24 23:38:19.581 REC continues in /MMSA8_0258/MMSA8_0258_10.wav (finished /MMSA8_0258/MMSA8_0258_09.wav; 135.0 s recorded so far; switch took 98 ms)
+2026-10-24 23:38:20.397 Bluetooth link down: reason 0x13 (closed by the computer/browser), last RSSI -54 dBm
+2026-10-24 23:38:20.397 Bluetooth: remote disconnected, advertising again
+2026-10-24 23:38:20.397 MODE: RECORDING, Bluetooth advertising
+2026-10-24 23:38:27.173 HEALTH: up=572 rec=1 take=258 part=10 recsecs=141 free_mb=29240 heap=178316 heapmin=173736 heapblk=131060 psram=4030404 backlog_ms=128 write_ms=50.6 ovf=0 drops=0 ble=1 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:38:27.378 'b': switching Bluetooth
+2026-10-24 23:38:27.378 Bluetooth OFF: stack shut down, radio off (60 ms; 218576 bytes of RAM free, 4 lost over 6 on/off cycles)
+2026-10-24 23:38:27.378 MODE: RECORDING, Bluetooth off
+2026-10-24 23:38:27.995 VBAT log: 573,4015,3948,4091,1,0
+2026-10-24 23:38:34.574 REC continues in /MMSA8_0258/MMSA8_0258_11.wav (finished /MMSA8_0258/MMSA8_0258_10.wav; 150.0 s recorded so far; switch took 100 ms)
+2026-10-24 23:38:34.574 HEALTH: up=579 rec=1 take=258 part=11 recsecs=149 free_mb=29235 heap=218580 heapmin=173736 heapblk=172020 psram=4030404 backlog_ms=42 write_ms=23.1 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:38:34.777 'b': switching Bluetooth
+2026-10-24 23:38:34.981 Bluetooth ON: advertising as "MMSA V2" (231 ms; uses 39884 bytes of RAM, 178696 still free)
+2026-10-24 23:38:34.981 MODE: RECORDING, Bluetooth advertising
+2026-10-24 23:38:44.420 HEALTH: up=589 rec=1 take=258 part=11 recsecs=158 free_mb=29227 heap=178696 heapmin=173736 heapblk=135156 psram=4030404 backlog_ms=128 write_ms=33.8 ovf=0 drops=0 ble=1 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:38:45.444 Bluetooth link up: interval 60.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-24 23:38:45.444 Bluetooth: remote connected
+2026-10-24 23:38:45.444 MODE: RECORDING, Bluetooth connected
+2026-10-24 23:38:46.881 Bluetooth link params: interval 15.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-24 23:38:48.527 Bluetooth link params: interval 60.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-24 23:38:49.555 REC continues in /MMSA8_0258/MMSA8_0258_12.wav (finished /MMSA8_0258/MMSA8_0258_11.wav; 165.0 s recorded so far; switch took 102 ms)
+2026-10-24 23:38:52.017 Bluetooth link down: reason 0x13 (closed by the computer/browser), last RSSI -54 dBm
+2026-10-24 23:38:52.017 Bluetooth: remote disconnected, advertising again
+2026-10-24 23:38:52.017 MODE: RECORDING, Bluetooth advertising
+2026-10-24 23:38:54.891 HEALTH: up=600 rec=1 take=258 part=12 recsecs=169 free_mb=29220 heap=178340 heapmin=173736 heapblk=131060 psram=4030404 backlog_ms=128 write_ms=16.5 ovf=0 drops=0 ble=1 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:38:57.975 HEALTH: up=603 rec=1 take=258 part=12 recsecs=172 free_mb=29217 heap=178340 heapmin=173736 heapblk=131060 psram=4030404 backlog_ms=42 write_ms=15.6 ovf=0 drops=0 ble=1 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:38:58.181 'b': switching Bluetooth
+2026-10-24 23:38:58.181 Bluetooth OFF: stack shut down, radio off (60 ms; 218572 bytes of RAM free, 8 lost over 7 on/off cycles)
+2026-10-24 23:38:58.181 MODE: RECORDING, Bluetooth off
+2026-10-24 23:38:58.181 VBAT log: 603,4010,3929,4080,1,0
+2026-10-24 23:39:04.551 REC continues in /MMSA8_0258/MMSA8_0258_13.wav (finished /MMSA8_0258/MMSA8_0258_12.wav; 180.0 s recorded so far; switch took 101 ms)
+2026-10-24 23:39:05.372 HEALTH: up=610 rec=1 take=258 part=13 recsecs=179 free_mb=29212 heap=218580 heapmin=173736 heapblk=172020 psram=4030404 backlog_ms=128 write_ms=22.6 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:39:05.576 'b': switching Bluetooth
+2026-10-24 23:39:05.783 Bluetooth ON: advertising as "MMSA V2" (227 ms; uses 39884 bytes of RAM, 178696 still free)
+2026-10-24 23:39:05.783 MODE: RECORDING, Bluetooth advertising
+2026-10-24 23:39:14.204 HEALTH: up=619 rec=1 take=258 part=13 recsecs=188 free_mb=29206 heap=178696 heapmin=173736 heapblk=135156 psram=4030404 backlog_ms=42 write_ms=16.9 ovf=0 drops=0 ble=1 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:39:15.022 Bluetooth link up: interval 60.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-24 23:39:15.022 Bluetooth: remote connected
+2026-10-24 23:39:15.022 MODE: RECORDING, Bluetooth connected
+2026-10-24 23:39:16.454 Bluetooth link params: interval 15.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-24 23:39:18.093 Bluetooth link params: interval 60.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-24 23:39:19.735 REC continues in /MMSA8_0258/MMSA8_0258_14.wav (finished /MMSA8_0258/MMSA8_0258_13.wav; 195.0 s recorded so far; switch took 102 ms)
+2026-10-24 23:39:20.765 Bluetooth link down: reason 0x13 (closed by the computer/browser), last RSSI -60 dBm
+2026-10-24 23:39:20.766 Bluetooth: remote disconnected, advertising again
+2026-10-24 23:39:20.766 MODE: RECORDING, Bluetooth advertising
+2026-10-24 23:39:21.176 HEALTH: up=626 rec=1 take=258 part=14 recsecs=195 free_mb=29200 heap=178348 heapmin=173736 heapblk=131060 psram=4030404 backlog_ms=128 write_ms=19.4 ovf=0 drops=0 ble=1 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:39:21.381 'b': switching Bluetooth
+2026-10-24 23:39:21.381 Bluetooth OFF: stack shut down, radio off (60 ms; 218580 bytes of RAM free, 0 lost over 8 on/off cycles)
+2026-10-24 23:39:21.381 MODE: RECORDING, Bluetooth off
+2026-10-24 23:39:28.153 VBAT log: 633,4005,3945,4056,1,0
+2026-10-24 23:39:29.380 HEALTH: up=634 rec=1 take=258 part=14 recsecs=203 free_mb=29194 heap=218580 heapmin=173736 heapblk=131060 psram=4030404 backlog_ms=42 write_ms=16.4 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:39:29.586 'b': switching Bluetooth
+2026-10-24 23:39:29.791 Bluetooth ON: advertising as "MMSA V2" (226 ms; uses 39884 bytes of RAM, 178696 still free)
+2026-10-24 23:39:29.791 MODE: RECORDING, Bluetooth advertising
+2026-10-24 23:39:34.709 REC continues in /MMSA8_0258/MMSA8_0258_15.wav (finished /MMSA8_0258/MMSA8_0258_14.wav; 210.0 s recorded so far; switch took 102 ms)
+2026-10-24 23:39:37.991 HEALTH: up=643 rec=1 take=258 part=15 recsecs=212 free_mb=29188 heap=178696 heapmin=173736 heapblk=135156 psram=4030404 backlog_ms=128 write_ms=81.7 ovf=0 drops=0 ble=1 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:39:38.197 'b': switching Bluetooth
+2026-10-24 23:39:38.197 Bluetooth OFF: stack shut down, radio off (61 ms; 218580 bytes of RAM free, 0 lost over 9 on/off cycles)
+2026-10-24 23:39:38.197 MODE: RECORDING, Bluetooth off
+2026-10-24 23:39:43.741 HEALTH: up=648 rec=1 take=258 part=15 recsecs=218 free_mb=29184 heap=218580 heapmin=173736 heapblk=135156 psram=4030404 backlog_ms=64 write_ms=48.2 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:39:43.946 'b': switching Bluetooth
+2026-10-24 23:39:44.151 Bluetooth ON: advertising as "MMSA V2" (228 ms; uses 39884 bytes of RAM, 178696 still free)
+2026-10-24 23:39:44.151 MODE: RECORDING, Bluetooth advertising
+2026-10-24 23:39:49.075 HEALTH: up=654 rec=1 take=258 part=15 recsecs=223 free_mb=29180 heap=178696 heapmin=173736 heapblk=135156 psram=4030404 backlog_ms=64 write_ms=18.8 ovf=0 drops=0 ble=1 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:39:49.692 REC continues in /MMSA8_0258/MMSA8_0258_16.wav (finished /MMSA8_0258/MMSA8_0258_15.wav; 225.0 s recorded so far; switch took 104 ms)
+2026-10-24 23:39:49.900 Bluetooth link up: interval 60.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-24 23:39:49.900 Bluetooth: remote connected
+2026-10-24 23:39:49.900 MODE: RECORDING, Bluetooth connected
+2026-10-24 23:39:51.336 Bluetooth link params: interval 15.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-24 23:39:53.183 Bluetooth link params: interval 60.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-24 23:39:53.803 'b': switching Bluetooth
+2026-10-24 23:39:53.803 Bluetooth link down: reason 0x16 (closed by this device (firmware)), last RSSI -63 dBm
+2026-10-24 23:39:53.803 Bluetooth OFF: stack shut down, radio off (96 ms; 218492 bytes of RAM free, 88 lost over 10 on/off cycles)
+2026-10-24 23:39:53.803 MODE: RECORDING, Bluetooth off
+2026-10-24 23:39:55.034 HEALTH: up=660 rec=1 take=258 part=16 recsecs=229 free_mb=29176 heap=218492 heapmin=173736 heapblk=135156 psram=4030404 backlog_ms=128 write_ms=18.4 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:39:58.517 VBAT log: 663,4013,3949,4090,1,0
+2026-10-24 23:40:04.672 REC continues in /MMSA8_0258/MMSA8_0258_17.wav (finished /MMSA8_0258/MMSA8_0258_16.wav; 240.0 s recorded so far; switch took 104 ms)
+2026-10-24 23:40:05.083 HEALTH: up=670 rec=1 take=258 part=17 recsecs=239 free_mb=29168 heap=218488 heapmin=173736 heapblk=139252 psram=4030404 backlog_ms=128 write_ms=16.5 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:40:05.289 'b': switching Bluetooth
+2026-10-24 23:40:05.492 Bluetooth ON: advertising as "MMSA V2" (227 ms; uses 39904 bytes of RAM, 178584 still free)
+2026-10-24 23:40:05.492 MODE: RECORDING, Bluetooth advertising
+2026-10-24 23:40:14.719 HEALTH: up=679 rec=1 take=258 part=17 recsecs=249 free_mb=29161 heap=178584 heapmin=173736 heapblk=135156 psram=4030404 backlog_ms=64 write_ms=51.7 ovf=0 drops=0 ble=1 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:40:14.926 'b': switching Bluetooth
+2026-10-24 23:40:14.926 Bluetooth OFF: stack shut down, radio off (54 ms; 218488 bytes of RAM free, 92 lost over 11 on/off cycles)
+2026-10-24 23:40:14.926 MODE: RECORDING, Bluetooth off
+2026-10-24 23:40:19.655 REC continues in /MMSA8_0258/MMSA8_0258_18.wav (finished /MMSA8_0258/MMSA8_0258_17.wav; 255.0 s recorded so far; switch took 105 ms)
+2026-10-24 23:40:21.907 HEALTH: up=687 rec=1 take=258 part=18 recsecs=256 free_mb=29156 heap=218492 heapmin=173736 heapblk=139252 psram=4030404 backlog_ms=128 write_ms=18.7 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:40:22.113 'b': switching Bluetooth
+2026-10-24 23:40:22.318 Bluetooth ON: advertising as "MMSA V2" (228 ms; uses 39892 bytes of RAM, 178600 still free)
+2026-10-24 23:40:22.318 MODE: RECORDING, Bluetooth advertising
+2026-10-24 23:40:28.690 VBAT log: 693,4009,3928,4073,1,1
+2026-10-24 23:40:30.331 HEALTH: up=695 rec=1 take=258 part=18 recsecs=264 free_mb=29150 heap=178600 heapmin=173736 heapblk=135156 psram=4030404 backlog_ms=64 write_ms=23.0 ovf=0 drops=0 ble=1 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:40:30.536 'b': switching Bluetooth
+2026-10-24 23:40:30.536 Bluetooth OFF: stack shut down, radio off (54 ms; 218492 bytes of RAM free, 88 lost over 12 on/off cycles)
+2026-10-24 23:40:30.536 MODE: RECORDING, Bluetooth off
+2026-10-24 23:40:34.646 REC continues in /MMSA8_0258/MMSA8_0258_19.wav (finished /MMSA8_0258/MMSA8_0258_18.wav; 270.0 s recorded so far; switch took 104 ms)
+2026-10-24 23:40:39.160 HEALTH: up=704 rec=1 take=258 part=19 recsecs=273 free_mb=29143 heap=218492 heapmin=173736 heapblk=139252 psram=4030404 backlog_ms=128 write_ms=32.8 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:40:39.366 'b': switching Bluetooth
+2026-10-24 23:40:39.569 Bluetooth ON: advertising as "MMSA V2" (227 ms; uses 39892 bytes of RAM, 178600 still free)
+2026-10-24 23:40:39.569 MODE: RECORDING, Bluetooth advertising
+2026-10-24 23:40:45.323 HEALTH: up=710 rec=1 take=258 part=19 recsecs=279 free_mb=29139 heap=178600 heapmin=173736 heapblk=135156 psram=4030404 backlog_ms=64 write_ms=23.9 ovf=0 drops=0 ble=1 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:40:46.142 Bluetooth link up: interval 60.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-24 23:40:46.142 Bluetooth: remote connected
+2026-10-24 23:40:46.142 MODE: RECORDING, Bluetooth connected
+2026-10-24 23:40:47.579 Bluetooth link params: interval 15.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-24 23:40:49.430 Bluetooth link params: interval 60.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-24 23:40:49.635 REC continues in /MMSA8_0258/MMSA8_0258_20.wav (finished /MMSA8_0258/MMSA8_0258_19.wav; 284.9 s recorded so far; switch took 104 ms)
+2026-10-24 23:40:54.989 HEALTH: up=720 rec=1 take=258 part=20 recsecs=289 free_mb=29132 heap=178280 heapmin=173736 heapblk=131060 psram=4030404 backlog_ms=128 write_ms=18.8 ovf=0 drops=0 ble=2 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:40:55.811 Bluetooth link down: reason 0x13 (closed by the computer/browser), last RSSI -55 dBm
+2026-10-24 23:40:55.811 Bluetooth: remote disconnected, advertising again
+2026-10-24 23:40:55.812 MODE: RECORDING, Bluetooth advertising
+2026-10-24 23:40:58.687 VBAT log: 723,4009,3958,4096,1,1
+2026-10-24 23:41:01.355 HEALTH: up=726 rec=1 take=258 part=20 recsecs=295 free_mb=29127 heap=178248 heapmin=173660 heapblk=131060 psram=4030404 backlog_ms=64 write_ms=16.4 ovf=0 drops=0 ble=1 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:41:02.381 Bluetooth link up: interval 60.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-24 23:41:02.381 Bluetooth: remote connected
+2026-10-24 23:41:02.381 MODE: RECORDING, Bluetooth connected
+2026-10-24 23:41:03.815 Bluetooth link params: interval 15.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-24 23:41:04.634 REC continues in /MMSA8_0258/MMSA8_0258_21.wav (finished /MMSA8_0258/MMSA8_0258_20.wav; 299.9 s recorded so far; switch took 108 ms)
+2026-10-24 23:41:05.451 Bluetooth link params: interval 60.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-24 23:41:11.195 Bluetooth link down: reason 0x13 (closed by the computer/browser), last RSSI -55 dBm
+2026-10-24 23:41:11.195 Bluetooth: remote disconnected, advertising again
+2026-10-24 23:41:11.195 MODE: RECORDING, Bluetooth advertising
+2026-10-24 23:41:16.940 HEALTH: up=742 rec=1 take=258 part=21 recsecs=311 free_mb=29116 heap=178252 heapmin=173660 heapblk=131060 psram=4030404 backlog_ms=128 write_ms=19.3 ovf=0 drops=0 ble=1 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:41:17.966 Bluetooth link up: interval 60.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-24 23:41:17.966 Bluetooth: remote connected
+2026-10-24 23:41:17.966 MODE: RECORDING, Bluetooth connected
+2026-10-24 23:41:19.397 Bluetooth link params: interval 15.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-24 23:41:19.601 REC continues in /MMSA8_0258/MMSA8_0258_22.wav (finished /MMSA8_0258/MMSA8_0258_21.wav; 314.9 s recorded so far; switch took 109 ms)
+2026-10-24 23:41:21.251 Bluetooth link params: interval 60.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-24 23:41:25.325 Bluetooth link down: reason 0x13 (closed by the computer/browser), last RSSI -57 dBm
+2026-10-24 23:41:25.325 Bluetooth: remote disconnected, advertising again
+2026-10-24 23:41:25.325 MODE: RECORDING, Bluetooth advertising
+2026-10-24 23:41:27.565 HEALTH: up=752 rec=1 take=258 part=22 recsecs=322 free_mb=29108 heap=178248 heapmin=173660 heapblk=131060 psram=4030404 backlog_ms=128 write_ms=20.7 ovf=0 drops=0 ble=1 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:41:28.384 Bluetooth link up: interval 60.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-24 23:41:28.384 Bluetooth: remote connected
+2026-10-24 23:41:28.384 MODE: RECORDING, Bluetooth connected
+2026-10-24 23:41:28.997 VBAT log: 754,4014,3962,4080,1,2
+2026-10-24 23:41:29.811 Bluetooth link params: interval 15.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-24 23:41:31.448 Bluetooth link params: interval 60.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-24 23:41:34.701 REC continues in /MMSA8_0258/MMSA8_0258_23.wav (finished /MMSA8_0258/MMSA8_0258_22.wav; 329.9 s recorded so far; switch took 108 ms)
+2026-10-24 23:41:38.352 Bluetooth link down: reason 0x13 (closed by the computer/browser), last RSSI -61 dBm
+2026-10-24 23:41:38.352 Bluetooth: remote disconnected, advertising again
+2026-10-24 23:41:38.352 MODE: RECORDING, Bluetooth advertising
+2026-10-24 23:41:41.608 HEALTH: up=766 rec=1 take=258 part=23 recsecs=336 free_mb=29098 heap=178248 heapmin=173612 heapblk=131060 psram=4030404 backlog_ms=128 write_ms=49.7 ovf=0 drops=0 ble=1 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:41:42.422 Bluetooth link up: interval 60.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-24 23:41:42.422 Bluetooth: remote connected
+2026-10-24 23:41:42.422 MODE: RECORDING, Bluetooth connected
+2026-10-24 23:41:43.844 Bluetooth link params: interval 15.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-24 23:41:45.679 Bluetooth link params: interval 60.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-24 23:41:49.568 REC continues in /MMSA8_0258/MMSA8_0258_24.wav (finished /MMSA8_0258/MMSA8_0258_23.wav; 344.9 s recorded so far; switch took 108 ms)
+2026-10-24 23:41:49.773 Bluetooth link down: reason 0x13 (closed by the computer/browser), last RSSI -53 dBm
+2026-10-24 23:41:49.773 Bluetooth: remote disconnected, advertising again
+2026-10-24 23:41:49.773 MODE: RECORDING, Bluetooth advertising
+2026-10-24 23:41:55.095 HEALTH: up=780 rec=1 take=258 part=24 recsecs=349 free_mb=29088 heap=178252 heapmin=173612 heapblk=131060 psram=4030404 backlog_ms=128 write_ms=53.7 ovf=0 drops=0 ble=1 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:41:56.325 HEALTH: up=781 rec=1 take=258 part=24 recsecs=350 free_mb=29087 heap=178252 heapmin=173612 heapblk=131060 psram=4030404 backlog_ms=42 write_ms=16.2 ovf=0 drops=0 ble=1 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:41:57.345 Bluetooth link up: interval 60.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-24 23:41:57.345 Bluetooth: remote connected
+2026-10-24 23:41:57.345 MODE: RECORDING, Bluetooth connected
+2026-10-24 23:41:58.777 Bluetooth link params: interval 15.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-24 23:41:58.982 VBAT log: 784,4011,3939,4075,1,2
+2026-10-24 23:42:00.418 Bluetooth link params: interval 60.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-24 23:42:03.085 'b': switching Bluetooth
+2026-10-24 23:42:03.085 Bluetooth link down: reason 0x16 (closed by this device (firmware)), last RSSI -58 dBm
+2026-10-24 23:42:03.289 Bluetooth OFF: stack shut down, radio off (96 ms; 218488 bytes of RAM free, 92 lost over 13 on/off cycles)
+2026-10-24 23:42:03.289 MODE: RECORDING, Bluetooth off
+2026-10-24 23:42:04.719 REC continues in /MMSA8_0258/MMSA8_0258_25.wav (finished /MMSA8_0258/MMSA8_0258_24.wav; 359.9 s recorded so far; switch took 107 ms)
+2026-10-24 23:42:11.889 HEALTH: up=796 rec=1 take=258 part=25 recsecs=366 free_mb=29075 heap=218492 heapmin=173612 heapblk=139252 psram=4030404 backlog_ms=128 write_ms=16.7 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:42:12.095 'b': switching Bluetooth
+2026-10-24 23:42:12.299 Bluetooth ON: advertising as "MMSA V2" (226 ms; uses 39908 bytes of RAM, 178584 still free)
+2026-10-24 23:42:12.299 MODE: RECORDING, Bluetooth advertising
+2026-10-24 23:42:12.505 HEALTH: up=797 rec=1 take=258 part=25 recsecs=366 free_mb=29075 heap=178584 heapmin=173612 heapblk=135156 psram=4030404 backlog_ms=42 write_ms=11.6 ovf=0 drops=0 ble=1 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:42:12.709 'b': switching Bluetooth
+2026-10-24 23:42:12.709 Bluetooth OFF: stack shut down, radio off (60 ms; 218492 bytes of RAM free, 88 lost over 14 on/off cycles)
+2026-10-24 23:42:12.709 MODE: RECORDING, Bluetooth off
+2026-10-24 23:42:12.913 HEALTH: up=797 rec=1 take=258 part=25 recsecs=367 free_mb=29075 heap=218492 heapmin=173612 heapblk=139252 psram=4030404 backlog_ms=64 write_ms=63.4 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:42:13.115 'r'
+2026-10-24 23:42:13.116 REC stop: /MMSA8_0258/MMSA8_0258_25.wav (8.5 s). Recording: 368.5 s audio in 25 files from /MMSA8_0258/MMSA8_0258_01.wav (0.26 GB), wall time 368.2 s
+2026-10-24 23:42:13.116   Checkpoints: 24, worst 37.8 ms
+2026-10-24 23:42:13.116   DMA overflows 0, pool drops 0, worst SD write 100.7 ms, min free blocks 203/256 -> NO AUDIO LOST
+2026-10-24 23:42:13.116   SD write speed avg 1481 KB/s (need 750 KB/s); deepest backlog 53 blocks = 1130 ms of audio (PSRAM pool)
+2026-10-24 23:42:13.116 MODE: idle, Bluetooth off
+2026-10-24 23:42:13.116 signal dBFS: mic0 -64.7 mic1 -65.5 mic2 -65.2 mic3 -66.3 mic4 -66.5 mic5 -67.7 mic6 -67.8 mic7 -68.5
+2026-10-24 23:42:13.116     DC:      mic0    -76 mic1    -38 mic2    -12 mic3    -50 mic4    -79 mic5   -216 mic6     98 mic7    133
+2026-10-24 23:42:13.519 HEALTH: up=798 rec=0 take=258 part=25 recsecs=367 free_mb=29075 heap=223028 heapmin=173612 heapblk=139252 psram=4030404 backlog_ms=42 write_ms=12.4 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:42:13.725 HEALTH: up=798 rec=0 take=258 part=25 recsecs=367 free_mb=29075 heap=223028 heapmin=173612 heapblk=139252 psram=4030404 backlog_ms=0 write_ms=0.0 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:42:13.930 'b': switching Bluetooth
+2026-10-24 23:42:14.134 Bluetooth ON: advertising as "MMSA V2" (228 ms; uses 39896 bytes of RAM, 183132 still free)
+2026-10-24 23:42:14.134 MODE: idle, Bluetooth advertising
+2026-10-24 23:42:15.155 signal dBFS: mic0 -66.9 mic1 -67.3 mic2 -66.2 mic3 -67.5 mic4 -66.3 mic5 -68.7 mic6 -67.4 mic7 -69.0
+2026-10-24 23:42:15.155     DC:      mic0    -69 mic1    -27 mic2      8 mic3    -39 mic4    -75 mic5   -205 mic6    105 mic7    135
+2026-10-24 23:42:15.155 Bluetooth link up: interval 60.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-24 23:42:15.155 Bluetooth: remote connected
+2026-10-24 23:42:15.155 MODE: idle, Bluetooth connected
+2026-10-24 23:42:16.585 Bluetooth link params: interval 15.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-24 23:42:16.994 REC via Bluetooth remote
+2026-10-24 23:42:17.198 REC start: /MMSA8_0259/MMSA8_0259_01.wav (8 ch; file opened in 322 ms)
+2026-10-24 23:42:17.198 MODE: RECORDING, Bluetooth connected
+2026-10-24 23:42:17.602   SD slowdown absorbed at +1 ms: backlog peaked at 17 blocks (362 ms of audio), drained after 432 ms
+2026-10-24 23:42:18.420 Bluetooth link params: interval 60.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-24 23:42:22.318 REC via Bluetooth remote
+2026-10-24 23:42:22.318 REC stop: /MMSA8_0259/MMSA8_0259_01.wav, 5.3 s audio (4096000 bytes), wall time 5.0 s
+2026-10-24 23:42:22.318   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:42:22.318   DMA overflows 0, pool drops 0, worst SD write 35.7 ms, min free blocks 239/256 -> NO AUDIO LOST
+2026-10-24 23:42:22.318   SD write speed avg 1403 KB/s (need 750 KB/s); deepest backlog 17 blocks = 362 ms of audio (PSRAM pool)
+2026-10-24 23:42:22.318 MODE: idle, Bluetooth connected
+2026-10-24 23:42:23.341 signal dBFS: mic0 -64.5 mic1 -65.5 mic2 -64.9 mic3 -65.8 mic4 -65.2 mic5 -66.8 mic6 -66.5 mic7 -67.0
+2026-10-24 23:42:23.341     DC:      mic0    -78 mic1    -27 mic2      3 mic3    -50 mic4    -71 mic5   -208 mic6     98 mic7    138
+2026-10-24 23:42:24.364 REC via Bluetooth remote
+2026-10-24 23:42:24.774 REC start: /MMSA8_0260/MMSA8_0260_01.wav (8 ch; file opened in 287 ms)
+2026-10-24 23:42:24.774 MODE: RECORDING, Bluetooth connected
+2026-10-24 23:42:24.979   SD slowdown absorbed at +0 ms: backlog peaked at 14 blocks (298 ms of audio), drained after 293 ms
+2026-10-24 23:42:26.414 REC via Bluetooth remote
+2026-10-24 23:42:26.618 REC stop: /MMSA8_0260/MMSA8_0260_01.wav, 2.1 s audio (1605632 bytes), wall time 1.8 s
+2026-10-24 23:42:26.619   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:42:26.619   DMA overflows 0, pool drops 0, worst SD write 13.1 ms, min free blocks 242/256 -> NO AUDIO LOST
+2026-10-24 23:42:26.619   SD write speed avg 1469 KB/s (need 750 KB/s); deepest backlog 14 blocks = 298 ms of audio (PSRAM pool)
+2026-10-24 23:42:26.619 MODE: idle, Bluetooth connected
+2026-10-24 23:42:27.232 signal dBFS: mic0 -66.9 mic1 -67.5 mic2 -68.4 mic3 -67.6 mic4 -67.9 mic5 -67.7 mic6 -68.8 mic7 -69.6
+2026-10-24 23:42:27.232     DC:      mic0    -80 mic1    -34 mic2      0 mic3    -48 mic4    -72 mic5   -213 mic6    105 mic7    137
+2026-10-24 23:42:28.660 REC via Bluetooth remote
+2026-10-24 23:42:28.865 REC start: /MMSA8_0261/MMSA8_0261_01.wav (8 ch; file opened in 290 ms)
+2026-10-24 23:42:28.865 MODE: RECORDING, Bluetooth connected
+2026-10-24 23:42:29.071 VBAT log: 814,4009,3948,4071,1,2
+2026-10-24 23:42:29.274   SD slowdown absorbed at +0 ms: backlog peaked at 15 blocks (320 ms of audio), drained after 334 ms
+2026-10-24 23:42:33.987 REC via Bluetooth remote
+2026-10-24 23:42:34.191 REC stop: /MMSA8_0261/MMSA8_0261_01.wav, 5.5 s audio (4194304 bytes), wall time 5.2 s
+2026-10-24 23:42:34.191   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:42:34.192   DMA overflows 0, pool drops 0, worst SD write 21.4 ms, min free blocks 241/256 -> NO AUDIO LOST
+2026-10-24 23:42:34.192   SD write speed avg 1483 KB/s (need 750 KB/s); deepest backlog 15 blocks = 320 ms of audio (PSRAM pool)
+2026-10-24 23:42:34.192 MODE: idle, Bluetooth connected
+2026-10-24 23:42:35.417 signal dBFS: mic0 -66.9 mic1 -67.4 mic2 -67.5 mic3 -67.7 mic4 -67.9 mic5 -67.9 mic6 -68.2 mic7 -68.5
+2026-10-24 23:42:35.417     DC:      mic0    -84 mic1    -29 mic2     -8 mic3    -40 mic4    -65 mic5   -208 mic6    102 mic7    131
+2026-10-24 23:42:36.236 REC via Bluetooth remote
+2026-10-24 23:42:36.644 REC start: /MMSA8_0262/MMSA8_0262_01.wav (8 ch; file opened in 290 ms)
+2026-10-24 23:42:36.644 MODE: RECORDING, Bluetooth connected
+2026-10-24 23:42:36.848   SD slowdown absorbed at +1 ms: backlog peaked at 15 blocks (320 ms of audio), drained after 312 ms
+2026-10-24 23:42:40.939 REC via Bluetooth remote
+2026-10-24 23:42:41.144 REC stop: /MMSA8_0262/MMSA8_0262_01.wav, 4.7 s audio (3637248 bytes), wall time 4.4 s
+2026-10-24 23:42:41.144   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:42:41.144   DMA overflows 0, pool drops 0, worst SD write 16.6 ms, min free blocks 241/256 -> NO AUDIO LOST
+2026-10-24 23:42:41.144   SD write speed avg 1482 KB/s (need 750 KB/s); deepest backlog 15 blocks = 320 ms of audio (PSRAM pool)
+2026-10-24 23:42:41.144 MODE: idle, Bluetooth connected
+2026-10-24 23:42:41.348 signal dBFS: mic0 -53.8 mic1 -54.9 mic2 -54.3 mic3 -54.2 mic4 -56.2 mic5 -56.4 mic6 -56.8 mic7 -55.3
+2026-10-24 23:42:41.348     DC:      mic0    -77 mic1    -21 mic2      3 mic3    -42 mic4    -72 mic5   -211 mic6    111 mic7    138
+2026-10-24 23:42:43.397 signal dBFS: mic0 -65.5 mic1 -66.4 mic2 -66.8 mic3 -66.7 mic4 -67.1 mic5 -67.3 mic6 -67.9 mic7 -68.2
+2026-10-24 23:42:43.398     DC:      mic0    -80 mic1    -29 mic2      5 mic3    -46 mic4    -75 mic5   -211 mic6    106 mic7    136
+2026-10-24 23:42:43.603 REC via Bluetooth remote
+2026-10-24 23:42:43.807 REC start: /MMSA8_0263/MMSA8_0263_01.wav (8 ch; file opened in 295 ms)
+2026-10-24 23:42:43.807 MODE: RECORDING, Bluetooth connected
+2026-10-24 23:42:48.720 REC via Bluetooth remote
+2026-10-24 23:42:49.335 REC stop: wrote the 46 queued blocks (981 ms of audio) first, in 683 ms
+2026-10-24 23:42:49.335 REC stop: /MMSA8_0263/MMSA8_0263_01.wav, 5.0 s audio (3866624 bytes), wall time 4.7 s
+2026-10-24 23:42:49.335   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:42:49.335   DMA overflows 0, pool drops 0, worst SD write 76.9 ms, min free blocks 209/256 -> NO AUDIO LOST
+2026-10-24 23:42:49.335   SD write speed avg 699 KB/s (need 750 KB/s); deepest backlog 47 blocks = 1002 ms of audio (PSRAM pool)
+2026-10-24 23:42:49.335 MODE: idle, Bluetooth connected
+2026-10-24 23:42:49.335 signal dBFS: mic0 -65.5 mic1 -66.7 mic2 -66.6 mic3 -66.8 mic4 -67.2 mic5 -67.3 mic6 -68.1 mic7 -68.3
+2026-10-24 23:42:49.335     DC:      mic0    -72 mic1    -28 mic2     -7 mic3    -58 mic4    -81 mic5   -206 mic6    104 mic7    134
+2026-10-24 23:42:51.386 signal dBFS: mic0 -65.7 mic1 -66.9 mic2 -66.8 mic3 -67.2 mic4 -67.2 mic5 -67.8 mic6 -68.0 mic7 -68.2
+2026-10-24 23:42:51.386     DC:      mic0    -75 mic1    -31 mic2      0 mic3    -48 mic4    -72 mic5   -210 mic6    105 mic7    135
+2026-10-24 23:42:51.799 REC via Bluetooth remote
+2026-10-24 23:42:52.208 REC start: /MMSA8_0264/MMSA8_0264_01.wav (8 ch; file opened in 296 ms)
+2026-10-24 23:42:52.208 MODE: RECORDING, Bluetooth connected
+2026-10-24 23:42:52.411   SD slowdown absorbed at +1 ms: backlog peaked at 15 blocks (320 ms of audio), drained after 303 ms
+2026-10-24 23:42:53.437 REC via Bluetooth remote
+2026-10-24 23:42:53.642 REC stop: /MMSA8_0264/MMSA8_0264_01.wav, 1.6 s audio (1245184 bytes), wall time 1.3 s
+2026-10-24 23:42:53.642   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:42:53.642   DMA overflows 0, pool drops 0, worst SD write 16.0 ms, min free blocks 241/256 -> NO AUDIO LOST
+2026-10-24 23:42:53.642   SD write speed avg 1442 KB/s (need 750 KB/s); deepest backlog 15 blocks = 320 ms of audio (PSRAM pool)
+2026-10-24 23:42:53.643 MODE: idle, Bluetooth connected
+2026-10-24 23:42:55.081 HEALTH: up=840 rec=0 take=264 part=1 recsecs=1 free_mb=29060 heap=182816 heapmin=173612 heapblk=139252 psram=4030404 backlog_ms=1002 write_ms=76.9 ovf=0 drops=0 ble=2 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:42:55.490 signal dBFS: mic0 -65.3 mic1 -66.6 mic2 -66.3 mic3 -66.9 mic4 -67.3 mic5 -67.6 mic6 -67.9 mic7 -68.8
+2026-10-24 23:42:55.490     DC:      mic0    -75 mic1    -21 mic2     -0 mic3    -49 mic4    -76 mic5   -211 mic6    104 mic7    133
+2026-10-24 23:42:56.103 REC via Bluetooth remote
+2026-10-24 23:42:56.512 REC start: /MMSA8_0265/MMSA8_0265_01.wav (8 ch; file opened in 294 ms)
+2026-10-24 23:42:56.512 MODE: RECORDING, Bluetooth connected
+2026-10-24 23:42:56.718   SD slowdown absorbed at +0 ms: backlog peaked at 15 blocks (320 ms of audio), drained after 291 ms
+2026-10-24 23:42:59.174 VBAT log: 844,4008,3942,4082,1,2
+2026-10-24 23:43:01.219 REC via Bluetooth remote
+2026-10-24 23:43:01.219 REC stop: /MMSA8_0265/MMSA8_0265_01.wav, 5.0 s audio (3866624 bytes), wall time 4.7 s
+2026-10-24 23:43:01.219   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:43:01.219   DMA overflows 0, pool drops 0, worst SD write 22.8 ms, min free blocks 241/256 -> NO AUDIO LOST
+2026-10-24 23:43:01.219   SD write speed avg 1480 KB/s (need 750 KB/s); deepest backlog 15 blocks = 320 ms of audio (PSRAM pool)
+2026-10-24 23:43:01.219 MODE: idle, Bluetooth connected
+2026-10-24 23:43:01.422 signal dBFS: mic0 -65.3 mic1 -67.4 mic2 -67.7 mic3 -67.9 mic4 -67.8 mic5 -68.1 mic6 -68.9 mic7 -68.7
+2026-10-24 23:43:01.423     DC:      mic0    -80 mic1    -21 mic2      0 mic3    -40 mic4    -72 mic5   -214 mic6    101 mic7    138
+2026-10-24 23:43:03.470 signal dBFS: mic0 -53.8 mic1 -55.1 mic2 -55.7 mic3 -56.0 mic4 -56.9 mic5 -57.6 mic6 -58.5 mic7 -59.3
+2026-10-24 23:43:03.470     DC:      mic0    -83 mic1    -31 mic2      2 mic3    -41 mic4    -71 mic5   -206 mic6    101 mic7    136
+2026-10-24 23:43:03.675 REC via Bluetooth remote
+2026-10-24 23:43:04.085 REC start: /MMSA8_0266/MMSA8_0266_01.wav (8 ch; file opened in 294 ms)
+2026-10-24 23:43:04.085 MODE: RECORDING, Bluetooth connected
+2026-10-24 23:43:04.289   SD slowdown absorbed at +1 ms: backlog peaked at 15 blocks (320 ms of audio), drained after 290 ms
+2026-10-24 23:43:06.546 REC via Bluetooth remote
+2026-10-24 23:43:06.546 REC stop: /MMSA8_0266/MMSA8_0266_01.wav, 2.8 s audio (2113536 bytes), wall time 2.5 s
+2026-10-24 23:43:06.546   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:43:06.546   DMA overflows 0, pool drops 0, worst SD write 22.7 ms, min free blocks 241/256 -> NO AUDIO LOST
+2026-10-24 23:43:06.546   SD write speed avg 1464 KB/s (need 750 KB/s); deepest backlog 15 blocks = 320 ms of audio (PSRAM pool)
+2026-10-24 23:43:06.546 MODE: idle, Bluetooth connected
+2026-10-24 23:43:07.367 signal dBFS: mic0 -66.6 mic1 -68.1 mic2 -67.8 mic3 -67.9 mic4 -68.5 mic5 -68.7 mic6 -68.5 mic7 -68.9
+2026-10-24 23:43:07.367     DC:      mic0    -79 mic1    -29 mic2      6 mic3    -37 mic4    -65 mic5   -211 mic6    109 mic7    131
+2026-10-24 23:43:07.982 REC via Bluetooth remote
+2026-10-24 23:43:08.391 REC start: /MMSA8_0267/MMSA8_0267_01.wav (8 ch; file opened in 294 ms)
+2026-10-24 23:43:08.391 MODE: RECORDING, Bluetooth connected
+2026-10-24 23:43:08.595   SD slowdown absorbed at +1 ms: backlog peaked at 15 blocks (320 ms of audio), drained after 305 ms
+2026-10-24 23:43:10.862 REC via Bluetooth remote
+2026-10-24 23:43:10.862 REC stop: /MMSA8_0267/MMSA8_0267_01.wav, 2.9 s audio (2211840 bytes), wall time 2.6 s
+2026-10-24 23:43:10.862   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:43:10.862   DMA overflows 0, pool drops 0, worst SD write 16.4 ms, min free blocks 241/256 -> NO AUDIO LOST
+2026-10-24 23:43:10.862   SD write speed avg 1474 KB/s (need 750 KB/s); deepest backlog 15 blocks = 320 ms of audio (PSRAM pool)
+2026-10-24 23:43:10.862 MODE: idle, Bluetooth connected
+2026-10-24 23:43:11.480 signal dBFS: mic0 -65.6 mic1 -66.9 mic2 -66.7 mic3 -65.2 mic4 -67.6 mic5 -67.8 mic6 -68.3 mic7 -68.6
+2026-10-24 23:43:11.480     DC:      mic0    -83 mic1    -30 mic2     -0 mic3    -51 mic4    -73 mic5   -211 mic6    105 mic7    135
+2026-10-24 23:43:13.124 REC via Bluetooth remote
+2026-10-24 23:43:13.531 REC start: /MMSA8_0268/MMSA8_0268_01.wav (8 ch; file opened in 295 ms)
+2026-10-24 23:43:13.531 MODE: RECORDING, Bluetooth connected
+2026-10-24 23:43:13.736   SD slowdown absorbed at +0 ms: backlog peaked at 15 blocks (320 ms of audio), drained after 292 ms
+2026-10-24 23:43:16.000 REC via Bluetooth remote
+2026-10-24 23:43:16.000 REC stop: /MMSA8_0268/MMSA8_0268_01.wav, 2.9 s audio (2195456 bytes), wall time 2.6 s
+2026-10-24 23:43:16.000   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:43:16.000   DMA overflows 0, pool drops 0, worst SD write 19.3 ms, min free blocks 241/256 -> NO AUDIO LOST
+2026-10-24 23:43:16.000   SD write speed avg 1474 KB/s (need 750 KB/s); deepest backlog 15 blocks = 320 ms of audio (PSRAM pool)
+2026-10-24 23:43:16.000 MODE: idle, Bluetooth connected
+2026-10-24 23:43:17.434 signal dBFS: mic0 -65.2 mic1 -66.5 mic2 -66.6 mic3 -66.9 mic4 -66.6 mic5 -67.3 mic6 -67.5 mic7 -68.2
+2026-10-24 23:43:17.434     DC:      mic0    -78 mic1    -31 mic2      4 mic3    -46 mic4    -76 mic5   -211 mic6    102 mic7    139
+2026-10-24 23:43:17.637 REC via Bluetooth remote
+2026-10-24 23:43:17.843 REC start: /MMSA8_0269/MMSA8_0269_01.wav (8 ch; file opened in 295 ms)
+2026-10-24 23:43:17.843 MODE: RECORDING, Bluetooth connected
+2026-10-24 23:43:18.254   SD slowdown absorbed at +0 ms: backlog peaked at 15 blocks (320 ms of audio), drained after 292 ms
+2026-10-24 23:43:21.746 REC via Bluetooth remote
+2026-10-24 23:43:21.952 REC stop: /MMSA8_0269/MMSA8_0269_01.wav, 4.2 s audio (3260416 bytes), wall time 4.0 s
+2026-10-24 23:43:21.952   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:43:21.952   DMA overflows 0, pool drops 0, worst SD write 16.2 ms, min free blocks 241/256 -> NO AUDIO LOST
+2026-10-24 23:43:21.952   SD write speed avg 1486 KB/s (need 750 KB/s); deepest backlog 15 blocks = 320 ms of audio (PSRAM pool)
+2026-10-24 23:43:21.953 MODE: idle, Bluetooth connected
+2026-10-24 23:43:23.591 signal dBFS: mic0 -65.6 mic1 -66.3 mic2 -66.5 mic3 -67.1 mic4 -67.4 mic5 -67.5 mic6 -67.8 mic7 -68.7
+2026-10-24 23:43:23.591     DC:      mic0    -84 mic1    -24 mic2      3 mic3    -43 mic4    -73 mic5   -208 mic6    106 mic7    136
+2026-10-24 23:43:24.415 REC via Bluetooth remote
+2026-10-24 23:43:24.618 REC start: /MMSA8_0270/MMSA8_0270_01.wav (8 ch; file opened in 298 ms)
+2026-10-24 23:43:24.618 MODE: RECORDING, Bluetooth connected
+2026-10-24 23:43:25.027   SD slowdown absorbed at +0 ms: backlog peaked at 15 blocks (320 ms of audio), drained after 305 ms
+2026-10-24 23:43:27.906 REC via Bluetooth remote
+2026-10-24 23:43:27.906 REC stop: /MMSA8_0270/MMSA8_0270_01.wav, 3.5 s audio (2719744 bytes), wall time 3.2 s
+2026-10-24 23:43:27.906   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:43:27.906   DMA overflows 0, pool drops 0, worst SD write 18.3 ms, min free blocks 241/256 -> NO AUDIO LOST
+2026-10-24 23:43:27.906   SD write speed avg 1469 KB/s (need 750 KB/s); deepest backlog 15 blocks = 320 ms of audio (PSRAM pool)
+2026-10-24 23:43:27.906 MODE: idle, Bluetooth connected
+2026-10-24 23:43:29.552 VBAT log: 874,4009,3947,4072,0,2
+2026-10-24 23:43:29.553 signal dBFS: mic0 -65.5 mic1 -67.2 mic2 -66.6 mic3 -66.7 mic4 -67.3 mic5 -67.9 mic6 -67.9 mic7 -68.8
+2026-10-24 23:43:29.553     DC:      mic0    -81 mic1    -35 mic2     -6 mic3    -52 mic4    -78 mic5   -214 mic6    103 mic7    135
+2026-10-24 23:43:31.197 'b': switching Bluetooth
+2026-10-24 23:43:31.197 Bluetooth link down: reason 0x16 (closed by this device (firmware)), last RSSI -55 dBm
+2026-10-24 23:43:31.197 Bluetooth OFF: stack shut down, radio off (64 ms; 222924 bytes of RAM free, -4344 lost over 15 on/off cycles)
+2026-10-24 23:43:31.197 MODE: idle, Bluetooth off
+2026-10-24 23:43:31.402 'r'
+2026-10-24 23:43:31.607 REC start: /MMSA8_0271/MMSA8_0271_01.wav (8 ch; file opened in 300 ms)
+2026-10-24 23:43:31.607 MODE: RECORDING, Bluetooth off
+2026-10-24 23:43:32.018   SD slowdown absorbed at +0 ms: backlog peaked at 15 blocks (320 ms of audio), drained after 303 ms
+2026-10-24 23:43:40.648 'F' (test build): the next block write counts as failed
+2026-10-24 23:43:40.648 SD write failed in /MMSA8_0271/MMSA8_0271_01.wav at 9.2 s; recovered in 107 ms, carrying on in /MMSA8_0271/MMSA8_0271_02.wav with no audio lost
+2026-10-24 23:43:49.064 'F' (test build): the next block write counts as failed
+2026-10-24 23:43:49.268 SD write failed in /MMSA8_0271/MMSA8_0271_02.wav at 17.8 s; recovered in 107 ms, carrying on in /MMSA8_0271/MMSA8_0271_03.wav with no audio lost
+2026-10-24 23:43:55.015 HEALTH: up=900 rec=1 take=271 part=3 recsecs=22 free_mb=29029 heap=218388 heapmin=173612 heapblk=139252 psram=4030404 backlog_ms=320 write_ms=46.8 ovf=0 drops=0 ble=0 sd=1 sderr=2 btnnoise=0
+2026-10-24 23:43:57.683 'F' (test build): the next block write counts as failed
+2026-10-24 23:43:57.683 SD write failed in /MMSA8_0271/MMSA8_0271_03.wav at 26.3 s; recovered in 133 ms, carrying on in /MMSA8_0271/MMSA8_0271_04.wav with no audio lost
+2026-10-24 23:43:59.535 VBAT log: 904,4008,3947,4078,1,0
+2026-10-24 23:44:09.185 'F' (test build): the next block write counts as failed
+2026-10-24 23:44:09.390 SD write failed in /MMSA8_0271/MMSA8_0271_04.wav at 37.9 s; recovered in 111 ms, carrying on in /MMSA8_0271/MMSA8_0271_05.wav with no audio lost
+2026-10-24 23:44:17.382 HEALTH: up=922 rec=1 take=271 part=5 recsecs=45 free_mb=29013 heap=218388 heapmin=173612 heapblk=139252 psram=4030404 backlog_ms=149 write_ms=49.5 ovf=0 drops=0 ble=0 sd=1 sderr=4 btnnoise=0
+2026-10-24 23:44:17.586 'r'
+2026-10-24 23:44:17.586 REC stop: /MMSA8_0271/MMSA8_0271_05.wav (8.3 s). Recording: 46.2 s audio in 5 files from /MMSA8_0271/MMSA8_0271_01.wav (0.03 GB), wall time 45.9 s
+2026-10-24 23:44:17.586   Checkpoints: 1, worst 31.0 ms
+2026-10-24 23:44:17.586   SD write errors recovered from: 4 (each started a new file, no audio lost)
+2026-10-24 23:44:17.586   DMA overflows 0, pool drops 0, worst SD write 49.5 ms, min free blocks 241/256 -> NO AUDIO LOST
+2026-10-24 23:44:17.586   SD write speed avg 1504 KB/s (need 750 KB/s); deepest backlog 15 blocks = 320 ms of audio (PSRAM pool)
+2026-10-24 23:44:17.586 MODE: idle, Bluetooth off
+2026-10-24 23:44:17.791 signal dBFS: mic0 -64.0 mic1 -64.7 mic2 -65.6 mic3 -65.8 mic4 -66.3 mic5 -66.8 mic6 -66.9 mic7 -66.7
+2026-10-24 23:44:17.791     DC:      mic0    -81 mic1    -36 mic2     -0 mic3    -46 mic4    -74 mic5   -209 mic6    104 mic7    134
+2026-10-24 23:44:17.997 'r'
+2026-10-24 23:44:18.405 REC start: /MMSA8_0272/MMSA8_0272_01.wav (8 ch; file opened in 300 ms)
+2026-10-24 23:44:18.405 MODE: RECORDING, Bluetooth off
+2026-10-24 23:44:18.614   SD slowdown absorbed at +1 ms: backlog peaked at 15 blocks (320 ms of audio), drained after 303 ms
+2026-10-24 23:44:24.562 'F' (test build): the next block write counts as failed
+2026-10-24 23:44:24.562 SD write failed in /MMSA8_0272/MMSA8_0272_01.wav at 6.5 s; recovered in 108 ms, carrying on in /MMSA8_0272/MMSA8_0272_02.wav with no audio lost
+2026-10-24 23:44:25.590 'F' (test build): the next block write counts as failed
+2026-10-24 23:44:25.590 SD write failed (card pulled?), stopping.
+2026-10-24 23:44:25.592 REC stop: /MMSA8_0272/MMSA8_0272_02.wav (1.0 s). Recording: 7.5 s audio in 2 files from /MMSA8_0272/MMSA8_0272_01.wav (0.01 GB), wall time 7.3 s
+2026-10-24 23:44:25.592   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:44:25.592   SD write errors recovered from: 1 (each started a new file, no audio lost)
+2026-10-24 23:44:25.592   DMA overflows 0, pool drops 0, worst SD write 66.9 ms, min free blocks 241/256 -> NO AUDIO LOST
+2026-10-24 23:44:25.592   SD write speed avg 1445 KB/s (need 750 KB/s); deepest backlog 15 blocks = 320 ms of audio (PSRAM pool)
+2026-10-24 23:44:25.592 MODE: idle, Bluetooth off
+2026-10-24 23:44:25.592 SD NOT available
+2026-10-24 23:44:25.592 SD mounted
+2026-10-24 23:44:25.796 SD: next recording will go in /MMSA8_0273/ (28.3 GB free; scan took 158 ms)
+2026-10-24 23:44:25.796 signal dBFS: mic0 -62.0 mic1 -63.7 mic2 -64.3 mic3 -64.3 mic4 -64.9 mic5 -65.1 mic6 -65.7 mic7 -64.9
+2026-10-24 23:44:25.796     DC:      mic0    -72 mic1    -17 mic2      9 mic3    -41 mic4    -66 mic5   -208 mic6    106 mic7    138
+2026-10-24 23:44:26.821 'r'
+2026-10-24 23:44:27.025 REC start: /MMSA8_0273/MMSA8_0273_01.wav (8 ch; file opened in 330 ms)
+2026-10-24 23:44:27.025 MODE: RECORDING, Bluetooth off
+2026-10-24 23:44:27.431   SD slowdown absorbed at +0 ms: backlog peaked at 16 blocks (341 ms of audio), drained after 407 ms
+2026-10-24 23:44:29.679 VBAT log: 934,4008,3945,4082,1,0
+2026-10-24 23:44:30.088 HEALTH: up=935 rec=1 take=273 part=1 recsecs=3 free_mb=28964 heap=218388 heapmin=173612 heapblk=139252 psram=4030404 backlog_ms=341 write_ms=66.9 ovf=0 drops=0 ble=0 sd=1 sderr=5 btnnoise=0
+2026-10-24 23:44:30.291 'r'
+2026-10-24 23:44:30.291 REC stop: /MMSA8_0273/MMSA8_0273_01.wav, 3.5 s audio (2686976 bytes), wall time 3.2 s
+2026-10-24 23:44:30.291   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:44:30.291   DMA overflows 0, pool drops 0, worst SD write 36.2 ms, min free blocks 240/256 -> NO AUDIO LOST
+2026-10-24 23:44:30.291   SD write speed avg 1399 KB/s (need 750 KB/s); deepest backlog 16 blocks = 341 ms of audio (PSRAM pool)
+2026-10-24 23:44:30.291 MODE: idle, Bluetooth off
+2026-10-24 23:44:30.699 'r'
+2026-10-24 23:44:30.906 REC start: /MMSA8_0274/MMSA8_0274_01.wav (8 ch; file opened in 301 ms)
+2026-10-24 23:44:30.906 MODE: RECORDING, Bluetooth off
+2026-10-24 23:44:31.314   SD slowdown absorbed at +0 ms: backlog peaked at 15 blocks (320 ms of audio), drained after 303 ms
+2026-10-24 23:44:37.746 ## board reset (DTR/RTS)
+2026-10-24 23:44:38.029 
+2026-10-24 23:44:38.029 Boot, reset reason: other (USB/flash reset)
+2026-10-24 23:44:38.029 REC button on IO21 reads HIGH (released, as expected).
+2026-10-24 23:44:38.845 Battery log: /BATLOG.CSV NOT written (no SD card), VBAT 4015 mV, a line every 30 s, stops below 3400 mV.
+2026-10-24 23:44:39.050 Bluetooth warm-up (controller init + RF calibration) done in 246 ms (1 interrupt setup(s) run directly, bypassing the 1 KB IPC task); Bluetooth is off.
+2026-10-24 23:44:39.050 
+2026-10-24 23:44:39.050 Buffer pool: 256 x 16 KB = 4096 KB (~5461 ms) in PSRAM. Free internal RAM: 248288 before the pool, 229076 after (keeping 60000 for SD incl. a later card mount + 46000 for Bluetooth)
+2026-10-24 23:44:39.050 MMSA V2 8-channel recorder with Bluetooth switch.
+2026-10-24 23:44:39.050 WAV: 48000 Hz 16-bit, 8 ch (PDM clock 3.072 MHz).  mic0-1 IO5, mic2-3 IO6, mic4-5 IO7, mic6-7 IO8 (WAV track N+1 = mic N).
+2026-10-24 23:44:39.050 Files: a folder per take, a new file every 15 s, checkpoints every 10 s.
+2026-10-24 23:44:39.050 TEST BUILD: serial F makes the next SD block write count as failed.
+2026-10-24 23:44:39.050 REC: short press = start/stop recording, hold 1 s = Bluetooth on/off.
+2026-10-24 23:44:39.050      Flashes on all LEDs: 2 short = Bluetooth ON, 1 long = OFF, 5 fast = failed.
+2026-10-24 23:44:39.050 
+2026-10-24 23:44:39.050 LEDs: IO40 record ready (SD mounted), IO41 loudness, IO42 blinks while recording.
+2026-10-24 23:44:39.050 MODE: idle, Bluetooth off
+2026-10-24 23:44:41.099 SD mounted
+2026-10-24 23:44:41.304 SD: next recording will go in /MMSA8_0275/ (28.3 GB free; scan took 160 ms)
+2026-10-24 23:44:41.922 'r'
+2026-10-24 23:44:42.331 REC start: /MMSA8_0275/MMSA8_0275_01.wav (8 ch; file opened in 304 ms)
+2026-10-24 23:44:42.331 MODE: RECORDING, Bluetooth off
+2026-10-24 23:44:42.537   SD slowdown absorbed at +0 ms: backlog peaked at 15 blocks (320 ms of audio), drained after 318 ms
+2026-10-24 23:44:45.401 HEALTH: up=7 rec=1 take=275 part=1 recsecs=3 free_mb=28962 heap=218932 heapmin=218796 heapblk=176116 psram=4030404 backlog_ms=320 write_ms=16.1 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:44:45.604 'r'
+2026-10-24 23:44:45.604 REC stop: /MMSA8_0275/MMSA8_0275_01.wav, 3.6 s audio (2768896 bytes), wall time 3.3 s
+2026-10-24 23:44:45.604   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:44:45.604   DMA overflows 0, pool drops 0, worst SD write 16.1 ms, min free blocks 241/256 -> NO AUDIO LOST
+2026-10-24 23:44:45.604   SD write speed avg 1484 KB/s (need 750 KB/s); deepest backlog 15 blocks = 320 ms of audio (PSRAM pool)
+2026-10-24 23:44:45.604 MODE: idle, Bluetooth off
+2026-10-24 23:44:46.014 'r'
+2026-10-24 23:44:46.219 REC start: /MMSA8_0276/MMSA8_0276_01.wav (8 ch; file opened in 302 ms)
+2026-10-24 23:44:46.219 MODE: RECORDING, Bluetooth off
+2026-10-24 23:44:46.629   SD slowdown absorbed at +0 ms: backlog peaked at 15 blocks (320 ms of audio), drained after 326 ms
+2026-10-24 23:45:01.014 REC continues in /MMSA8_0276/MMSA8_0276_02.wav (finished /MMSA8_0276/MMSA8_0276_01.wav; 15.0 s recorded so far; switch took 97 ms)
+2026-10-24 23:45:05.713 ## board reset (DTR/RTS)
+2026-10-24 23:45:05.970 
+2026-10-24 23:45:05.970 Boot, reset reason: other (USB/flash reset)
+2026-10-24 23:45:05.970 REC button on IO21 reads HIGH (released, as expected).
+2026-10-24 23:45:06.794 Battery log: /BATLOG.CSV NOT written (no SD card), VBAT 4009 mV, a line every 30 s, stops below 3400 mV.
+2026-10-24 23:45:07.000 Bluetooth warm-up (controller init + RF calibration) done in 247 ms (1 interrupt setup(s) run directly, bypassing the 1 KB IPC task); Bluetooth is off.
+2026-10-24 23:45:07.000 
+2026-10-24 23:45:07.000 Buffer pool: 256 x 16 KB = 4096 KB (~5461 ms) in PSRAM. Free internal RAM: 248288 before the pool, 229076 after (keeping 60000 for SD incl. a later card mount + 46000 for Bluetooth)
+2026-10-24 23:45:07.000 MMSA V2 8-channel recorder with Bluetooth switch.
+2026-10-24 23:45:07.000 WAV: 48000 Hz 16-bit, 8 ch (PDM clock 3.072 MHz).  mic0-1 IO5, mic2-3 IO6, mic4-5 IO7, mic6-7 IO8 (WAV track N+1 = mic N).
+2026-10-24 23:45:07.000 Files: a folder per take, a new file every 15 s, checkpoints every 10 s.
+2026-10-24 23:45:07.000 TEST BUILD: serial F makes the next SD block write count as failed.
+2026-10-24 23:45:07.000 REC: short press = start/stop recording, hold 1 s = Bluetooth on/off.
+2026-10-24 23:45:07.000      Flashes on all LEDs: 2 short = Bluetooth ON, 1 long = OFF, 5 fast = failed.
+2026-10-24 23:45:07.000 Serial: r = record, b = Bluetooth, h = health line, s = SD-crosstalk snapshot test, p = PSRAM + button check, i = button monitor.
+2026-10-24 23:45:07.000 
+2026-10-24 23:45:07.000 MODE: idle, Bluetooth off
+2026-10-24 23:45:07.618 SD mounted
+2026-10-24 23:45:07.824 SD: next recording will go in /MMSA8_0277/ (28.3 GB free; scan took 160 ms)
+2026-10-24 23:45:07.824 signal dBFS: mic0 -17.8 mic1 -17.4 mic2 -17.5 mic3 -17.4 mic4 -17.4 mic5 -17.4 mic6 -17.5 mic7 -17.2
+2026-10-24 23:45:07.824     DC:      mic0  -3784 mic1  -2375 mic2  -2695 mic3  -2260 mic4  -2362 mic5  -2411 mic6  -2549 mic7  -1736
+2026-10-24 23:45:08.440 'r'
+2026-10-24 23:45:08.847 REC start: /MMSA8_0277/MMSA8_0277_01.wav (8 ch; file opened in 307 ms)
+2026-10-24 23:45:08.848 MODE: RECORDING, Bluetooth off
+2026-10-24 23:45:09.054   SD slowdown absorbed at +0 ms: backlog peaked at 15 blocks (320 ms of audio), drained after 315 ms
+2026-10-24 23:45:11.930 HEALTH: up=6 rec=1 take=277 part=1 recsecs=3 free_mb=28948 heap=218932 heapmin=218796 heapblk=176116 psram=4030404 backlog_ms=320 write_ms=16.4 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:45:12.135 'r'
+2026-10-24 23:45:12.135 REC stop: /MMSA8_0277/MMSA8_0277_01.wav, 3.6 s audio (2768896 bytes), wall time 3.3 s
+2026-10-24 23:45:12.135   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:45:12.135   DMA overflows 0, pool drops 0, worst SD write 16.4 ms, min free blocks 241/256 -> NO AUDIO LOST
+2026-10-24 23:45:12.135   SD write speed avg 1479 KB/s (need 750 KB/s); deepest backlog 15 blocks = 320 ms of audio (PSRAM pool)
+2026-10-24 23:45:12.135 MODE: idle, Bluetooth off
+2026-10-24 23:45:12.548 'r'
+2026-10-24 23:45:12.753 REC start: /MMSA8_0278/MMSA8_0278_01.wav (8 ch; file opened in 305 ms)
+2026-10-24 23:45:12.753 MODE: RECORDING, Bluetooth off
+2026-10-24 23:45:13.161   SD slowdown absorbed at +1 ms: backlog peaked at 15 blocks (320 ms of audio), drained after 302 ms
+2026-10-24 23:45:26.569 ## board reset (DTR/RTS)
+2026-10-24 23:45:26.805 
+2026-10-24 23:45:26.805 Boot, reset reason: other (USB/flash reset)
+2026-10-24 23:45:26.805 REC button on IO21 reads HIGH (released, as expected).
+2026-10-24 23:45:27.627 Battery log: /BATLOG.CSV NOT written (no SD card), VBAT 4014 mV, a line every 30 s, stops below 3400 mV.
+2026-10-24 23:45:27.831 Bluetooth warm-up (controller init + RF calibration) done in 247 ms (1 interrupt setup(s) run directly, bypassing the 1 KB IPC task); Bluetooth is off.
+2026-10-24 23:45:27.831 
+2026-10-24 23:45:27.831 Buffer pool: 256 x 16 KB = 4096 KB (~5461 ms) in PSRAM. Free internal RAM: 248288 before the pool, 229076 after (keeping 60000 for SD incl. a later card mount + 46000 for Bluetooth)
+2026-10-24 23:45:27.831 MMSA V2 8-channel recorder with Bluetooth switch.
+2026-10-24 23:45:27.831 WAV: 48000 Hz 16-bit, 8 ch (PDM clock 3.072 MHz).  mic0-1 IO5, mic2-3 IO6, mic4-5 IO7, mic6-7 IO8 (WAV track N+1 = mic N).
+2026-10-24 23:45:27.831 Files: a folder per take, a new file every 15 s, checkpoints every 10 s.
+2026-10-24 23:45:27.831 TEST BUILD: serial F makes the next SD block write count as failed.
+2026-10-24 23:45:27.831 REC: short press = start/stop recording, hold 1 s = Bluetooth on/off.
+2026-10-24 23:45:27.831      Flashes on all LEDs: 2 short = Bluetooth ON, 1 long = OFF, 5 fast = failed.
+2026-10-24 23:45:27.831 Serial: r = record, b = Bluetooth, h = health line, s = SD-crosstalk snapshot test, p = PSRAM + button check, i = button monitor.
+2026-10-24 23:45:27.831 
+2026-10-24 23:45:27.831 MODE: idle, Bluetooth off
+2026-10-24 23:45:28.037 SD mounted
+2026-10-24 23:45:28.243 SD: next recording will go in /MMSA8_0279/ (28.3 GB free; scan took 162 ms)
+2026-10-24 23:45:28.655 signal dBFS: mic0 -24.2 mic1 -24.0 mic2 -24.1 mic3 -24.0 mic4 -24.1 mic5 -24.1 mic6 -24.0 mic7 -23.9
+2026-10-24 23:45:28.655     DC:      mic0  -2932 mic1  -1804 mic2  -2082 mic3  -1773 mic4  -2009 mic5  -2023 mic6  -2004 mic7  -1406
+2026-10-24 23:45:28.863 'r'
+2026-10-24 23:45:29.272 REC start: /MMSA8_0279/MMSA8_0279_01.wav (8 ch; file opened in 311 ms)
+2026-10-24 23:45:29.272 MODE: RECORDING, Bluetooth off
+2026-10-24 23:45:29.476   SD slowdown absorbed at +0 ms: backlog peaked at 15 blocks (320 ms of audio), drained after 313 ms
+2026-10-24 23:45:32.353 HEALTH: up=5 rec=1 take=279 part=1 recsecs=3 free_mb=28938 heap=218932 heapmin=218796 heapblk=176116 psram=4030404 backlog_ms=320 write_ms=16.0 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:45:32.560 'r'
+2026-10-24 23:45:32.560 REC stop: /MMSA8_0279/MMSA8_0279_01.wav, 3.6 s audio (2801664 bytes), wall time 3.3 s
+2026-10-24 23:45:32.560   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:45:32.560   DMA overflows 0, pool drops 0, worst SD write 16.0 ms, min free blocks 241/256 -> NO AUDIO LOST
+2026-10-24 23:45:32.560   SD write speed avg 1486 KB/s (need 750 KB/s); deepest backlog 15 blocks = 320 ms of audio (PSRAM pool)
+2026-10-24 23:45:32.560 MODE: idle, Bluetooth off
+2026-10-24 23:45:32.764 signal dBFS: mic0 -32.3 mic1 -37.3 mic2 -35.5 mic3 -37.3 mic4 -35.0 mic5 -36.2 mic6 -35.1 mic7 -38.0
+2026-10-24 23:45:32.764     DC:      mic0   -730 mic1   -415 mic2   -479 mic3   -431 mic4   -596 mic5   -650 mic6   -379 mic7   -233
+2026-10-24 23:45:32.967 'r'
+2026-10-24 23:45:33.172 REC start: /MMSA8_0280/MMSA8_0280_01.wav (8 ch; file opened in 309 ms)
+2026-10-24 23:45:33.172 MODE: RECORDING, Bluetooth off
+2026-10-24 23:45:33.581   SD slowdown absorbed at +0 ms: backlog peaked at 15 blocks (320 ms of audio), drained after 321 ms
+2026-10-24 23:45:47.932 REC continues in /MMSA8_0280/MMSA8_0280_02.wav (finished /MMSA8_0280/MMSA8_0280_01.wav; 15.0 s recorded so far; switch took 99 ms)
+2026-10-24 23:45:56.970 VBAT log: 30,4011,3957,4096,1,0
+2026-10-24 23:46:02.044 ## board reset (DTR/RTS)
+2026-10-24 23:46:02.306 
+2026-10-24 23:46:02.307 Boot, reset reason: other (USB/flash reset)
+2026-10-24 23:46:02.307 REC button on IO21 reads HIGH (released, as expected).
+2026-10-24 23:46:02.923 Battery log: /BATLOG.CSV NOT written (no SD card), VBAT 4011 mV, a line every 30 s, stops below 3400 mV.
+2026-10-24 23:46:03.129 Bluetooth warm-up (controller init + RF calibration) done in 245 ms (1 interrupt setup(s) run directly, bypassing the 1 KB IPC task); Bluetooth is off.
+2026-10-24 23:46:03.129 
+2026-10-24 23:46:03.129 Buffer pool: 256 x 16 KB = 4096 KB (~5461 ms) in PSRAM. Free internal RAM: 248288 before the pool, 229076 after (keeping 60000 for SD incl. a later card mount + 46000 for Bluetooth)
+2026-10-24 23:46:03.129 MMSA V2 8-channel recorder with Bluetooth switch.
+2026-10-24 23:46:03.129 WAV: 48000 Hz 16-bit, 8 ch (PDM clock 3.072 MHz).  mic0-1 IO5, mic2-3 IO6, mic4-5 IO7, mic6-7 IO8 (WAV track N+1 = mic N).
+2026-10-24 23:46:03.129 Files: a folder per take, a new file every 15 s, checkpoints every 10 s.
+2026-10-24 23:46:03.129 TEST BUILD: serial F makes the next SD block write count as failed.
+2026-10-24 23:46:03.129 REC: short press = start/stop recording, hold 1 s = Bluetooth on/off.
+2026-10-24 23:46:03.129      Flashes on all LEDs: 2 short = Bluetooth ON, 1 long = OFF, 5 fast = failed.
+2026-10-24 23:46:03.129 
+2026-10-24 23:46:03.129 LEDs: IO40 record ready (SD mounted), IO41 loudness, IO42 blinks while recording.
+2026-10-24 23:46:03.129 MODE: idle, Bluetooth off
+2026-10-24 23:46:03.334 SD mounted
+2026-10-24 23:46:03.334 SD: next recording will go in /MMSA8_0281/ (28.2 GB free; scan took 163 ms)
+2026-10-24 23:46:03.950 'r'
+2026-10-24 23:46:04.362 REC start: /MMSA8_0281/MMSA8_0281_01.wav (8 ch; file opened in 311 ms)
+2026-10-24 23:46:04.362 MODE: RECORDING, Bluetooth off
+2026-10-24 23:46:04.568   SD slowdown absorbed at +0 ms: backlog peaked at 15 blocks (320 ms of audio), drained after 313 ms
+2026-10-24 23:46:07.433 HEALTH: up=5 rec=1 take=281 part=1 recsecs=3 free_mb=28917 heap=218932 heapmin=218796 heapblk=176116 psram=4030404 backlog_ms=320 write_ms=33.0 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:46:07.639 'r'
+2026-10-24 23:46:07.639 REC stop: /MMSA8_0281/MMSA8_0281_01.wav, 3.6 s audio (2768896 bytes), wall time 3.3 s
+2026-10-24 23:46:07.639   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:46:07.639   DMA overflows 0, pool drops 0, worst SD write 33.0 ms, min free blocks 241/256 -> NO AUDIO LOST
+2026-10-24 23:46:07.639   SD write speed avg 1466 KB/s (need 750 KB/s); deepest backlog 15 blocks = 320 ms of audio (PSRAM pool)
+2026-10-24 23:46:07.639 MODE: idle, Bluetooth off
+2026-10-24 23:46:08.047 'r'
+2026-10-24 23:46:08.250 REC start: /MMSA8_0282/MMSA8_0282_01.wav (8 ch; file opened in 315 ms)
+2026-10-24 23:46:08.250 MODE: RECORDING, Bluetooth off
+2026-10-24 23:46:08.662   SD slowdown absorbed at +1 ms: backlog peaked at 16 blocks (341 ms of audio), drained after 327 ms
+2026-10-24 23:46:14.525 ## board reset (DTR/RTS)
+2026-10-24 23:46:14.769 
+2026-10-24 23:46:14.769 Boot, reset reason: other (USB/flash reset)
+2026-10-24 23:46:14.769 REC button on IO21 reads HIGH (released, as expected).
+2026-10-24 23:46:14.769 SD mounted
+2026-10-24 23:46:14.974 SD: next recording will go in /MMSA8_0283/ (28.2 GB free; scan took 160 ms)
+2026-10-24 23:46:14.974 Battery log: /BATLOG.CSV started, VBAT 4009 mV, a line every 30 s, stops below 3400 mV.
+2026-10-24 23:46:15.182 Bluetooth warm-up (controller init + RF calibration) done in 245 ms (1 interrupt setup(s) run directly, bypassing the 1 KB IPC task); Bluetooth is off.
+2026-10-24 23:46:15.182 
+2026-10-24 23:46:15.182 Buffer pool: 256 x 16 KB = 4096 KB (~5461 ms) in PSRAM. Free internal RAM: 247472 before the pool, 228260 after (keeping 28000 for SD + 46000 for Bluetooth)
+2026-10-24 23:46:15.182 MMSA V2 8-channel recorder with Bluetooth switch.
+2026-10-24 23:46:15.182 WAV: 48000 Hz 16-bit, 8 ch (PDM clock 3.072 MHz).  mic0-1 IO5, mic2-3 IO6, mic4-5 IO7, mic6-7 IO8 (WAV track N+1 = mic N).
+2026-10-24 23:46:15.182 Files: a folder per take, a new file every 15 s, checkpoints every 10 s.
+2026-10-24 23:46:15.182 TEST BUILD: serial F makes the next SD block write count as failed.
+2026-10-24 23:46:15.182 REC: short press = start/stop recording, hold 1 s = Bluetooth on/off.
+2026-10-24 23:46:15.182      Flashes on all LEDs: 2 short = Bluetooth ON, 1 long = OFF, 5 fast = failed.
+2026-10-24 23:46:15.182 
+2026-10-24 23:46:15.182 LEDs: IO40 record ready (SD mounted), IO41 loudness, IO42 blinks while recording.
+2026-10-24 23:46:15.182 MODE: idle, Bluetooth off
+2026-10-24 23:46:15.795 'r'
+2026-10-24 23:46:16.205 REC start: /MMSA8_0283/MMSA8_0283_01.wav (8 ch; file opened in 308 ms)
+2026-10-24 23:46:16.205 MODE: RECORDING, Bluetooth off
+2026-10-24 23:46:16.410   SD slowdown absorbed at +1 ms: backlog peaked at 15 blocks (320 ms of audio), drained after 318 ms
+2026-10-24 23:46:19.287 HEALTH: up=4 rec=1 take=283 part=1 recsecs=3 free_mb=28914 heap=219024 heapmin=218888 heapblk=176116 psram=4030404 backlog_ms=320 write_ms=20.9 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:46:19.494 'r'
+2026-10-24 23:46:19.494 REC stop: /MMSA8_0283/MMSA8_0283_01.wav, 3.6 s audio (2768896 bytes), wall time 3.3 s
+2026-10-24 23:46:19.494   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:46:19.494   DMA overflows 0, pool drops 0, worst SD write 20.9 ms, min free blocks 241/256 -> NO AUDIO LOST
+2026-10-24 23:46:19.494   SD write speed avg 1475 KB/s (need 750 KB/s); deepest backlog 15 blocks = 320 ms of audio (PSRAM pool)
+2026-10-24 23:46:19.494 MODE: idle, Bluetooth off
+2026-10-24 23:46:19.906 'r'
+2026-10-24 23:46:20.111 REC start: /MMSA8_0284/MMSA8_0284_01.wav (8 ch; file opened in 311 ms)
+2026-10-24 23:46:20.111 MODE: RECORDING, Bluetooth off
+2026-10-24 23:46:20.521   SD slowdown absorbed at +1 ms: backlog peaked at 16 blocks (341 ms of audio), drained after 318 ms
+2026-10-24 23:46:34.874 REC continues in /MMSA8_0284/MMSA8_0284_02.wav (finished /MMSA8_0284/MMSA8_0284_01.wav; 15.0 s recorded so far; switch took 99 ms)
+2026-10-24 23:46:44.742 VBAT log: 30,4013,3920,4068,1,0
+2026-10-24 23:46:48.394 ## board reset (DTR/RTS)
+2026-10-24 23:46:48.642 
+2026-10-24 23:46:48.642 Boot, reset reason: other (USB/flash reset)
+2026-10-24 23:46:48.642 REC button on IO21 reads HIGH (released, as expected).
+2026-10-24 23:46:49.465 Battery log: /BATLOG.CSV NOT written (no SD card), VBAT 4011 mV, a line every 30 s, stops below 3400 mV.
+2026-10-24 23:46:49.669 Bluetooth warm-up (controller init + RF calibration) done in 256 ms (1 interrupt setup(s) run directly, bypassing the 1 KB IPC task); Bluetooth is off.
+2026-10-24 23:46:49.669 
+2026-10-24 23:46:49.669 Buffer pool: 256 x 16 KB = 4096 KB (~5461 ms) in PSRAM. Free internal RAM: 248288 before the pool, 229076 after (keeping 60000 for SD incl. a later card mount + 46000 for Bluetooth)
+2026-10-24 23:46:49.669 MMSA V2 8-channel recorder with Bluetooth switch.
+2026-10-24 23:46:49.669 WAV: 48000 Hz 16-bit, 8 ch (PDM clock 3.072 MHz).  mic0-1 IO5, mic2-3 IO6, mic4-5 IO7, mic6-7 IO8 (WAV track N+1 = mic N).
+2026-10-24 23:46:49.669 Files: a folder per take, a new file every 15 s, checkpoints every 10 s.
+2026-10-24 23:46:49.669 TEST BUILD: serial F makes the next SD block write count as failed.
+2026-10-24 23:46:49.669 REC: short press = start/stop recording, hold 1 s = Bluetooth on/off.
+2026-10-24 23:46:49.669      Flashes on all LEDs: 2 short = Bluetooth ON, 1 long = OFF, 5 fast = failed.
+2026-10-24 23:46:49.669 Serial: r = record, b = Bluetooth, h = health line, s = SD-crosstalk snapshot test, p = PSRAM + button check, i = button monitor.
+2026-10-24 23:46:49.669 
+2026-10-24 23:46:49.669 MODE: idle, Bluetooth off
+2026-10-24 23:46:50.905 SD mounted
+2026-10-24 23:46:50.905 SD: next recording will go in /MMSA8_0285/ (28.2 GB free; scan took 164 ms)
+2026-10-24 23:46:51.523 'r'
+2026-10-24 23:46:51.934 REC start: /MMSA8_0285/MMSA8_0285_01.wav (8 ch; file opened in 310 ms)
+2026-10-24 23:46:51.934 MODE: RECORDING, Bluetooth off
+2026-10-24 23:46:52.139   SD slowdown absorbed at +0 ms: backlog peaked at 15 blocks (320 ms of audio), drained after 303 ms
+2026-10-24 23:46:55.015 HEALTH: up=6 rec=1 take=285 part=1 recsecs=3 free_mb=28893 heap=218932 heapmin=218796 heapblk=176116 psram=4030404 backlog_ms=320 write_ms=20.8 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:46:55.220 'r'
+2026-10-24 23:46:55.220 REC stop: /MMSA8_0285/MMSA8_0285_01.wav, 3.6 s audio (2768896 bytes), wall time 3.3 s
+2026-10-24 23:46:55.220   Checkpoints: 0, worst 0.0 ms
+2026-10-24 23:46:55.220   DMA overflows 0, pool drops 0, worst SD write 20.8 ms, min free blocks 241/256 -> NO AUDIO LOST
+2026-10-24 23:46:55.220   SD write speed avg 1476 KB/s (need 750 KB/s); deepest backlog 15 blocks = 320 ms of audio (PSRAM pool)
+2026-10-24 23:46:55.220 MODE: idle, Bluetooth off
+2026-10-24 23:46:55.764 ## board reset (DTR/RTS)
+2026-10-24 23:46:56.039 
+2026-10-24 23:46:56.039 Boot, reset reason: other (USB/flash reset)
+2026-10-24 23:46:56.039 REC button on IO21 reads HIGH (released, as expected).
+2026-10-24 23:46:56.039 SD mounted
+2026-10-24 23:46:56.243 SD: next recording will go in /MMSA8_0286/ (28.2 GB free; scan took 160 ms)
+2026-10-24 23:46:56.244 Battery log: /BATLOG.CSV started, VBAT 4011 mV, a line every 30 s, stops below 3400 mV.
+2026-10-24 23:46:56.447 Bluetooth warm-up (controller init + RF calibration) done in 247 ms (1 interrupt setup(s) run directly, bypassing the 1 KB IPC task); Bluetooth is off.
+2026-10-24 23:46:56.448 
+2026-10-24 23:46:56.448 Buffer pool: 256 x 16 KB = 4096 KB (~5461 ms) in PSRAM. Free internal RAM: 247472 before the pool, 228260 after (keeping 28000 for SD + 46000 for Bluetooth)
+2026-10-24 23:46:56.448 MMSA V2 8-channel recorder with Bluetooth switch.
+2026-10-24 23:46:56.448 WAV: 48000 Hz 16-bit, 8 ch (PDM clock 3.072 MHz).  mic0-1 IO5, mic2-3 IO6, mic4-5 IO7, mic6-7 IO8 (WAV track N+1 = mic N).
+2026-10-24 23:46:56.448 Files: a folder per take, a new file every 15 s, checkpoints every 10 s.
+2026-10-24 23:46:56.448 TEST BUILD: serial F makes the next SD block write count as failed.
+2026-10-24 23:46:56.448 REC: short press = start/stop recording, hold 1 s = Bluetooth on/off.
+2026-10-24 23:46:56.448      Flashes on all LEDs: 2 short = Bluetooth ON, 1 long = OFF, 5 fast = failed.
+2026-10-24 23:46:56.448 Serial: r = record, b = Bluetooth, h = health line, s = SD-crosstalk snapshot test, p = PSRAM + button check, i = button monitor.
+2026-10-24 23:46:56.448 
+2026-10-24 23:46:56.448 MODE: idle, Bluetooth off
+2026-10-24 23:46:56.652 HEALTH: up=0 rec=0 take=0 part=0 recsecs=0 free_mb=28893 heap=223660 heapmin=221708 heapblk=180212 psram=4030404 backlog_ms=0 write_ms=0.0 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0
+2026-10-24 23:46:56.697 ## stress test end
