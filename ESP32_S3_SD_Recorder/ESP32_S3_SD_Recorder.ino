@@ -42,6 +42,8 @@
 #include <BLEServer.h>
 #include <BLEUtils.h>
 #include <BLE2902.h>
+#include <host/ble_gap.h>
+#include <host/ble_hs.h>
 
 // ---- PDM microphone pins (from ESP32_S3_USB_Mic.ino) ----
 #define PDM_CLK_PIN       4
@@ -118,6 +120,9 @@
 // the byte counter actually incrementing while recording.
 #define STATUS_NOTIFY_INTERVAL_MS 500
 
+// loop() passes longer than this are logged over serial (see loop()).
+#define SLOW_LOOP_WARN_MS 500
+
 #define BLE_DEVICE_NAME       "ESP32 SD Recorder"
 #define BLE_SERVICE_UUID      "6e400001-b5a3-f393-e0a9-e50e24dcca9e"
 #define BLE_CONTROL_CHAR_UUID "6e400002-b5a3-f393-e0a9-e50e24dcca9e"
@@ -131,11 +136,14 @@
 volatile bool clockSet = false;
 
 // ---------------------------------------------------------------------------
-// Status payload (10 bytes, all multi-byte fields little-endian):
+// Status payload (12 bytes, all multi-byte fields little-endian):
 //   [0]   flag bitfield (see STATUS_FLAG_*)
 //   [1-4] bytes written to the current/last recording (uint32)
 //   [5-8] free space on the SD card, in MB (uint32)
 //   [9]   latched error code (see ErrorCode)
+//   [10]  RSSI of the BLE link in dBm (int8; 0 = not measured yet)
+//   [11]  HCI reason code of the last BLE disconnect this boot (0 = none,
+//         0xFF = non-HCI host error) — see disconnectReasonText()
 // Sent on every state change and on a fixed heartbeat cadence so the remote
 // can distinguish "idle and fine" from "link has gone stale".
 // ---------------------------------------------------------------------------
@@ -209,7 +217,6 @@ uint32_t freeSpaceMB = 0;
 uint64_t freeSpaceAtRecordStartBytes = 0;
 ErrorCode errorCode = ERR_NONE;
 unsigned long lastFreeSpaceCheckMs = 0;
-unsigned long lastStatusNotifyMs = 0;
 
 bool lastButton = HIGH;
 unsigned long lastDebounceMs = 0;
@@ -219,6 +226,17 @@ float levelSmoothed = 0.0f;
 
 BLECharacteristic *bleStatusCharacteristic = nullptr;
 bool bleClientConnected = false;
+// notifyBleStatus() is called from both loop() (on state changes) and
+// statusHeartbeatTask, so setValue()/notify() are serialized with this.
+static SemaphoreHandle_t bleStatusMutex;
+
+// Link diagnostics (see onBleGapEvent): lets the remote show signal strength
+// and why the previous connection dropped, to tell a weak radio link apart
+// from the firmware or the computer closing the connection.
+volatile int8_t bleRssi = 0;
+volatile uint8_t bleLastDisconnectReason = 0;
+volatile uint16_t bleConnHandle = BLE_HS_CONN_HANDLE_NONE;
+static ble_gap_event_listener bleGapListener;
 
 // ---------------------------------------------------------------------------
 // WAV header
@@ -442,21 +460,49 @@ static void notifyBleStatus() {
     return;
   }
 
+  xSemaphoreTake(bleStatusMutex, portMAX_DELAY);
+
   uint8_t flags = 0;
   if (recording) flags |= STATUS_FLAG_RECORDING;
   if (sdReady) flags |= STATUS_FLAG_SD_READY;
   if (sdReady && freeSpaceMB < LOW_SPACE_WARN_MB) flags |= STATUS_FLAG_LOW_SPACE;
   if (errorCode != ERR_NONE) flags |= STATUS_FLAG_ERROR;
 
-  uint8_t payload[10];
+  uint8_t payload[12];
   payload[0] = flags;
   memcpy(payload + 1, &dataBytesWritten, 4);
   memcpy(payload + 5, &freeSpaceMB, 4);
   payload[9] = (uint8_t)errorCode;
+  payload[10] = (uint8_t)bleRssi;
+  payload[11] = bleLastDisconnectReason;
 
   bleStatusCharacteristic->setValue(payload, sizeof(payload));
   if (bleClientConnected) {
     bleStatusCharacteristic->notify();
+  }
+
+  xSemaphoreGive(bleStatusMutex);
+}
+
+// Heartbeat: pushed on a fixed cadence regardless of state changes, so the
+// remote can tell "still connected and fine" apart from "link has gone
+// stale" and watch the byte counter climb during a recording. Runs in its
+// own task rather than loop() because loop() is also the SD user, and a
+// slow SD call there (free-space scan, remount sweep, slow write) would
+// otherwise silence the heartbeat for seconds and trip the remote's
+// stale-link warning even though nothing is actually wrong.
+static void statusHeartbeatTask(void *param) {
+  (void)param;
+  for (;;) {
+    uint16_t handle = bleConnHandle;
+    if (bleClientConnected && handle != BLE_HS_CONN_HANDLE_NONE) {
+      int8_t rssi;
+      if (ble_gap_conn_rssi(handle, &rssi) == 0) {
+        bleRssi = rssi;
+      }
+    }
+    notifyBleStatus();
+    vTaskDelay(pdMS_TO_TICKS(STATUS_NOTIFY_INTERVAL_MS));
   }
 }
 
@@ -656,10 +702,73 @@ class BleServerCallbacksImpl : public BLEServerCallbacks {
   }
 };
 
+// Plain-English meaning of the HCI disconnect reasons that actually show up
+// in practice. The key split: supervision timeout = the radio link was lost
+// (range/interference/obstruction); "closed by the computer" = the host side
+// ended it (browser, Disconnect button, OS power management); "closed by this
+// device" = the firmware ended it.
+static const char *disconnectReasonText(uint8_t hciReason) {
+  switch (hciReason) {
+    case BLE_ERR_CONN_SPVN_TMO:      return "link lost / supervision timeout (signal, range or interference)";
+    case BLE_ERR_REM_USER_CONN_TERM: return "closed by the computer/browser";
+    case BLE_ERR_CONN_TERM_LOCAL:    return "closed by this device (firmware)";
+    case BLE_ERR_LMP_LL_RSP_TMO:     return "link-layer response timeout (signal, or the other side stalled)";
+    case BLE_ERR_CONN_ESTABLISHMENT: return "connection failed to establish (signal)";
+    case BLE_ERR_CONN_TERM_MIC:      return "packet integrity check failed (interference)";
+    default:                         return "other";
+  }
+}
+
+// NimBLE GAP listener: sees every connection event, including the real
+// disconnect reason, which the Arduino BLEServerCallbacks don't pass along.
+// Runs on the NimBLE host task.
+static int onBleGapEvent(struct ble_gap_event *event, void *arg) {
+  (void)arg;
+  ble_gap_conn_desc desc;
+
+  switch (event->type) {
+    case BLE_GAP_EVENT_CONNECT:
+      if (event->connect.status == 0) {
+        bleConnHandle = event->connect.conn_handle;
+        bleRssi = 0;
+        if (ble_gap_conn_find(event->connect.conn_handle, &desc) == 0) {
+          Serial.printf("BLE link up: interval %.2f ms, latency %u, supervision timeout %u ms\r\n",
+                        desc.conn_itvl * 1.25f, desc.conn_latency, desc.supervision_timeout * 10);
+        }
+      }
+      break;
+
+    case BLE_GAP_EVENT_CONN_UPDATE:
+      if (event->conn_update.status == 0 &&
+          ble_gap_conn_find(event->conn_update.conn_handle, &desc) == 0) {
+        Serial.printf("BLE params updated: interval %.2f ms, latency %u, supervision timeout %u ms\r\n",
+                      desc.conn_itvl * 1.25f, desc.conn_latency, desc.supervision_timeout * 10);
+      }
+      break;
+
+    case BLE_GAP_EVENT_DISCONNECT: {
+      int reason = event->disconnect.reason;
+      uint8_t hci = (reason >= BLE_HS_ERR_HCI_BASE && reason < BLE_HS_ERR_HCI_BASE + 0x100)
+        ? (uint8_t)(reason - BLE_HS_ERR_HCI_BASE)
+        : 0xFF;
+      bleLastDisconnectReason = hci;
+      bleConnHandle = BLE_HS_CONN_HANDLE_NONE;
+      Serial.printf("BLE link down: reason 0x%02X (%s), last RSSI %d dBm\r\n",
+                    hci, disconnectReasonText(hci), (int)bleRssi);
+      break;
+    }
+
+    default:
+      break;
+  }
+  return 0;
+}
+
 static void beginBle() {
   BLEDevice::init(BLE_DEVICE_NAME);
 
   BLEServer *server = BLEDevice::createServer();
+  ble_gap_event_listener_register(&bleGapListener, onBleGapEvent, NULL);
   server->setCallbacks(new BleServerCallbacksImpl());
 
   BLEService *service = server->createService(BLE_SERVICE_UUID);
@@ -838,6 +947,13 @@ void setup() {
   digitalWrite(SD_STATUS_LED_PIN, LOW);
 
   Serial.begin(115200);
+  // USB CDC serial: with the cable plugged into a PC but no terminal reading
+  // the port, every print otherwise blocks up to ~2s (20 x 100ms retries)
+  // waiting for the host. That froze loop() for 36s on the "already exists,
+  // skipping" scan in nextRecordingPath() (start command appeared ignored)
+  // and stalled the NimBLE host task on its connect/disconnect prints, so
+  // the browser timed out and dropped the link. Never wait: drop the output.
+  Serial.setTxTimeoutMs(0);
   delay(500);
 
   beginPdmMic();
@@ -861,12 +977,24 @@ void setup() {
     Serial.println("SD card mount failed, recording disabled");
   }
 
+  bleStatusMutex = xSemaphoreCreateMutex();
   beginBle();
+  xTaskCreatePinnedToCore(statusHeartbeatTask, "ble_status", 4096, NULL, 1, NULL, 0);
 
   Serial.println("SD recorder ready. Press the button to start/stop recording.");
 }
 
 void loop() {
+  // Diagnostic: report any loop() pass that blocked for a long time (almost
+  // always an SD call), since that's what delays commands and the button.
+  static unsigned long lastLoopStartMs = 0;
+  unsigned long loopStartMs = millis();
+  if (lastLoopStartMs && loopStartMs - lastLoopStartMs > SLOW_LOOP_WARN_MS) {
+    Serial.printf("Slow loop pass: %lu ms (recording=%d)\r\n",
+                  loopStartMs - lastLoopStartMs, (int)recording);
+  }
+  lastLoopStartMs = loopStartMs;
+
   RecordCommand command;
   while (xQueueReceive(commandQueue, &command, 0) == pdTRUE) {
     if (command == CMD_START) {
@@ -889,16 +1017,6 @@ void loop() {
   updateRecordLed();
   updateSdPresence();
   updateFreeSpace();
-
-  // Heartbeat: pushed on this fixed cadence regardless of state changes, so
-  // the remote can tell "still connected and fine" apart from "link has gone
-  // stale" and watch the byte counter actually climb during a recording.
-  // Placed before the queue-timeout return so it isn't skipped when no
-  // audio chunk happens to be ready yet.
-  if (millis() - lastStatusNotifyMs >= STATUS_NOTIFY_INTERVAL_MS) {
-    lastStatusNotifyMs = millis();
-    notifyBleStatus();
-  }
 
   AudioChunk chunk;
   if (xQueueReceive(filledQueue, &chunk, pdMS_TO_TICKS(50)) != pdTRUE) {

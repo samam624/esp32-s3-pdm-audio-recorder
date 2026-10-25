@@ -282,11 +282,13 @@
 
   .stats {
     display: flex;
+    flex-wrap: wrap;
     gap: 10px;
   }
 
   .stat {
     flex: 1;
+    min-width: 120px;
     background: var(--surface-2);
     border: 1px solid var(--line);
     border-radius: 10px;
@@ -423,6 +425,10 @@
       <span class="stat-label">Free space</span>
       <span class="stat-value mono" id="storageStatValue">—</span>
     </div>
+    <div class="stat" id="signalStat">
+      <span class="stat-label">Signal</span>
+      <span class="stat-value mono" id="signalStatValue">—</span>
+    </div>
   </div>
 
   <div class="connect-row">
@@ -476,7 +482,9 @@
   // The firmware sends a status heartbeat every 500ms (device-side
   // STATUS_NOTIFY_INTERVAL_MS). If nothing arrives for this long while
   // connected, treat the link as stale rather than trusting a frozen UI.
-  const STALE_STATUS_MS = 2500;
+  // Generous enough (10 missed heartbeats) that normal BLE jitter and
+  // browser timer throttling don't trip it.
+  const STALE_STATUS_MS = 5000;
   // If recording and the byte counter hasn't moved in this long, the write
   // path may have silently stalled even though no explicit error was raised.
   const STALL_DATA_MS = 4000;
@@ -495,6 +503,28 @@
   const dataStatValue = document.getElementById("dataStatValue");
   const storageStat = document.getElementById("storageStat");
   const storageStatValue = document.getElementById("storageStatValue");
+  const signalStat = document.getElementById("signalStat");
+  const signalStatValue = document.getElementById("signalStatValue");
+
+  // Device-side HCI disconnect reasons (status byte 11). Supervision timeout
+  // means the radio link itself was lost; the others mean one side chose to
+  // close it.
+  const DISCONNECT_REASONS = {
+    0x08: "link lost / supervision timeout — signal, range or interference",
+    0x13: "closed by the computer/browser",
+    0x16: "closed by the device firmware",
+    0x22: "link-layer response timeout — signal, or the other side stalled",
+    0x3d: "packet integrity check failed — interference",
+    0x3e: "connection failed to establish — signal",
+  };
+
+  function signalQuality(rssi) {
+    if (rssi >= -60) return "excellent";
+    if (rssi >= -70) return "good";
+    if (rssi >= -80) return "fair";
+    if (rssi >= -90) return "weak";
+    return "very weak";
+  }
 
   let device = null;
   let controlChar = null;
@@ -516,6 +546,10 @@
   let linkStale = false;
   let dataStalled = false;
   let disconnectedWhileRecording = false;
+  let rssi = 0;                    // dBm; 0 = not measured yet
+  let minRssi = 0;                 // weakest reading this connection
+  let lastLoggedSignalBand = "";
+  let reportedDisconnectReason = false;
 
   function log(text) {
     const row = document.createElement("div");
@@ -596,6 +630,9 @@
 
     storageStatValue.textContent = sdCardReady ? formatMB(freeSpaceMB) + " free" : "no card";
     storageStat.classList.toggle("warn", lowSpace || !sdCardReady);
+
+    signalStatValue.textContent = (connected && rssi) ? rssi + " dBm · " + signalQuality(rssi) : "—";
+    signalStat.classList.toggle("warn", connected && rssi !== 0 && rssi < -80);
   }
 
   function setConnectedUi(isConnected) {
@@ -609,7 +646,17 @@
       recordLabel.textContent = "Not connected";
       recordBtn.classList.remove("recording");
       stopElapsedTimer();
+      // Forget the last-known state so the first status after a reconnect
+      // registers as a transition and redraws the label/pill correctly.
+      recording = false;
+    } else if (!recording) {
+      // applyRecordingTransition() only fires on a state change, so an idle
+      // device on connect would otherwise leave the "Not connected" label up.
+      recordLabel.textContent = "Ready";
+      statusPill.className = "pill ok";
+      statusPillText.textContent = "Connected";
     }
+    updateStatsUi();
     refreshAlert();
   }
 
@@ -663,12 +710,35 @@
     const freeMB = value.getUint32(5, true);
     const errCode = value.getUint8(9);
 
+    // Link diagnostics (firmware with a 12-byte payload only).
+    if (value.byteLength >= 12) {
+      const reading = value.getInt8(10);
+      if (reading) {
+        rssi = reading;
+        if (!minRssi || rssi < minRssi) minRssi = rssi;
+        const band = signalQuality(rssi);
+        if (band !== lastLoggedSignalBand) {
+          lastLoggedSignalBand = band;
+          log("signal: " + rssi + " dBm (" + band + ")");
+        }
+      }
+      const reason = value.getUint8(11);
+      if (reason && !reportedDisconnectReason) {
+        reportedDisconnectReason = true;
+        const text = DISCONNECT_REASONS[reason] || (reason === 0xff ? "host error" : "other");
+        log("previous disconnect reason (from device): 0x" + reason.toString(16).padStart(2, "0") + " — " + text);
+      }
+    }
+
     const isRecording = !!(flags & FLAG_RECORDING);
     sdCardReady = !!(flags & FLAG_SD_READY);
     lowSpace = !!(flags & FLAG_LOW_SPACE);
     currentErrorCode = (flags & FLAG_ERROR) ? errCode : 0;
     freeSpaceMB = freeMB;
 
+    if (linkStale) {
+      log("status link recovered after " + ((Date.now() - lastStatusAt) / 1000).toFixed(1) + "s gap");
+    }
     lastStatusAt = Date.now();
     linkStale = false;
 
@@ -715,7 +785,7 @@
   setInterval(watchdogTick, 1000);
 
   function onDisconnected() {
-    log("gatt server disconnected");
+    log("gatt server disconnected" + (rssi ? " (last signal " + rssi + " dBm, weakest " + minRssi + " dBm)" : ""));
     if (recording) {
       disconnectedWhileRecording = true;
       log("warning: link dropped while a recording was in progress");
@@ -757,6 +827,10 @@
     dataStalled = false;
     currentErrorCode = 0;
     lastLoggedErrorCode = 0;
+    rssi = 0;
+    minRssi = 0;
+    lastLoggedSignalBand = "";
+    reportedDisconnectReason = false;
 
     try {
       setMessage("Opening device chooser…");

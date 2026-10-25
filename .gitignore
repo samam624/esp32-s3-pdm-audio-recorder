@@ -5,3 +5,8 @@
 # OS cruft
 Thumbs.db
 .DS_Store
+
+# MMSA V2 captures can grow quickly. Keep generated recordings local except
+# for the small, known sample used by the visualization examples.
+MMSA V2/data/**/*.wav
+!MMSA V2/data/MMSA8_0084.wav
