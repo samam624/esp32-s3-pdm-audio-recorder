@@ -1,0 +1,401 @@
+                SMD LED
+                Product Data Sheet
+                LTST-C190KGKT
+
+                                             Spec No. :DS22-2000-074
+                                             Effective Date: 04/20/2017
+                                             Revision: N
+
+                                                     LITE-ON DCC
+                                                       RELEASE
+
+                                                            BNS-OD-FC001/A4
+
+ LITE-ON Technology Corp. / Optoelectronics
+
+No.90,Chien 1 Road, Chung Ho, New Taipei City 23585, Taiwan, R.O.C.
+    Tel: 886-2-2222-6181 Fax: 886-2-2221-1948 / 886-2-2221-0660
+                              http://www.liteon.com/opto
+                                                                             SMD LED
+                                                                    LTST-C190KGKT
+
+1. Description
+
+SMD LED lamps from Lite-On are available in miniature sizes and special configurations for automated PC board assembly and
+space-sensitive applications. These SMD LED lamps are suitable for use in a wide variety of electronic equipment, including
+cordless and cellular phones, notebook computers, network systems, home appliances, and indoor signboard applications.
+
+1.1 Features                                         1.2 Applications
+
+     Meet RoHS                                            Telecommunication, Office automation, home appliances,
+     Extra thin (0.80 mm) Chip LED                        industrial equipment
+     Ultra bright AlInGaP Chip LED                        Keypad/Keyboard Backlighting
+     Package in 8mm tape on 7" diameter reels.            Status indicator
+     EIA STD package                                      Micro-displays
+     I.C. compatible                                      Signal and Symbol Luminary
+     Compatible with automatic placement equipment
+     Compatible with infrared reflow solder process
+
+2. Package Dimensions
+
+                   Part No.                          Lens Color     Source Color
+              LTST-C190KGKT                          Water Clear
+                                                                    AlInGaP Green
+
+                                                                       Green
+
+Notes:        All dimensions are in millimeters.
+          1.  Tolerance is ±0.1 mm (.004") unless otherwise noted.
+          2.
+
+                                                                    1/11           Part No. : LTST-C190KGKT
+                                                                                   BNS-OD-FC002/A4
+                                                                     SMD LED
+                                                            LTST-C190KGKT
+
+3. Rating and Characteristics                           LTST-C190KGKT          Unit
+
+   3.1 Absolute Maximum Ratings at Ta=25°C              75                     mW
+
+                                        Parameter       80                     mA
+       Power Dissipation
+       Peak Forward Current                             30                     mA
+       (1/10 Duty Cycle, 0.1ms Pulse Width)
+       DC Forward Current                               5                      V
+       Reverse Voltage
+       Operating Temperature Range                      -30 ºC to + 85 ºC
+       Storage Temperature Range
+       Infrared Soldering Condition                     -40 ºC to + 85 ºC
+
+  3.2 Suggest IR Reflow Condition For Pb Free Process:  260 °C For 10 Seconds
+
+                                                        2/11               Part No. : LTST-C190KGKT
+                                                                           BNS-OD-FC002/A4
+                                                                                         SMD LED
+                                                                                LTST-C190KGKT
+
+3.3 Electrical / Optical Characteristics at Ta=25°C
+
+            Parameter     Symbol  MIN.               LTST-C190KGKT  MAX.                       Test
+Luminous Intensity           IV                             TYP.           Unit
+
+                                                                                           Condition
+
+                                  18.0               -              71.0                   IF =20mA
+                                                                           mcd
+
+                                                                                             Note 1
+
+Viewing Angle             21/2                       130                   deg   Note 2 (Fig.5)
+
+Peak Emission Wavelength  P                          574.0                             Measurement
+                                                                           nm
+ominant Wavele gth        d       567.5                             576.5
+                                                                                       @Peak (Fig.1)
+Spectral Line Half-Width                             15
+                                                                                          IF =20mA
+                                                                           nm
+
+                                                                                            Note 3
+
+                                                                           nm
+
+Forward Voltage           VF      1.9                               2.4    V     IF =20mA
+
+Reverse Current           IR      -                  -              10                     VR = 5V
+                                                                           A
+
+Notes:
+       1. Luminous intensity is measured with a light sensor and filter combination that approximates the
+          CIE eye-response curve.
+       2. 1/2 is the off-axis angle at which the luminous intensity is half the axial luminous intensity.
+       3. The dominant wavelength, d is derived from the CIE chromaticity diagram and represents the
+          single wavelength which defines the color of the device.
+       4. Caution in ESD:
+          Static Electricity and surge damages the LED. It is recommend to use a wrist band or anti-electrostatic
+          glove when handling the LED. All devices, equipment and machinery must be properly grounded.
+
+                                                                           3/11  Part No. : LTST-C190KGKT
+                                                                                 BNS-OD-FC002/A4
+                                                                                                SMD LED
+                                                                                       LTST-C190KGKT
+
+4. Bin Rank
+
+4.1 Bin code list
+
+Vf Rank
+
+                             Forward Voltage Color: Green Unit: V@20mA
+
+                   Bin Code  Min.                                                 Max.
+                                                                                  2.00
+                      4      1.90                                                 2.10
+                                                                                  2.20
+                      5      2.00                                                 2.30
+                                                                                  2.40
+                      6      2.10
+
+                      7      2.20
+
+                      8      2.30
+
+                             Tolerance on each Forward Voltage bin is +/- 0.1V
+
+IV Rank
+
+                         Luminous Intensity Color: Green  Unit: mcd@20mA
+                                                                                  Max.
+                   Bin Code  Min.                                                  28.0
+                                                                                   45.0
+                      M      18.0                                                  71.0
+
+                      N      28.0
+
+                      P      45.0
+
+                             Tolerance on each Luminous Intensity bin is +/- 15%
+
+Hue Rank
+
+                      Dominate Wavelength Color: Green Unit: nm@20mA
+
+                   Bin Code  Min.                                               Max.
+
+                   C         567.5                                              570.5
+
+                   D         570.5                                              573.5
+
+                   E         573.5                                              576.5
+
+                      Tolerance for each Dominate Wavelength bin is +/- 1nm
+
+                                                          4/11                           Part No. : LTST-C190KGKT
+                                                                                         BNS-OD-FC002/A4
+                                                                  SMD LED
+                                                         LTST-C190KGKT
+
+5. Typical Electrical / Optical Characteristics Curves.
+
+(25°C Ambient Temperature Unless Otherwise Noted)
+
+                                                         5/11  Part No. : LTST-C190KGKT
+                                                               BNS-OD-FC002/A4
+                                                                              SMD LED
+                                                                    LTST-C190KGKT
+
+6. User Guide
+
+ 6.1 Cleaning
+
+       Do not use unspecified chemical liquid to clean LED they could harm the package.
+       If clean is necessary, immerse the LED in ethyl alcohol or in isopropyl alcohol at normal temperature for less one minute.
+
+ 6.2 Recommend Printed Circuit Board Attachment Pad
+
+ 6.3 Package Dimensions Of Tape And Reel
+
+Note:
+       1. All dimensions are in millimeters (inches).
+
+                                                       6/11  Part No. : LTST-C190KGKT
+                                                             BNS-OD-FC002/A4
+                                                                             SMD LED
+                                                                    LTST-C190KGKT
+
+6.4 Package Dimensions of Reel
+
+Notes:
+
+        1. Empty component pockets sealed with top cover tape.
+        2. 7 inch reel-4000 pieces per reel.
+        3. Minimum packing quantity is 500 pieces for remainders.
+        4. The maximum number of consecutive missing lamps is two.
+        5. In accordance with ANSI/EIA 481 specifications.
+
+                                                                    7/11  Part No. : LTST-C190KGKT
+                                                                          BNS-OD-FC002/A4
+                                                                         SMD LED
+                                                                LTST-C190KGKT
+
+7. Cautions
+
+7.1 Application
+
+     The LEDs described here are intended to be used for ordinary electronic equipment (such as office equipment,
+     communication equipment and household applications).Consult Liteon's Sales in advance for information on applications
+     in which exceptional reliability is required, particularly when the failure or malfunction of the LEDs may directly jeopardize
+     life or health (such as in aviation, transportation, traffic control equipment, medical and life support systems and safety
+     devices).
+
+7.2 Storage
+
+      The package is sealed:
+      The LEDs should be stored at 30°C or less an d 90%RH or less. And the LEDs are limited to use within
+      one year, while the LEDs is packed in moisture-proof package with the desiccants inside.
+      The package is opened:
+      The storage ambient for the LEDs should not exceed 30°C temperature or 60% relative humidity.
+      It is recommended that LEDs out of their original packaging are IR-reflowed within one week(MSL3).
+     For extended storage out of their original packaging, it is recommended that the LEDs be stored in a sealed container
+     with appropriate desiccant, or in a desiccators with nitrogen ambient.
+     LEDs stored out of their original packaging for more than one week should be baked at about 60 deg C for at least 20
+     hours before solder assembly.
+
+7.3 Cleaning
+
+     Use alcohol-based cleaning solvents such as isopropyl alcohol to clean the LED if necessary.
+
+7.4 Soldering
+
+     Recommended soldering conditions:
+
+                  Reflow soldering                              Soldering iron
+
+Pre-heat          150~200°C                     Temperature     300°C Max.
+Pre-heat time     120 sec. Max.                 Soldering time  3 sec. Max.
+Peak temperature  260°C Max.                                    (one time only)
+Soldering time    10 sec. Max.(Max. two times)
+
+Notes:
+
+Because different board designs use different number and types of devices, solder pastes, reflow ovens, and circuit
+boards, no single temperature profile works for all possible combinations.
+However, you can successfully mount your packages to the PCB by following the proper guidelines and PCB-specific
+characterization.
+LITE-ON Runs both component-level verification using in-house KYRAMX98 reflow chambers and board-level assembly.
+The results of this testing are verified through post-reflow reliability testing. Profiles used at LITE-ON are based on
+JEDEC standards to ensure that all packages can be successfully and reliably surface mounted.
+Figure on page3 shows a sample temperature profile compliant to JEDEC standards. You can use this example as a
+generic target to set up your reflow process. You should adhere to the JEDEC profile limits as well as specifications and
+recommendations from the solder paste manufacturer to avoid damaging the device and create a reliable solder joint.
+
+                                                                8/11            Part No. : LTST-C190KGKT
+                                                                                BNS-OD-FC002/A4
+                                     SMD LED
+                            LTST-C190KGKT
+
+7.5 Drive Method
+
+A LED is a current-operated device. In order to ensure intensity uniformity on multiple LEDs connected in parallel in an
+application, it is recommended that a current limiting resistor be incorporated in the drive circuit, in series with each LED
+as shown in Circuit A below.
+
+Circuit model A        Circuit model B
+
+                  LED  LED
+
+     (A) Recommended circuit.
+     (B) The brightness of each LED might appear different due to the differences in the I-V characteristics
+
+          of those LEDs.
+
+7.6 ESD (Electrostatic Discharge)
+
+     Static Electricity or power surge will damage the LED.
+     Suggestions to prevent ESD damage:
+
+            Use of a conductive wrist band or anti-electrostatic glove when handling these LEDs.
+            All devices, equipment, and machinery must be properly grounded.
+            Work tables, storage racks, etc. should be properly grounded.
+            Use ion blower to neutralize the static charge which might have built up on surface of the LED's plastic lens as a
+             result of friction between LEDs during storage and handling.
+
+     ESD-damaged LEDs will exhibit abnormal characteristics such as high reverse leakage current, low forward voltage, or
+     " no lightup " at low currents.
+     To verify for ESD damage, check for " lightup " and Vf of the suspect LEDs at low currents.
+     The Vf of " good " LEDs should be >2.0V@0.1mA for InGaN product and >1.4V@0.1mA for AlInGaP product.
+
+                       9/11             Part No. : LTST-C190KGKT
+                                        BNS-OD-FC002/A4
+                                                                                            SMD LED
+                                                                                   LTST-C190KGKT
+
+8. Reliability Test
+
+Classification  Test Item         Test Condition                                   Reference Standard
+
+                Operation Life    Ta= Under Room Temperature As Per Data Sheet     MIL-STD-750D:1026
+                                  Maximum Rating                                   MIL-STD-883D:1005
+                                  *Test Time= 1000HRS (-24HRS,+72HRS)              JIS C 7021:B-1
+
+                High Temperature  R-Reflow In-Board, 2 Times                       MIL-STD-202F:103B
+                  High Humidity   Ta= 65±5,RH= 9095%                               JIS C 7021:B-11
+                      Storage     *Test Time= 240HRS±2HRS
+Endurance
+Test
+
+                High Temperature  Ta= 105±5                                        MIL-STD-883D:1008
+                      Storage     *Test Time= 1000HRS (-24HRS,+72HRS)              JIS C 7021:B-10
+
+                Low Temperature   Ta= -55±5                                        JIS C 7021:B-12
+                      Storage     *Test Time=1000HRS (-24HRS,+72H RS)
+                                                                                   MIL-STD-202F:107D
+                Temperature       105 ºC  25 ºC  -55 ºC  25 ºC                     MIL-STD-750D:1051
+                   Cycling        30mins 5mins 30mins 5mins                        MIL-STD-883D:1010
+                                  10 Cycles                                        JIS C 7021:A-4
+                  Thermal                                                          MIL-STD-202F:107D
+                    Sh ck         IR-Reflow In-Board, 2 Times                      MIL-STD-750D:1051
+                                  85 ± 5 ºC  -40 ºC ± 5 ºC                         MIL-STD-883D:1011
+                                  10mins 10mins 10 Cycles
+                                                                                   MIL-STD-202F:210A
+Environmental       Solder        T.sol= 260 ± 5 ºC                                MIL-STD-750D:2031
+Test             Resistance       Dwell Time= 10 ± 1secs                           JIS C 7021:A-1
+                  IRReflow
+                                  Ramp-up rate(217 ºC to Peak) +3 ºC / second max  MIL-STD-750D:2031.2
+                Solder ability    Temp. maintain at 175(±25) ºC 180 seconds max    J-STD-020D
+                                  Temp. maintain above 217 ºC 60-150 seconds
+                                  Peak temperature range 260 ºC +0/-5 ºC           MIL-STD-202F:208D
+                                  Time within 5°C of actual Peak Temperature (tp)  MIL-STD-750D:2026
+                                  10-30 seconds                                    MIL-STD-883D:2003
+                                  Ramp-down rate +6 ºC /second max                 IEC 68 Part 2-20
+                                                                                   JIS C 7021:A-2
+                                  T.sol= 235 ± 5 ºC
+                                  Immersion time 2±0.5 sec
+                                  Immersion rate 25±2.5 mm/sec
+                                  Coverage 95% of the dipped surface
+
+                                                                10/11              Part No. : LTST-C190KGKT
+                                                                                   BNS-OD-FC002/A4
+                                                                               SMD LED
+                                                                     LTST-C190KGKT
+
+9. Others
+
+  The appearance and specifications of the product may be modified for improvement without prior notice.
+
+10. Suggested Checking List
+
+  Training and Certification
+  1. Everyone working in a static-safe area is ESD-certified?
+  2. Training records kept and re-certification dates monitored?
+
+  Static-Safe Workstation & Work Areas
+  1. Static-safe workstation or work-areas have ESD signs?
+  2. All surfaces and objects at all static-safe workstation and within 1 ft measure less than 100V?
+  3. All ionizer activated, positioned towards the units?
+  4. Each work surface mats grounding is good?
+
+  Personnel Grounding
+  1. Every person (including visitors) handling ESD sensitive (ESDS) items wears wrist strap, heel strap or conductive shoes with
+
+        conductive flooring?
+  2. If conductive footwear used, conductive flooring also present where operator stand or walk?
+  3. Garments, hairs or anything closer than 1 ft to ESD items measure less than 100V*?
+  4. Every wrist strap or heel strap/conductive shoes checked daily and result recorded for all DLs?
+  5. All wrist strap or heel strap checkers calibration up to date?
+  Note: *50V for InGaN LED.
+
+  Device Handling
+  1. Every ESDS items identified by EIA-471 labels on item or packaging?
+  2. All ESDS items completely inside properly closed static-shielding containers when not at static-safe workstation?
+  3. No static charge generators (e.g. plastics) inside shielding containers with ESDS items?
+  4. All flexible conductive and dissipative package materials inspected before reuse or recycles?
+
+  Others
+  1. Audit result reported to entity ESD control coordinator?
+  2. Corrective action from previous audits completed?
+  3. Are audit records complete and on file?
+
+11/11  Part No. : LTST-C190KGKT
+       BNS-OD-FC002/A4
+

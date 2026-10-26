@@ -1,0 +1,731 @@
+Tactile Switch                                                                                               B3F
+
+Through-hole-mounting Switches
+in a Wide Range of Models:
+6 × 6 mm, 12 × 12 mm, Side-operated
+Models, Gold-plated Contacts, and
+Radial Tape
+
+· Extended mechanical/electrical durability: 10 x 106
+   operations for 12 x 12 mm type and 1 x 106
+   operations for the 6 x 6 mm type
+
+· Taped radial type, vertical type and high force
+   types are available.
+
+· Gold plated models available for increased
+   contact reliability, resistance to corrosive gas and
+   insulation failure prevention for ion migration in
+   harsh environments
+
+· B32-series Key Tops mount to models with
+   projected plungers.
+
+ RoHS Compliant
+
+ List of Models
+
+6 × 6 mm Models
+
+     Type  Contact   Plunger         Height          Operating        Plunger                            Bags
+           material                                  force (OF)         color                   Minimum With ground
+Standard:                                                                      Without ground  packing unit terminal     Minimum
+B3F-1000   Silver    Flat type       4.3 mm          0.98 N {100 gf}  lvory        terminal                             packing unit
+Series     plated    Projected type                  1.47 N {150 gf}  Yellow                                  B3F-1100
+                                     5.0 mm          2.55 N {260 gf}  Orange   B3F-1000                       B3F-1102  100 pcs
+                                                     4.9 N {500 gf}   Red      B3F-1002                       B3F-1105
+                                     5.0 mm          0.98 N {100 gf}  Black    B3F-1005                       ---
+                                     (7.5-mm pitch)  1.47 N {150 gf}  Gray     B3F-1006                       B3F-1120
+                                     7.0 mm          2.55 N {260 gf}  Pink     B3F-1020                       B3F-1122
+                                     9.5 mm          4.9 N {500 gf}   Blue     B3F-1022                       B3F-1125
+                                                     0.98 N {100 gf}  Black    B3F-1025                       ---
+                                     7.3 mm                                    B3F-1026                       B3F-1110
+                                                     0.98 N {100 gf}  Black    ---
+                                                     1.47 N {150 gf}  Yellow                   100 pcs  ---
+                                                     0.98 N {100 gf}  Black    B3F-1060                 ---
+                                                     1.47 N {150 gf}  Yellow   B3F-1062                 ---
+                                                     2.55 N {260 gf}  Orange   B3F-1070                 ---
+                                                     0.98 N {100 gf}  lvory    B3F-1072                 ---
+                                                                               B3F-1075                 B3F-1150
+                                                     1.47 N {150 gf}  Yellow   B3F-1050
+                                                                                                        B3F-1152
+                                                                               B3F-1052
+
+                                                     2.55 N {260 gf} Orange B3F-1055                    B3F-1155
+
+                                                     4.9 N {500 gf} Red        B3F-1056                 ---
+
+                                                                                                                        1
+B3F                                                                                                                       B3F
+
+     Type         Contact   Plunger            Height     Operating     Plunger                            Bags
+                  material                 3.15 mm        force (OF)      color                   Minimum With ground
+Side-                                      3.85 mm                               Without ground  packing unit terminal     Minimum
+operated:                                              0.98 N {100 gf}  lvory        terminal                             packing unit
+B3F-3000                                               1.47 N {150 gf}  Yellow                                  B3F-3100
+Series            Silver    Flat type                  2.55 N {260 gf}  Orange   ---                            B3F-3102
+                  plated                               0.98 N {100 gf}  Black    ---                            B3F-3105
+                                                       1.47 N {150 gf}  Gray     ---                            B3F-3120
+                            Projected type 6.15 mm     2.55 N {260 gf}  Pink     ---                            B3F-3122
+                                                       0.98 N {100 gf}  lvory    ---                            B3F-3125
+                                                                                 ---                            B3F-3150
+                                                                                 ---
+
+                                                       1.47 N {150 gf} Yellow ---                         B3F-3152
+
+                                                       2.55 N {260 gf} Orange ---                         B3F-3155
+
+High-             Gold      Flat type      4.3 mm      1.76 N {180 gf}  Yellow   B3F-1002-G               B3F-1102-G
+reliability       plated                   5.0 mm                       Gray                              B3F-1122-G
+gold-plated:                               7.0 mm                       Yellow   B3F-1022-G               ---
+B3F-1000-G                                                                                       100 pcs                  100 pcs
+Series                                     9.5 mm                                B3F-1062-G
+                                                                                 (see note)
+                                                                        Yellow   B3F-1072-G               ---
+                                                                                 (see note)
+Side-                       Projected type 7.3 mm                       Yellow   B3F-1052-G               ---
+operated
+with highly
+reliable
+gold-plated:
+B3F-3000-G
+Series
+
+                            Flat type      3.85 mm                      Gray     ---                      B3F-3122-G
+                                                                                                          (see note)
+
+Note: Bulk Packaged, 100 Switches per bag. Order in multiples of the package quantity.
+
+12 × 12 mm Models
+
+   Type           Contact Plunger          Height         Operating     Plunger                           Bags
+                  material (or LED color)                 force (OF)      color
+                                                                                 Without ground   Minimum With ground      Minimum
+                                                       1.27 N {130 gf}  lvory        terminal    packing unit terminal    packing unit
+                                                       2.55 N {260 gf}  Yellow
+Standard:         Silver    Flat type      4.3 mm      1.27 N {130 gf}  lvory    B3F-4000                 B3F-4100        100 pcs
+B3F-4000          plated                               2.55 N {260 gf}  Yellow   B3F-4005
+Series                                                 1.27 N {130 gf}  Blue     B3F-4050                 B3F-4105
+                                                                        Blue     B3F-4055
+                            Projected type 7.3 mm                                B3F-5000                 B3F-4150
+
+                                                                                 B3F-5050                 B3F-4155
+
+Long durability:  Silver    Flat type      4.3 mm                                                100 pcs  B3F-5100
+B3F-5000 Se-      plated                                                                                  B3F-5150
+ries                        Projected type 7.3 mm
+                  Gold
+High reliability  plated    Flat type      4.3 mm      1.27 N {130 gf} Blue      B3F-5001                 B3F-5101
+gold-plated:
+B3F-5001                    Projected type 7.3 mm                       Blue     B3F-5051                 B3F-5151
+Series
+
+Note: Bulk Packaged, 100 switches per bag. Order in multiples of the package quantity.
+
+6 × 6 mm Radial Models (Taping Specifications)
+
+     Type         Contact   Plunger        Height      Operating        Plunger                       Taped Radial
+                  material                             force (OF)        color                    Minimum With ground
+Taped                                                                            Without ground  packing unit terminal     Minimum
+Radial:           Silver    Flat type      4.3 mm      0.98 N {100 gf}  lvory        terminal                             packing unit
+B3F-6000          plated                   5.0 mm      1.47 N {150 gf}  Yellow                                  B3F-6100
+Series                                                 0.98 N {100 gf}  Black    B3F-6000                       B3F-6102  1,000 pcs
+                                                       1.47 N {150 gf}  Gray     B3F-6002                       B3F-6120
+                            Projected type 7.3 mm      0.98 N {100 gf}  lvory    B3F-6020        1,000 pcs
+                                                       1.47 N {150 gf}  Yellow   B3F-6022                       B3F-6122
+                                                                                 B3F-6050                       B3F-6150
+                                                                                 B3F-6052                       B3F-6152
+
+Note: The switches are tape packaged in units of 1,000 per package. Order in multiples of the package size. Switches are not sold individually.
+
+2
+B3F                                                                                                                                    B3F
+
+ Ratings/Characteristics
+
+Rating (resistive load)                      1 to 50 mA, 3 to 24 VDC (B3F-G: 100 A to 50 mA, 3 to 24 VDC)
+Minimum applicable load (reference value)
+Ambient operating temperature                10 A at 1 VDC (resistive load)
+Ambient operating humidity
+Contact form                                 -25°C to +70°C at 60%RH max. (with no icing or condensation)
+Contact resistance (initial value)
+Insulation resistance                        35% to 85% (at +5 to +35°C)
+Dielectric strength
+Bounce time                                  SPST-NO
+Vibration resistance
+Shock resistance                             100 m max.
+Durability
+                                             100 M min. (at 250 VDC with insulation tester)
+Weight
+                                             500 VAC, 50/60 Hz for 1 min
+Degree of protection
+Washing                                      5 ms max.
+
+                                             Malfunction: 10 to 55 Hz, 1.5 mm double amplitude
+
+                                             Destruction: 1,000 m/s2 {approx. 100G} max.
+                                             Malfunction: 100 m/s2 {approx. 10G} max.
+
+                                             B3F-1000, B3F-3000, B3F-6000:
+                                                    1,000,000 operations min (OF: 0.98 N {100 gf}) (B3F-1070: 500,000 operations min)
+                                                    300,000 operations min (OF: 1.47 N {150 gf})
+                                                    100,000 operations min (OF: 2.55 N {260 gf})
+                                                    50,000 operations min (OF: 4.9 N {500 gf})
+
+                                             B3F-4000:
+                                                    3,000,000 operations min (OF: 1.27 N {130 gf})
+                                                    1,000,000 operations min (OF: 2.55 N {260 gf})
+
+                                             B3F-5000/5001:
+                                                    10,000,000 operations min.
+
+                                             B3F-G:
+                                                    300,000 operations min.
+
+                                             6 × 6 mm models: approx. 0.25 g
+                                             12 × 12 mm models (standard types): approx. 0.85 g
+                                             Radial models: approx. 0.25 g
+
+                                             IEC IP00
+
+                                             Not possible
+
+ Operating Characteristics
+
+6 × 6 mm Models
+
+                                                    B3F-1000, B3F-3000, B3F-6000                                        B3F-G
+                                                                                                                        1.76 N
+          Operating force (OF)           0.98 N     1.47 N               2.55 N                      4.9 N         B3F-1@@2-G
+                                      B3F-1@@0                                                   B3F-10@6          B3F-3@@2-G
+Item                                  B3F-3@@0      B3F-1@@2             B3F-1@@5
+Operating force (OF)                  B3F-6@@0      B3F-3@@2             B3F-3@@5          4.9±1.47 N          1.76±0.49 N
+Releasing force (RF)            0.98±0.29 N         B3F-6@@2                               {500±150 gf}        {180±50 gf}
+Pretravel (PT)                  {100±30 gf}                                                0.7 N {70 gf} min.  0.49 N {50 gf}min.
+                                0.2 N {20 gf} min.  1.47±0.49 N          2.55±0.69 N                           0.25+0.2/-0.1 mm
+                                0.25+0.2/-0.1 mm    {150±50 gf}          {260±70 gf}
+
+                                                    0.49 N {50 gf}min. 0.49 N {50 gf}min.
+
+12 × 12 mm Models
+
+                                B3F-4000, B3F-5000, B3F-5001
+
+          Operating force (OF)  1.27 N              2.55 N
+
+Item                            B3F-4@@0            B3F-4@@5
+Operating force (OF)            B3F-5@@0
+Releasing force (RF)            B3F-5@@1
+Pretravel (PT)
+                                1.27±0.49 N         2.55±0.69 N
+                                {130±50 gf}         {260±70 gf}
+
+                                0.29 N {30 gf} min. 0.49 N {50 gf} min.
+
+                                0.3+0.2/-0.1 mm
+
+                                                                                                                                       3
+B3F                                                                                                                                                                                        B3F
+
+ Dimensions (Unit: mm)
+
+Note:     The numbers used for terminals in the following graphics are indicated in the "Bottom View" diagram below. In this                                                  2                 1
+          diagram, the Switch is rotated so that the terminals are on the right and left-hand sides, and the OMRON logo ap-
+          pears the right way up. (Except Side-operated and Radial Models)                                                                                                    4                 3
+
+                                                                                                                                                                              (Bottom View)
+
+6 × 6 mm Models
+
+Standard, Flat Plunger Type                                                                     Standard, Flat Plunger Type
+(without Ground Terminal)                                                                       (with Ground Terminal)
+
+B3F-1000, B3F-1002, B3F-1005, B3F-1006                                                          B3F-1100, B3F-1102, B3F-1105
+B3F-1020 (See note.), B3F-1022 (See note.),                                                     B3F-1120 (See note.), B3F-1122 (See note.)
+B3F-1025 (See note.), B3F-1026 (See note.)                                                      B3F-1125 (See note.)
+B3F-1002-G, B3F-1022-G (See note.)                                                              B3F-1102-G, B3F-1122-G (See note.)
+
+                                                               PCB Processing Dimensions                                                              PCB Processing Dimensions
+
+                                                               (Reference Only) (Top View)                                                            (Reference Only) (Top View)
+
+                      6±0.2                                    (PCB thickness, t=1.6)                  6±0.2                                          (PCB thickness, t=1.6)
+
+   6±0.2                       4.5±0.2                                                          6±0.2                          4.5±0.2
+
+                                                                              4.5±0.1                                                                                         4.5±0.1
+
+                                                                                                                                                      4.1±0.1
+
+                                                                                                                          1.5                3.5                              Five, 1±0.05 dia.
+
+                                                                  6.5±0.1     Four, 1±0.1 dia.                                               dia.
+
+                                        3.5
+
+                                        dia.                                                         (See note.)                                                                       6.5±0.1
+                                                                                                4.3±0.2
+         (See note.)                                  Terminal Arrangement/                                                      3.4 Terminal Arrangement/Internal
+   4.3±0.2                                                                                        3.5                                                     Connections (Top View)
+                               3.4                    Internal Connections (Top View)
+                                                                                                                     0.7       0.3 4 3
+   3.5                                                         4           3                                    6.5±0.5
+                                 0.3                                                                            7.7±0.5
+                                                                                                                                             0.7 0.7
+
+                      6.5±0.5                                                                                                           0.3
+
+                      7.7±0.5           0.7 0.7                2           1                                                                                   2           1
+
+   Note: The height of B3F-1020, B3F-1022, B3F-1025,                                            Note: The height of B3F-1120, B3F-1122, and                       5
+           and B3F-1026 is 5±0.2 mm.
+                                                                                                       B3F-1125 is 5±0.2 mm.
+
+Standard, Flat Plunger Type                                                                     Standard, Flat Plunger Type
+(with Ground Terminal, Pitch: 7.5 mm)                                                           (without Ground Terminal)
+
+B3F-1110                                                                                            B3F-1060, B3F-1062, B3F-1062-G
+                                                               PCB Processing Dimensions
+                                                                                                                                                      PCB Processing Dimensions
+                                                               (Reference Only) (Top View)                                                            (Reference Only) (Top View)
+                                                                                                                                                      (PCB thickness, t=1.6)
+                                                               (PCB thickness, t=1.6)
+
+                      6±0.2
+
+                                                                                                       6±0.2
+
+6±0.2                          4.5±0.2                                        4.5±0.1                                                                                         4.5±0.1
+
+                                                      4.1±0.1                                   6±0.2                     4.5±0.2
+
+                               1.5 1.2±0.05 dia. dia. Four, 3.5                                                                                                   6.5±0.1     Four,
+                                                                                               1±0.05 dia.                                                                    1±0.05 dia.
+
+                                        3.5                       7.5±0.1                                                 0.5 max.
+
+                                        dia. 7±0.2
+                                                      Terminal Arrangement/Internal
+                                                                                                                               3.4
+
+5±0.2 3.4 Connections (Top View) (1.8)                                                                                                                Terminal Arrangement/
+                                                                                                                                                      Internal Connections
+                                                                                                                            3.5                       (Top View)
+
+   3.5 4 3 0.3
+
+                               0.3                                                                     6.5±0.5                          0.7 0.7                4           3
+                                                                                                       7.7±0.5
+                        0.7                  0.7 0.7           2           1
+                      7.5±0.5            0.3
+                                                                  5
+                       9±0.5
+
+                                                                                                                                                               2           1
+
+Note: Unless otherwise specified, a tolerance of ±0.4 mm applies to all dimensions. No terminal numbers are indicated on the Switches.
+
+4
+B3F                                                                                                                                                                                                                              B3F
+
+Standard, Flat Plunger Type                                                                                           Standard, Projected Plunger Type
+(without Ground Terminal)                                                                                             (without Ground Terminal)
+B3F-1070, B3F-1072, B3F-1075, B3F-1072-G
+                                                                                                                      B3F-1050, B3F-1052                                                      PCB Processing Dimensions
+                                                            PCB Processing Dimensions                                 B3F-1055, B3F-1056                                                      (Reference Only) (Top View)
+                                                            (Reference Only) (Top View)                               B3F-1052-G                                                              (PCB thickness, t=1.6)
+                                                            (PCB thickness, t=1.6)
+                                                                                                                                        6±0.2
+                   6±0.2
+
+6±0.2                       4.5±0.2                                                                4.5±0.1            6±0.2                            4.5±0.2                                                                   4.5±0.2
+
+                                                 3.5
+
+                                                 3 dia. 6.5±0.1 Four, 2.4 × 2.4±0.1 3.5 dia. 1±0.05 dia. 6.5±0.1 Four,
+                                                 dia.                                           1±0.05 .dia
+
+                            0.5 max.                       Terminal Arrangement/Internal                                                               1.8±0.1                                Terminal Arrangement/Internal
+                                                                                                                                                                                              Connections (Top View)
+9.5                                                        Connections (Top View)                            7.3±0.2
+
+                                   3.4                                                                                4.3±0.2                          3.4
+
+3.5 (1.8)                                                                  4                    3                                                                                                      4                    3
+                             0.3
+                                                                                                                                3.5
+                                                                                                                                                              0.3
+
+                 6.5±0.5                                                   2                    1                                       6.5±0.5                                                        2                    1
+
+                 7.7±0.5                     0.7 0.7                                                                                    7.7±0.5                    0.7 0.7
+
+Standard, Projected Plunger Type                                                                                      Side-operated, Flat Plunger Type
+(with Ground Terminal)                                                                                                B3F-3100, B3F-3102, B3F-3105
+
+B3F-1150, B3F-1152, B3F-1155
+
+                                                                   PCB Processing Dimensions                                              7.3                                                 PCB Processing Dimensions
+                                                                   (Reference Only) (Top View)                                                                                                (Reference Only) (Top View)
+                                                                   (PCB thickness, t=1.6)                                               3.5 dia.                                              (PCB thickness, t=1.6)
+
+                          6±0.2                                                                                                          4.5±0.5                                                                    Two, 1.5 ±0.05 dia.
+                                                                                                                                          7±0.5
+                                                                                                                                6.25       8.7
+
+          6±0.2                         4.5±0.2                                                    4.5±0.1
+
+                                                                                                                                                                                                                                 2.5±0.1
+
+                             1.5                                  4.1±0.1                          Five, 1±0.05 dia.                                                                                      4.5±0.1
+                 2.4 × 2.4±0.1                         3.5 dia.                                                                                                                                            7±0.1
+                                                                                    6.5±0.1                                                                                                                                 Two,
+                                                                                                                                                                                                                            1±0.05 dia.
+
+                                        1.8±0.1                     Terminal Arrangement/                             7.4                                                                     Terminal Arrangement/
+                                          3.4                                                                                                                                                 Internal Connections
+7.3±0.2                                                             Internal Connections                                        4                                                             (Top View)
+       4.3±0.2                                                                                                                     0.7
+                                                                    (Top View)
+         3.5
+                                                                                                                           3.5
+
+                                                                              4                 3                                                                                                                        4
+
+                                        0.3                                                                                                                        0.3 0.3                    13
+
+                                                                                                                                                                   2.25                                1              2
+
+                            0.7                       0.7 0.7 2 1                                                                                                  3.15±0.2  2.5±0.5
+                          6.5±0.5
+                                                 0.3                                5
+                          7.7±0.5
+
+Side-operated, Flat Plunger Type (Height: 3.85 mm)                                                                    Side-operated, Projected Plunger Type
+B3F-3120, B3F-3122, B3F-3125, B3F-3122-G                                                                              B3F-3150, B3F-3152, B3F-3155
+
+                       7.3                                          PCB Processing Dimensions                                                     7.3                                         PCB Processing Dimensions
+     6.25                                                           (Reference Only) (Top View)                                 6.25                                                          (Reference Only) (Top View)
+                                                                    (PCB thickness, t=1.6)                                                                                                    (PCB thickness, t=1.6)
+
+                                                                                         Two, 1.5 ±0.05 dia.                                                                                                           Two, 1.5 ±0.05 dia.
+
+                                                                                                   2.5±0.1                                                                                                                       2.5±0.1
+
+                 3.5 dia.
+
+                                                                                    4.5±0.1                                             3.5 dia.                                                             4.5±0.1             Two,
+                                                                                     7±0.1                                                                                                                    7±0.1              1±0.05 dia.
+                                                                                                Two,
+                                                                                                1±0.05 dia.
+
+7.4                                                                 Terminal Arrangement/                             7.4                                          2.4 × 2.4±0.1                 Terminal Arrangement/
+                                                                                                                              4                                                                  Internal Connections
+       4                                                            Internal Connections                                                                           0.3 0.3                       (Top View)
+                                                                                                                      3.5                                                       1.8±0.1
+                                                                    (Top View)                                                                                                          2.25
+                                                                                                                                  0.7                                             6.15±0.2
+3.5 4                                                                                                                                                                                                                         4
+                                                                           3                                                                                                                           3
+          0.7 0.3 0.3 1
+                 4.5±0.5                                                         1           2                                                                                                1           1              2
+
+                 7±0.5                              2.25   2.5±0.5                                                                      4.5±0.5                                               2.5±0.5
+                 8.7                             3.85±0.2
+                                                                                                                                         7±0.5
+                                                                                                                                          8.7
+
+Note: Unless otherwise specified, a tolerance of ±0.4 mm applies to all dimensions. No terminal numbers are indicated on the Switches.
+
+                                                                                                                                                                                                                                              5
+B3F                                                                                                                                                                                                 B3F
+
+12 × 12 mm Models                                  PCB Processing Dimensions                      Standard, Long-durability,                                         PCB Processing Dimensions
+ Standard, Long-durability,                        (Reference Only) (Top View)                    and High-reliability Models                                        (Reference Only) (Top View)
+ and High-reliability Models                       (PCB thickness, t=1.6)                         Flat Plunger Type                                                  (PCB thickness, t=1.6)
+ Flat Plunger Type                                                                                (with Ground Terminal)
+ (without Ground Terminal)                                             Two, 1.8±0.05 dia.         B3F-4100, B3F-4105,                                                                         Two, 1.8±0.05 dia.
+ B3F-4000, B3F-4005,                                                   (for positioning boss)     B3F-5100, B3F-5101                                                                          (for positioning boss)
+ B3F-5000, B3F-5001
+                                                                                                                      12±0.2
+                       12±0.2
+
+                                                             5±0.1 9±0.1                                                                                                                      5±0.1 9±0.1
+
+   12±0.2                  5±0.2                                                                  12±0.2                                5±0.2              6.9±0.1
+                                                                                                                             1.6
+                                                   12.5±0.1  Four,                                                                                                                            Five,
+                                                             1.2±0.05 dia.                                                                                                                    1.2±0.05 dia.
+
+                                                                                                                                                                              12.5±0.1
+
+                                         7.1 dia.  Terminal Arrangement/                                                                              7.1 dia.       Terminal Arrangement/
+                                                   Internal Connections                                                                                              Internal Connections
+4.3±0.2                    3.5         11          (Top View)                                     4.3±0.2                                                            (Top View)
+                                         9±0.1
+                                                                                                                                  3.5
+
+   3.5                                             4         3                                    3.5                                                                         4               3
+
+                 1.6 dia.  0.3                                                                                     0.9            0.3                               1.6 dia.
+                                                                                                                                                      11
+
+                 12.5±0.5                          2         1                                                     12.5±0.5                           6.9                     2               1
+
+                 13.8±0.5                                                                                          13.8±0.5                                9±0.1                        5
+
+Standard, Long-durability,                         PCB Processing Dimensions                      Standard, Long-durability,                                         PCB Processing Dimensions
+and High-reliability Models                        (Reference Only) (Top View)                    and High-reliability Models                                        (Reference Only) (Top View)
+Projected Plunger Type                             (PCB thickness, t=1.6)                         Projected Plunger Type                                             (PCB thickness, t=1.6)
+(without Ground Terminal)                                                                         (with Ground Terminal)
+B3F-4050, B3F-4055,                                                       Two, 1.8±0.05 dia.                                                                                                 Two, 1.8±0.05 dia.
+B3F-5050, B3F-5051                                                        (for positioning boss)  B3F-4150, B3F-4155,                                                                        (for positioning boss)
+                                                                                                  B3F-5150, B3F-5151
+                           12±0.2
+                                                                                                                        12±0.2
+
+                                                                                                  12±0.2                               5±0.2                                                  5±0.1 9±0.1
+
+       12±0.2                   5±0.2                        5±0.1 9±0.1
+
+7.3±0.2                                                                                                                                                    6.9±0.1
+       4.3±0.2
+            3.5                                    12.5±0.1  Four,                                                                1.6                                                         Five,
+                                                             1.2±0.05 dia.                                              @3.8±0.1                                                              1.2±0.05 dia.
+
+                 @3.8±0.1                                                                                                                    1.8±0.2                          12.5±0.1
+                                                                                                                                            3.5
+                 1.6 dia.              7.1 dia.                                                                                                            7.1 dia.
+                 12.5±0.5
+                 13.8±0.5  1.8±0.2                 Terminal Arrangement/                          7.3±0.2                                                                     Terminal Arrangement/
+                           3.5                     Internal Connections                                  4.3±0.2                                                              Internal Connections
+                                                   (Top View)                                                 3.5                                                             (Top View)
+
+                                                   4         3                                                                                                                   4               3
+
+                           0.3         11                                                                          0.9            0.3                      1 1 1.6 dia.
+
+                                       9±0.1       2         1                                                          12.5±0.5                      6.9                        2               1
+                                                                                                                                                          9±0.1
+                                                                                                                        13.8±0.5                                                           5
+
+Note: Unless otherwise specified, a tolerance of ±0.4 mm applies to all dimensions.
+
+6
+B3F                                                                                                                                                                                                                 B3F
+
+Note:  The numbers used for terminals in the following graphics are indicated in the "Bottom View" diagram below. In this                                                                                       1
+       diagram, the Switch is rotated so that the terminals are on the right and left-hand sides, and the OMRON logo appears
+       the right way up.                                                                                                                                                                                         2
+                                                                                                                                                                                                         (Bottom View)
+6 mm × 6 mm Radial Types (Taping Specifications): Sold in Units of 1,000 Switches
+
+Flat Plunger Type                                                       6±0.3 Surface B
+
+(without Ground Terminal)
+
+B3F-6000, B3F-6002         6±0.3                                                                                                                     12.7±1
+                                                                                                                                                 6.35±1
+                                                                                                                                                                                                         2 max.
+
+                                  3.5 dia.                                          Surface A
+
+                                                                                                    0.5 max.
+
+                                                                                                                            0.9         Support                                   0.5 max. +1 9
+                                                                                                                                                                                                 180
+                                                                                         (1)     4.3 3.4                                tape
+
+                                                                                                                         0.2 max.                                                 6 9±0.5
+                                                                                                                      0.3
+                           0.5                                                                                                                                                                        18-0.5 +1
+                                     5-0.2 +0.8
+
+                                                                      Terminal Arrangement                                                       4 dia. ±0.2                      Carrier tape
+                           PCB Processing Dimensions /Internal Connections                                                                        12.7±0.3
+                           (Reference Only) (Top View) (Top View)
+Note: The tape is random   (PCB thickness, t=1.6)
+        between surface A
+        and surface B.
+
+                                  +0.1                                                              2                 1
+                           Two, 1 0 dia. 5±0.1
+
+Flat Plunger Type                                                       6±0.3                                                                                 12.7±1
+                                                                                                                                                         6.35±1
+(with Ground Terminal)                                                                                                                                                                                   2 max.
+                                                                                                                                        Support
+B3F-6100, B3F-6102         6±0.3                                                              2                                         tape
+
+                                3.5 dia.                                                             0.5 max.                   0.9                             4±0.2 dia.                   11
+                           (1)                                                                                        0.2 dia.                                         12.7±0.3   0.5 max.
+                                                                                                  4.3 3.4
+                                                                                              3.1                                                                                                20±0.5
+
+                                                                                                                 0.3                                                              6 9±0.5
+                                                                                                                 0.6
+                                                                                                                                                                                                18-0.5 +1
+
+                           0.5                                                    5±0.2
+
+                                                                        5-0.2 +0.8
+
+                                                                                                    Terminal Arrangement                                                          Carrier tape
+                                                                                                    /Internal Connections
+                           PCB Processing Dimensions                                                (Top View)
+                           (Reference Only) (Top View)
+                           (PCB thickness, t=1.6)
+
+                           Three, 1 0 +0.1 dia.                         5±0.1                          2                 1
+                                                                               5±0.1
+                                                                                                                                   3
+
+Flat Plunger Type                                                       6±0.3 Surface B
+
+(without Ground Terminal)                                                                                                                                     12.7±1                                     2 max.
+                                                                                                                                                         6.35±1
+B3F-6020, B3F-6022
+                                                                                                                                        Support
+                                                                 6±0.3                                                                  tape
+
+                                                                        3.5 dia.         Surface A                                                                    4±0.2 dia.
+                                                                                                                                                                       12.7±0.3
+                                                                                                    0.5 max.                                                                      0.5 max. 9 +1
+                                                                                                                                                                                                  180
+
+                                                                                         (1)        5 3.4                          0.9
+
+                                                                                                                                                                                  6 9±0.5
+
+                                                                                                                         0.2 max.                                                                        18-0.5 +1
+                                                                                                                      0.3
+                                  0.5
+                                            5-0.2 +0.8
+
+Note: The tape is random   PCB Processing Dimensions                                                Terminal Arrangement                                                          Carrier tape
+        between surface A  (Reference Only) (Top View)                                              /Internal Connections
+        and surface B.     (PCB thickness, t=1.6)                                                   (Top View)
+
+                           Two, 1 0 +0.1 dia. 5±0.1                                                       2              1
+
+Note: Unless otherwise specified, a tolerance of ±0.4 mm applies to all dimensions. No terminal numbers are indicated on the Switches.
+
+                                                                                                                                                                                                                    7
+B3F                                                                                                                                                                                                     B3F
+
+Flat Plunger Type                                                           6±0.3
+
+(with Ground Terminal)
+
+B3F-6120, B3F-6122         6±0.3                                                                  2                                                    12.7±1
+                                                                                                                                                   6.35±1
+                                                                                                                                                                                                2 max.
+                                                                                                                                                               4±0.2 dia.
+                                3.5 dia.                                                                 0.5 max.                    0.9  Support               12.7±0.3              11
+                           (1)                                                                                            0.2 max.        tape                             0.5 max. 20±0.5
+                                                                                                       5 3.4
+                                                                                                  3.1                                                                      6 9±0.5
+
+                           0.5                                                        5±0.2                          0.3                                                                 18-0.5 +1
+                                                                                                                     0.6
+                                                                            5-0.2 +0.8
+
+                        PCB Processing Dimensions                                                    Terminal Arrangement                                                  Carrier tape
+                        (Reference Only) (Top View)                                                  /Internal Connections
+                        (PCB thickness, t=1.6)                                                       (Top View)
+
+                        Three, 1 0 +0.1dia.                                 5±0.1                         2                    1
+                                                                                   5±0.1
+                                                                                                                                  3
+
+Projected Plunger Type                                                      6±0.3 Surface B
+(without Ground Terminal)
+
+B3F-6050, B3F-6052
+
+                                                                     6±0.3
+
+                                                                            3.5 dia. Surface A 2.4                                                     12.7±1                                   2 max.
+                                                                                                                                                   6.35±1
+                                                                                                     0.5 max.
+                                                                                                                                                               4±0.2 dia.
+                                                                                                     7.3                             0.9                         12.7±0.3
+                                                                                                                          0.2 max.
+                                                                                             (1)          3.4
+
+                                                                                                                                          Support                          0.5 dia. 9 +1
+                                                                                                                                          tape                                            18 0
+
+                           0.5                                                                                            0.3                                              6 9±0.5
+                                     5-0.2 +0.8
+
+                                                                                                                                                                                         18-0.5 +1
+
+                       PCB Processing Dimensions                                                     Terminal Arrang ement
+                       (Reference Only) (Top View)                                                   /Internal Connections
+                       (PCB thickness, t=1.6)                                                        (Top View)
+
+                                                                                                                                                                           Carrier tape
+
+                                                   Two, 1 0 +0.1dia. 5±0.1                           2                    1
+
+   Note: The tape is random between surface A
+           and surface B.
+
+   Projected Plunger Type 6±0.3
+   (with Ground Terminal)
+
+   B3F-6150, B3F-6152                                                                                                                                  12.7±1
+                                                                                                                                                   6.35±1
+                           6±0.3                                                                  2
+                                                                                                                                                               4±0.2 dia.
+                                                                                                                                                                 12.7±0.3                       2 max.
+
+                                                                            3.5 dia.                                      2.4
+
+                           (1)                                                                           0.5 max.                    0.9  Support                                     11
+                                                                                                      7.3                 0.2 max.        tape                             0.5 max. 20±0.5
+
+                           0.5                                                        5±0.2                  3.4                                                           6 9±0.5
+
+                                                                               +0.8               3.1                                                                                    18-0.5 +1
+
+                                                                            5 -0.2                                   0.3
+                                                                                                                     0.6
+
+                           PCB Processing Dimensions                                                      Terminal Arrangement                                             Carrier tape
+                           (Reference Only) (Top View)                                                    /Internal Connections
+                           (PCB thickness, t=1.6)                                                         (Top View)
+
+                                        +0.1                                5±0.1                            2                    1
+                                                                                   5±0.1
+                        Three, 1 0 dia.                                                                                              3
+
+Note: Unless otherwise specified, a tolerance of ±0.4 mm applies to all dimensions. No terminal numbers are indicated on the Switches.
+
+8
+B3F                                                                                                   B3F
+
+ Key Tops
+
+B32-series Key Tops are available for projected plungers. Refer to the Datasheet of B32 for details.
+
+ Precautions
+
+Be sure to read the safety precautions common to all Tactile Switches for correct use.
+
+· Application examples provided in this document are for reference only. In actual applications, confirm equipment functions and safety before using the product.
+· Consult your OMRON representative before using the product under conditions which are not described in the manual or applying the product to nuclear control systems, railroad
+
+ systems, aviation systems, vehicles, combustion systems, medical equipment, amusement machines, safety equipment, and other systems or equipment that may have a serious
+ influence on lives and property if used improperly. Make sure that the ratings and performance characteristics of the product provide a margin of safety for the system or
+ equipment, and be sure to provide the system or equipment with double safety mechanisms.
+
+                                              Note: Do not use this document to operate the Unit.
+
+OMRON Corporation                             Contact: www.omron.com/ecb                              Cat. No. A070-E1-08
+                                                                                                              1014(0207)(O)
+Electronic and Mechanical Components Company
+
+                                                                                                      9
+

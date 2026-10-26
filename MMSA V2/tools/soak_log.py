@@ -26,7 +26,7 @@ from datetime import datetime
 from pathlib import Path
 
 BAD = re.compile(r"WARNING|failed|FAILED|Could not|NOT started|!! audio loss|AUDIO WAS LOST|[Pp]anic|Guru|"
-                 r"abort\(|assert|Backtrace|SD NOT available|card pulled|REC ignored")
+                 r"abort\(|assert|Backtrace|SD NOT available|card pulled|REC ignored|CLIPPING")
 
 
 def keep_awake():
@@ -100,7 +100,7 @@ def run(a):
                 if line.startswith("Boot, reset reason"):
                     b.note(f"INCIDENT: board rebooted ({line})")
                     restart_at = time.time() + 10
-                elif line.startswith("REC stop: /"):
+                elif line.startswith("REC stop: /") and not finished:  # a card-full/battery stop is the planned end
                     context = " | ".join(new[max(0, i - 4):i])
                     b.note(f"INCIDENT: recording stopped by itself: {line}  [before: {context}]")
                     restart_at = time.time() + 5
@@ -167,13 +167,18 @@ def summarize(path):
     stops = [s for _, s in board if s.startswith("REC stop: /")]
     lost = [s for _, s in board if "AUDIO WAS LOST" in s or s.startswith("  !! audio loss")]
     reboots = [f"{t:%H:%M:%S} {s}" for t, s in board if s.startswith("Boot, reset reason")]
-    incidents = [f"{t:%H:%M:%S} {s}" for t, s in pc if s.startswith("INCIDENT")]
+    # A full card ends the soak on purpose: the stop that follows it, and the card going offline, aren't faults.
+    # (Logs from before this fix can hold an INCIDENT for that stop, with the card-full line in its context.)
+    full_at = next((t for t, s in board if s.startswith("SD card full")), None)
+    incidents = [f"{t:%H:%M:%S} {s}" for t, s in pc if s.startswith("INCIDENT") and "SD card full" not in s]
     polls_ok = sum(s.startswith("BLE poll ok") for _, s in pc)
     polls_bad = [f"{t:%H:%M:%S} {s}" for t, s in pc if s.startswith("BLE poll FAILED")]
-    errors = [f"{t:%H:%M:%S} {s}" for t, s in board if BAD.search(s) and "5 fast = failed" not in s]
+    errors = [f"{t:%H:%M:%S} {s}" for t, s in board if BAD.search(s) and "5 fast = failed" not in s
+              and not (s == "SD NOT available" and full_at and 0 <= (t - full_at).total_seconds() < 5)]
+    end_note = next((s for _, s in reversed(pc) if s.startswith("soak end:")), "soak end: still running")
     port = [f"{t:%H:%M:%S} {s}" for t, s in pc if s.startswith("port ")]
 
-    print(f"Soak log {path.name}: {t0:%Y-%m-%d %H:%M} to {t1:%H:%M} ({hours:.2f} h)")
+    print(f"Soak log {path.name}: {t0:%Y-%m-%d %H:%M} to {t1:%H:%M} ({hours:.2f} h; {end_note})")
     print(f"  takes started: {sum(s.startswith('REC start:') for _, s in board)}, file switches: {len(switches)}"
           + (f" (slowest {max(switches)} ms)" if switches else ""))
     if health:

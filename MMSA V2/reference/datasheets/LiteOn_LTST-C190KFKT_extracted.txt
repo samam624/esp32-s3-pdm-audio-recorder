@@ -1,0 +1,353 @@
+                SMD LED
+                Product Data Sheet
+                LTST-C190KFKT
+
+                                             Spec No. :DS-22-99-0186
+                                             Effective Date: 09/04/2021
+                                             Revision: L
+
+                                                     LITE-ON DCC
+                                                       RELEASE
+
+                                                            BNS-OD-FC001/A4
+
+ LITE-ON Technology Corp. / Optoelectronics
+
+No.90,Chien 1 Road, Chung Ho, New Taipei City 23585, Taiwan, R.O.C.
+    Tel: 886-2-2222-6181 Fax: 886-2-2221-1948 / 886-2-2221-0660
+                              http://www.liteon.com/opto
+                   LITE-ON TECHNOLOGY                               CORPORATION
+
+                                          Property of Lite-On Only
+Features
+
+     * Meet ROHS, Green Product.
+     * Extra thin (0.80H mm) Chip LED.
+     * Ultra bright AlInGaP Chip LED.
+     * Package In 8mm Tape On 7" Diameter Reels.
+     * EIA STD package.
+     * I.C. compatible.
+     * Compatible With Automatic Placement Equipment.
+     * Compatible With Infrared Reflow Solder Process.
+Package Dimensions
+
+      Part No.                  Lens                        Source Color
+LTST-C190KFKT               Water Clear                    AllnGaP Orange
+
+Notes:
+1. All dimensions are in millimeters (inches).
+2. Tolerance is ± 0.10 mm (.004") unless otherwise noted.
+
+  Part No. : LTST-C190KFKT                                          Page : 1 of 12
+BNS-OD-C131/A4
+                   LITE-ON TECHNOLOGY CORPORATION
+
+                                          Property of Lite-On Only
+Absolute Maximum Ratings At Ta=25
+
+                 Parameter            LTST-C190KFKT         Unit
+
+Power Dissipation                     75                    mW
+
+Peak Forward Current                  80                    mA
+
+(1/10 Duty Cycle, 0.1ms Pulse Width)
+
+DC Forward Current                    30                    mA
+
+Reverse Voltage                       5                     V
+
+Operating Temperature Range              -35°C to + 85°C
+
+Storage Temperature Range                -45°C to + 85°C
+
+Infrared Soldering Condition          260°C For 10 Seconds
+
+  Part No. : LTST-C190KFKT                Page : 2 of 12
+BNS-OD-C131/A4
+                   LITE-ON TECHNOLOGY CORPORATION
+
+                                          Property of Lite-On Only
+
+Suggestion Profile:
+ Suggestion IR Reflow Profile For Pb Free Process
+
+  Part No. : LTST-C190KFKT  Page : 3 of 12
+BNS-OD-C131/A4
+                   LITE-ON TECHNOLOGY CORPORATION
+
+                                          Property of Lite-On Only
+Electrical Optical Characteristics At Ta=25
+
+Parameter                 Symbol  Part No.  Min. Typ. Max. Unit Test Condition
+                                   LTST-
+
+Luminous Intensity          IV    C190KFKT 45.0 90.0       mcd IF = 20mA
+                                                                           Note 1
+
+Viewing Angle             21/2 C190KFKT     130            deg Note 2 (Fig.6)
+
+Peak Emission Wavelength    P     C190KFKT  611            nm Measurement
+                                                                     @Peak (Fig.1)
+
+Dominant Wavelength         d     C190KFKT  605            nm  Note 3
+
+Spectral Line Half-Width     C190KFKT       17             nm
+
+Forward Voltage             VF    C190KFKT  2.0       2.4  V   IF = 20mA
+
+Reverse Current             IR    C190KFKT            10   A   VR = 5V
+
+Notes: 1. Luminous intensity is measured with a light sensor and filter combination that approximates the
+           CIE eye-response curve.
+
+        2. 1/2 is the off-axis angle at which the luminous intensity is half the axial luminous intensity.
+        3. The dominant wavelength, d is derived from the CIE chromaticity diagram and represents the
+
+           single wavelength which defines the color of the device.
+
+  Part No. : LTST-C190KFKT                            Page : 4 of 12
+BNS-OD-C131/A4
+               LITE-ON TECHNOLOGY CORPORATION
+
+                           Property of Lite-On Only
+
+Bin Code List
+
+               Luminous Intensity         Unit : mcd @20mA
+
+               Bin Code            Min.                                Max.
+
+               P                   45.0                                71.0
+
+               Q                   71.0                                112.0
+
+               R                   112.0                               180.0
+
+               S                   180.0                               280.0
+
+                            Tolerance on each Intensity bin is +/-15%
+
+  Part No. : LTST-C190KFKT                Page : 5 of 12
+BNS-OD-C131/A4
+  LITE-ON TECHNOLOGY CORPORATION
+
+                Property of Lite-On Only
+
+Typical Electrical / Optical Characteristics Curves
+(25 °C Ambient Temperature Unless Otherwise Noted)
+
+  Part No. : LTST-C190KFKT  Page : 6 of 12
+BNS-OD-C131/A4
+                  LITE-ON TECHNOLOGY CORPORATION
+
+                                        Property of Lite-On Only
+Cleaning
+
+  Do not use unspecified chemical liquid to clean LED they could harm the package.
+  If clean is necessary, immerse the LED in ethyl alcohol or in isopropyl alcohol at normal temperature for
+  less one minute.
+Suggest Soldering Pad Dimensions
+
+Package Dimensions Of Tape And Reel
+
+      Notes:                                            Page : 7 of 12
+        1. All dimensions are in millimeters (inches).
+
+  Part No. : LTST-C190KFKT
+BNS-OD-C131/A4
+LITE-ON TECHNOLOGY CORPORATION
+
+            Property of Lite-On Only
+
+Notes:
+  1. Empty component pockets sealed with top cover tape.
+  2. 7 inch reel-4000 pieces per reel.
+  3. Minimum packing quantity is 500 pcs for remainders.
+  4. The maximum number of consecutive missing lamps is two.
+  5. In accordance with ANSI/EIA 481 specifications.
+
+  Part No. : LTST-C190KFKT                                    Page : 8 of 12
+BNS-OD-C131/A4
+                  LITE-ON TECHNOLOGY CORPORATION
+
+                              Property of Lite-On Only
+
+                                                             CAUTIONS
+1. Application
+
+    The LEDs described here are intended to be used for ordinary electronic equipment (such as office equipment,
+    communication equipment and household applications).Consult Liteon's Sales in advance for information on
+    applications in which exceptional reliability is required, particularly when the failure or malfunction of the LEDs
+    may directly jeopardize life or health (such as in aviation, transportation, traffic control equipment, medical and
+    life support systems and safety devices).
+
+2. Storage
+   The package is sealed:
+   The LEDs should be stored at 30°C or less and 90%RH or less. And the LEDs are limited to use within
+   one year, while the LEDs is packed in moisture-proof package with the desiccants inside.
+   The package is opened:
+   The storage ambient for the LEDs should not exceed 30°C temperature or 60% relative humidity.
+   It is recommended that LEDs out of their original packaging are IR-reflowed within one week (MSL 3).
+   For extended storage out of their original packaging, it is recommended that the LEDs be stored in a sealed
+   container with appropriate desiccant, or in a desiccators with nitrogen ambient.
+   LEDs stored out of their original packaging for more than a week should be baked at about 60 deg C for at
+   least 20 hours before solder assembly.
+
+3. Cleaning
+   Use alcohol-based cleaning solvents such as isopropyl alcohol to clean the LED if necessary.
+
+4. Soldering                                    Soldering iron
+   Recommended soldering conditions:
+                         Reflow soldering
+
+Pre-heat          150~200°C                     Temperature     300°C Max.
+Pre-heat time     120 sec. Max.                 Soldering time  3 sec. Max.
+Peak temperature  260°C Max.                                    (one time only)
+Soldering time    10 sec. Max.(Max. two times)
+
+Soldering notes:
+Because different board designs use different number and types of devices, solder pastes, reflow ovens, and circuit
+boards, no single temperature profile works for all possible combinations.
+However, you can successfully mount your packages to the PCB by following the proper guidelines and
+PCB-specific characterization.
+LITE-ON Runs both component-level verification using in-house KYRAMX98 reflow chambers and board-level
+assembly.
+The results of this testing are verified through post-reflow reliability testing.
+Profiles used at LITE-ON are based on JEDEC standards to ensure that all packages can be successfully and reliably
+surface mounted.
+Figure on page3 shows a sample temperature profile compliant to JEDEC standards.
+You can use this example as a generic target to set up your reflow process.
+You should adhere to the JEDEC profile limits as well as specifications and recommendations from the solder
+paste manufacturer to avoid damaging the device and create a reliable solder joint.
+
+  Part No. : LTST-C190KFKT                                      Page : 9 of 12
+BNS-OD-C131/A4
+LITE-ON TECHNOLOGY CORPORATION
+
+            Property of Lite-On Only
+
+5. Drive Method
+   An LED is a current-operated device. In order to ensure intensity uniformity on multiple LEDs connected in
+   parallel in an application, it is recommended that a current limiting resistor be incorporated in the drive circuit, in
+   series with each LED as shown in Circuit A below.
+
+Circuit model A             Circuit model B
+
+LED                         LED
+
+   (A) Recommended circuit.
+   (B) The brightness of each LED might appear different due to the differences in the I-V characteristics
+
+         of those LEDs.
+
+   6. ESD (Electrostatic Discharge)
+
+   Static Electricity or power surge will damage the LED.
+   Suggestions to prevent ESD damage:
+
+ Use of a conductive wrist band or anti-electrostatic glove when handling these LEDs.
+ All devices, equipment, and machinery must be properly grounded.
+ Work tables, storage racks, etc. should be properly grounded.
+ Use ion blower to neutralize the static charge which might have built up on surface of the LED's plastic lens as
+
+     a result of friction between LEDs during storage and handling.
+
+    ESD-damaged LEDs will exhibit abnormal characteristics such as high reverse leakage current, low forward
+    voltage, or " no lightup " at low currents.
+     To verify for ESD damage, check for " lightup " and Vf of the suspect LEDs at low currents.
+     The Vf of " good " LEDs should be >2.0V@0.1mA for InGaN product and >1.4V@0.1mA for AlInGaP product.
+
+  Part No. : LTST-C190KFKT  Page : 10 of 12
+BNS-OD-C131/A4
+                     LITE-ON TECHNOLOGY CORPORATION
+
+                                       Property of Lite-On Only
+
+7. Reliability Test  Test Item                              Test Condition                 Reference Standard
+  Classification
+                                       Ta= Under Room Temperature As Per Data Sheet     MIL-STD-750D:1026
+                     Operation Life    Maximum Rating                                   MIL-STD-883D:1005
+                                       *Test Time= 1000HRS (-24HRS,+72HRS)              JIS C 7021:B-1
+Endurance            High Temperature                                                   MIL-STD-202F:103B
+    Test               High Humidity   IR-Reflow In-Board, 2 Times                      JIS C 7021:B-11
+                           Storage     Ta= 65±5,RH= 9095%
+                                       *Test Time= 240HRS±2HRS                          MIL-STD-883D:1008
+                     High Temperature                                                   JIS C 7021:B-10
+                           Storage     Ta= 105±5
+                                       *Test Time= 1000HRS (-24HRS,+72HRS)              JIS C 7021:B-12
+                     Low Temperature
+                            Storage    Ta= -55±5
+                                       *Test Time=1000HRS (-24HRS,+72H RS)
+
+                     Temperature       105  25  -55  25                                 MIL-STD-202F:107D
+                        Cycling        30mins 5mins 30mins 5mins                        MIL-STD-750D:1051
+                                       10 Cycles                                        MIL-STD-883D:1010
+                                                                                        JIS C 7021:A-4
+
+                     Thermal           IR-Reflow In-Board, 2 Times                      MIL-STD-202F:107D
+                      Shock            85 ± 5  -40 ± 5                                  MIL-STD-750D:1051
+                                                                                        MIL-STD-883D:1011
+                                       10mins 10mins 10 Cycles
+
+Environmental              Solder      T.sol= 260 ± 5                                   MIL-STD-202F:210A
+      Test              Resistance     Dwell Time= 10 ± 1secs                           MIL-STD-750D:2031
+                                                                                        JIS C 7021:A-1
+                        IR-Reflow      Ramp-up rate(217 to Peak) +3/ second max
+                     Pb Free Process   Temp. maintain at 175(±25) 180 seconds max       MIL-STD-750D:2031.2
+                                       Temp. maintain above 217 60-150 seconds          J-STD-020D
+                                       Peak temperature range 260+0/-5
+                                       Time within 5°C of actual Peak Temperature (tp)
+                                       10~30 seconds
+                                       Ramp-down rate +6/second max
+
+                     Solderability     T.sol= 235 ± 5                                   MIL-STD-202F:208D
+                                       Immersion time 2±0.5 sec                         MIL-STD-750D:2026
+                                       Immersion rate 25±2.5 mm/sec                     MIL-STD-883D:2003
+                                       Coverage 95% of the dipped surface               IEC 68 Part 2-20
+                                                                                        JIS C 7021:A-2
+
+8. Others
+   The appearance and specifications of the product may be modified for improvement without prior notice.
+
+  Part No. : LTST-C190KFKT                                                              Page : 11 of 12
+BNS-OD-C131/A4
+                   LITE-ON TECHNOLOGY                               CORPORATION
+
+                                          Property of Lite-On Only
+9. Suggested Checking List
+
+Training and Certification
+   1. Everyone working in a static-safe area is ESD-certified?
+   2. Training records kept and re-certification dates monitored?
+
+Static-Safe Workstation & Work Areas
+   1. Static-safe workstation or work-areas have ESD signs?
+   2. All surfaces and objects at all static-safe workstation and within 1 ft measure less than 100V?
+   3. All ionizer activated, positioned towards the units?
+   4. Each work surface mats grounding is good?
+
+Personnel Grounding
+   1. Every person (including visitors) handling ESD sensitive (ESDS) items wears wrist strap, heel
+      strap or conductive shoes with conductive flooring?
+   2. If conductive footwear used, conductive flooring also present where operator stand or walk?
+   3. Garments, hairs or anything closer than 1 ft to ESD items measure less than 100V*?
+   4. Every wrist strap or heel strap/conductive shoes checked daily and result recorded for all DLs?
+   5. All wrist strap or heel strap checkers calibration up to date?
+      Note: *50V for Blue LED.
+
+Device Handling
+   1. Every ESDS items identified by EIA-471 labels on item or packaging?
+  2. All ESDS items completely inside properly closed static-shielding containers when not at
+      static-safe workstation?
+   3. No static charge generators (e.g. plastics) inside shielding containers with ESDS items?
+  4. All flexible conductive and dissipative package materials inspected before reuse or recycles?
+
+Others
+ 1. Audit result reported to entity ESD control coordinator?
+ 2. Corrective action from previous audits completed?
+ 3. Are audit records complete and on file?
+
+  Part No. : LTST-C190KFKT                                          Page : 12 of 12
+BNS-OD-C131/A4
+

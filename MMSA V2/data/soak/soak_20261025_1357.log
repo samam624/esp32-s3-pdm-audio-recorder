@@ -1,0 +1,71 @@
+2026-10-25 13:57:23.383 ## soak start: hours=0.3 ble=True poll=60.0 min restart=True
+2026-10-25 13:57:23.587 HEALTH: up=22 rec=0 take=0 part=0 recsecs=0 free_mb=30346 heap=206336 heapmin=206032 heapblk=163828 psram=4030404 backlog_ms=0 write_ms=0.0 ovf=0 drops=0 ble=0 sd=1 sderr=0 btnnoise=0 clip=0 clipmask=0
+2026-10-25 13:57:23.787 'b': switching Bluetooth
+2026-10-25 13:57:23.989 Bluetooth ON: advertising as "MMSA V2" (227 ms; uses 40608 bytes of RAM, 165728 still free)
+2026-10-25 13:57:23.989 MODE: idle, Bluetooth advertising
+2026-10-25 13:57:24.191 'r'
+2026-10-25 13:57:24.393 REC start: /MMSA8_0001/MMSA8_0001_01.wav (8 ch; file opened in 244 ms)
+2026-10-25 13:57:24.395 MODE: RECORDING, Bluetooth advertising
+2026-10-25 13:57:24.596   SD slowdown absorbed at +0 ms: backlog peaked at 12 blocks (256 ms of audio), drained after 255 ms
+2026-10-25 13:57:31.086 VBAT log: 30,4009,3937,4068,1,1
+2026-10-25 13:58:00.896 HEALTH: up=60 rec=1 take=1 part=1 recsecs=36 free_mb=30320 heap=160648 heapmin=156060 heapblk=118772 psram=4030404 backlog_ms=256 write_ms=27.3 ovf=0 drops=0 ble=1 sd=1 sderr=0 btnnoise=0 clip=0 clipmask=0
+2026-10-25 13:58:01.300 VBAT log: 60,4012,3937,4081,1,1
+2026-10-25 13:58:25.442 Bluetooth packet size (MTU): 256 bytes
+2026-10-25 13:58:25.646 Bluetooth link up: interval 60.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-25 13:58:25.646 Bluetooth: remote connected
+2026-10-25 13:58:25.646 MODE: RECORDING, Bluetooth connected
+2026-10-25 13:58:26.861 Bluetooth link params: interval 15.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-25 13:58:28.688 Bluetooth link params: interval 60.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-25 13:58:31.534 VBAT log: 90,4007,3931,4065,1,2
+2026-10-25 13:58:31.973 ## BLE poll ok: recording=True rec_secs=66 free_mb=30298 error=0
+2026-10-25 13:58:35.178 Bluetooth link down: reason 0x13 (closed by the computer/browser), last RSSI -51 dBm
+2026-10-25 13:58:35.178 Bluetooth: remote disconnected, advertising again
+2026-10-25 13:58:35.178 MODE: RECORDING, Bluetooth advertising
+2026-10-25 13:58:44.104 Bluetooth packet size (MTU): 256 bytes
+2026-10-25 13:58:44.309 Bluetooth link up: interval 60.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-25 13:58:44.309 Bluetooth: remote connected
+2026-10-25 13:58:44.309 MODE: RECORDING, Bluetooth connected
+2026-10-25 13:58:44.916   SD slowdown absorbed at +79339 ms: backlog peaked at 33 blocks (704 ms of audio), drained after 1129 ms
+2026-10-25 13:58:45.526 Bluetooth link params: interval 15.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-25 13:58:45.929 Clock set over Bluetooth: 2026-10-25 13:58:45
+2026-10-25 13:58:47.350 Bluetooth link params: interval 60.00 ms, latency 0, supervision timeout 9600 ms
+2026-10-25 13:59:00.758 HEALTH: up=120 rec=1 take=1 part=1 recsecs=96 free_mb=30276 heap=160132 heapmin=155544 heapblk=118772 psram=4030404 backlog_ms=704 write_ms=262.1 ovf=0 drops=0 ble=2 sd=1 sderr=0 btnnoise=0 clip=0 clipmask=0
+2026-10-25 13:59:01.771 VBAT log: 120,4008,3943,4071,1,2
+2026-10-25 13:59:31.811 VBAT log: 150,4009,3936,4089,1,2
+2026-10-25 14:00:00.852 HEALTH: up=180 rec=1 take=1 part=1 recsecs=156 free_mb=30232 heap=160132 heapmin=155544 heapblk=118772 psram=4030404 backlog_ms=64 write_ms=52.7 ovf=0 drops=0 ble=2 sd=1 sderr=0 btnnoise=0 clip=0 clipmask=0
+2026-10-25 14:00:01.869 VBAT log: 181,4014,3948,4085,1,2
+2026-10-25 14:00:31.933 VBAT log: 211,4011,3927,4082,1,2
+2026-10-25 14:01:00.950 HEALTH: up=240 rec=1 take=1 part=1 recsecs=216 free_mb=30188 heap=160132 heapmin=155544 heapblk=118772 psram=4030404 backlog_ms=64 write_ms=54.4 ovf=0 drops=0 ble=2 sd=1 sderr=0 btnnoise=0 clip=0 clipmask=0
+2026-10-25 14:01:02.169 VBAT log: 241,4007,3953,4082,1,2
+2026-10-25 14:01:32.582 VBAT log: 271,4014,3955,4076,1,2
+2026-10-25 14:02:00.774 HEALTH: up=300 rec=1 take=1 part=1 recsecs=276 free_mb=30144 heap=160132 heapmin=155544 heapblk=118772 psram=4030404 backlog_ms=64 write_ms=54.2 ovf=0 drops=0 ble=2 sd=1 sderr=0 btnnoise=0 clip=0 clipmask=0
+2026-10-25 14:02:02.601 VBAT log: 301,4017,3926,4100,1,2
+2026-10-25 14:02:32.846 VBAT log: 332,4010,3950,4089,1,2
+2026-10-25 14:03:00.864 HEALTH: up=360 rec=1 take=1 part=1 recsecs=336 free_mb=30100 heap=160132 heapmin=155544 heapblk=118772 psram=4030404 backlog_ms=85 write_ms=55.0 ovf=0 drops=0 ble=2 sd=1 sderr=0 btnnoise=0 clip=0 clipmask=0
+2026-10-25 14:03:03.094 VBAT log: 362,4010,3927,4070,1,2
+2026-10-25 14:03:33.147 VBAT log: 392,4011,3939,4082,1,2
+2026-10-25 14:04:00.951 HEALTH: up=420 rec=1 take=1 part=1 recsecs=396 free_mb=30056 heap=160048 heapmin=155420 heapblk=118772 psram=4030404 backlog_ms=42 write_ms=32.9 ovf=0 drops=0 ble=2 sd=1 sderr=0 btnnoise=0 clip=0 clipmask=0
+2026-10-25 14:04:03.382 VBAT log: 422,4010,3949,4074,1,2
+2026-10-25 14:04:33.589 VBAT log: 452,4011,3946,4101,1,2
+2026-10-25 14:05:00.973 HEALTH: up=480 rec=1 take=1 part=1 recsecs=456 free_mb=30012 heap=160132 heapmin=155420 heapblk=118772 psram=4030404 backlog_ms=85 write_ms=64.1 ovf=0 drops=0 ble=2 sd=1 sderr=0 btnnoise=0 clip=0 clipmask=0
+2026-10-25 14:05:03.810 VBAT log: 482,4010,3947,4060,1,2
+2026-10-25 14:05:33.857 VBAT log: 513,4009,3934,4096,1,2
+2026-10-25 14:06:00.890 HEALTH: up=540 rec=1 take=1 part=1 recsecs=516 free_mb=29968 heap=160132 heapmin=155420 heapblk=118772 psram=4030404 backlog_ms=106 write_ms=73.1 ovf=0 drops=0 ble=2 sd=1 sderr=0 btnnoise=0 clip=0 clipmask=0
+2026-10-25 14:06:03.938 VBAT log: 543,4016,3970,4090,1,2
+2026-10-25 14:06:34.190 VBAT log: 573,4015,3937,4088,1,2
+2026-10-25 14:07:01.018 HEALTH: up=600 rec=1 take=1 part=1 recsecs=576 free_mb=29924 heap=160048 heapmin=155420 heapblk=118772 psram=4030404 backlog_ms=85 write_ms=52.9 ovf=0 drops=0 ble=2 sd=1 sderr=0 btnnoise=0 clip=0 clipmask=0
+2026-10-25 14:07:04.265 VBAT log: 603,4013,3943,4100,1,2
+2026-10-25 14:07:12.586   SD slowdown absorbed at +586061 ms: backlog peaked at 49 blocks (1045 ms of audio), drained after 2101 ms
+2026-10-25 14:07:34.302 VBAT log: 633,4016,3929,4091,1,2
+2026-10-25 14:07:38.557 SD card full: 29896 MB left, the reserve kept so the card never fills to the end (it stalls there). Stopping; the recording's files are complete.
+2026-10-25 14:07:38.557 REC stop: /MMSA8_0001/MMSA8_0001_01.wav, 614.4 s audio (471859200 bytes), wall time 614.2 s
+2026-10-25 14:07:38.557   Checkpoints: 61, worst 40.6 ms
+2026-10-25 14:07:38.557   Clipping: none
+2026-10-25 14:07:38.557   DMA overflows 0, pool drops 0, worst SD write 308.2 ms, min free blocks 207/256 -> NO AUDIO LOST
+2026-10-25 14:07:38.557   SD write speed avg 1506 KB/s (need 750 KB/s); deepest backlog 49 blocks = 1045 ms of audio (PSRAM pool)
+2026-10-25 14:07:38.557 MODE: idle, Bluetooth connected
+2026-10-25 14:07:38.760 signal dBFS: mic0 -59.0 mic1 -59.7 mic2 -59.8 mic3 -59.7 mic4 -59.9 mic5 -60.2 mic6 -60.5 mic7 -61.2
+2026-10-25 14:07:38.760     DC:      mic0   -196 mic1     22 mic2   -265 mic3   -197 mic4   -137 mic5   -242 mic6    -83 mic7   -312
+2026-10-25 14:07:39.169 ## soak end: card full
+2026-10-25 14:07:39.367 HEALTH: up=638 rec=0 take=1 part=1 recsecs=614 free_mb=29896 heap=164668 heapmin=155420 heapblk=118772 psram=4030404 backlog_ms=1045 write_ms=308.2 ovf=0 drops=0 ble=2 sd=1 sderr=0 btnnoise=0 clip=0 clipmask=0
+2026-10-25 14:07:39.569 HEALTH: up=638 rec=0 take=1 part=1 recsecs=614 free_mb=29896 heap=164668 heapmin=155420 heapblk=118772 psram=4030404 backlog_ms=0 write_ms=0.0 ovf=0 drops=0 ble=2 sd=1 sderr=0 btnnoise=0 clip=0 clipmask=0

@@ -1,0 +1,127 @@
+                                           SPECIFICATION (Reference sheet)
+
+· Supplier : Samsung electro-mechanics        · Samsung P/N :            CL10A475KA8NQNC
+· Product : Multi-layer Ceramic Capacitor     · Description :            CAP, 4.7uF, 25V, ±10%, X5R, 0603
+
+A. Samsung Part Number
+
+                          CL 10 A 475 K A 8 N Q N C
+                                
+
+ Series         Samsung Multi-layer Ceramic Capacitor
+ Size
+                0603 (inch code)           L: 1.60 ± 0.15                W: 0.80 ± 0.15 
+
+ Dielectric         X5R                     Inner electrode              Ni
+ Capacitance          4.7 uF                    Termination
+ Capacitance         ±10 %                      Plating                  Cu
+
+     tolerance         25 V                 Product                      Sn 100%          (Pb Free)
+ Rated Voltage  0.80 ± 0.15                 Special
+ Thickness                                  Packaging                    Size control code
+
+                                                                         Reserved for future use
+
+                                                                         Cardboard Type, 7" reel
+
+B. Structure & Dimension
+
+                                                       Dimension()
+
+     Samsung P/N                 L         W                T                     BW
+CL10A475KA8NQNC           1.60 ± 0.15                                        0.30 ± 0.20
+                                           0.80 ± 0.15      0.80 ± 0.15
+C. Samsung Reliablility Test and Judgement Condition
+
+                           Judgement                                                                      Test condition
+
+Capacitance        Within specified tolerance                1 ±10% / 1.0±0.2Vrms
+                         0.1 max.
+Tan  (DF)                                                    *A capacitor prior to measuring the capacitance is heat
+                                                             treated at 150+0/-10 for 1hour and maintained in
+Insulation                                                   ambient air for 24±2 hours.
+Resistance
+Appearance         10,000Mohm or 100Mohm×                    Rated Voltage                                60~120 sec.
+Withstanding
+Voltage            Whichever is smaller
+Temperature
+Characteristics    No abnormal exterior appearance           Microscope (×10)
+Adhesive Strength  No dielectric breakdown or                   250% of the rated voltage
+of Termination
+Bending Strength   mechanical breakdown
+
+Solderability      X5R
+
+                   (From-55 to 85, Capacitance change should be within ±15%)
+
+                   No peeling shall be occur on the          500g·f, for 10±1 sec.
+
+                   terminal electrode          within ±12.5% Bending to the limit (1)
+                   Capacitance change :
+
+                                                             with 1.0mm/sec.
+
+                   More than 75% of terminal surface         SnAg3.0Cu0.5 solder
+                   is to be soldered newly                   245±5, 3±0.3sec.
+
+                                                             (preheating : 80~120 for 10~30sec.)
+
+Resistance to      Capacitance change :        within ±7.5%  Solder pot : 270±5, 10±1sec.
+Soldering Heat                                 within ± 5%
+Vibration Test     Tan , IR : initial spec.                  Amplitude : 1.5mm
+                   Capacitance change :                      From 10 to 55 (return : 1min.)
+Moisture           Tan , IR : initial spec.                  2hours × 3 direction (x, y, z)
+Resistance                                                   With rated voltage
+                   Capacitance change : within ±12.5%        40±2, 90~95%RH, 500+12/-0hrs
+High Temperature
+Resistance         Tan  :  0.2 max
+
+Temperature        IR : 500Mohm or 12.5Mohm × 
+Cycling                       Whichever is smaller
+
+                   Capacitance change : within ±12.5%        With 100% of the rated voltage
+                                                             Max. operating temperature
+                   Tan  :       0.2 max                      1,000+48/-0hrs
+                   IR :    1,000Mohm or 25Mohm × 
+                           Whichever is smaller
+
+                   Capacitance change : within ±7.5%         1 cycle condition
+
+                   Tan , IR : initial spec.                  Min. operating temperature                                     25
+                                                                                                                            25
+                                                              Max. operating temperature 
+
+                                                                                            5 cycle test
+ The reliability test condition can be replaced by the corresponding accelerated test condition.
+
+D. Recommended Soldering method :
+      Reflow ( Reflow Peak Temperature : 260±5, 30sec. )
+
+      Product specifications included in the specifications are effective as of March 1, 2013.
+      Please be advised that they are standard product specifications for reference only.
+      We may change, modify or discontinue the product specifications without notice at any time.
+      So, you need to approve the product specifications before placing an order.
+      Should you have any question regarding the product specifications,
+      please contact our sales personnel or application engineers.
+- Disclaimer & Limitation of Use and Application -
+
+The products listed in this Specification sheet are NOT designed and manufactured for any use
+and applications set forth below.
+
+Please note that any misuse of the products deviating from products specifications or information
+provided in this Spec sheet may cause serious property damages or personal injury.
+We will NOT be liable for any damages resulting from any misuse of the products, specifically
+including using the products for high reliability applications as listed below.
+
+If you have any questions regarding this 'Limitation of Use and Application', you should first contact
+our sales personnel or application engineers.
+
+ Aerospace/Aviation equipment
+ Automotive or Transportation equipment (vehicles, trains, ships, etc)
+ Medical equipment
+ Military equipment
+ Disaster prevention/crime prevention equipment
+ Any other applications with the same as or similar complexity or reliability to the applications
+
+   set forth above.
+

@@ -11,7 +11,14 @@ window the tool:
    array can't tell which side of itself the source is on, so h is "height above the mics" in any direction.
 
 The mic pitch is fitted from the recording unless given (--pitch-mm). Windows where the source isn't clearly above
-the noise, or where the fit doesn't explain the delays, are left out of the track.
+the noise, or where the fit doesn't explain the delays, are left out of the track. A source that goes across and back
+is split into passes, each with its own speed.
+
+Needs a broadband source (noise, speech, music). A pure tone can't be located this way: GCC-PHAT has no broadband
+detail to lock onto, and the tone's phase across the array is dominated by reflections. In MMSA8_0003 (a 1 kHz tone
+moved along the array, 2026-10-25), neighbouring mics differed by up to 73 degrees, where a single path allows at most
+41.5 degrees at 39.5 mm. For a tone, --levels-only --band around it (e.g. 950 1050) skips the fit and shows just the
+level heatmap.
 
 Writes visualizations/<name>_spatial.html (side view of the array with the source, a level heatmap with the track
 overlaid, height over time, audio playback with a moving cursor, and a table) and a CSV of the track.
@@ -19,6 +26,7 @@ overlaid, height over time, audio playback with a moving cursor, and a table) an
 Usage:
     python spatial_track.py recording.wav
     python spatial_track.py recording.wav --pitch-mm 40 --band 1000 16000
+    python spatial_track.py tone_recording.wav --levels-only --band 950 1050
 """
 
 from __future__ import annotations
@@ -38,6 +46,7 @@ import numpy as np
 SPEED_OF_SOUND_MM_S = 343_000.0
 INTERP = 8                 # GCC-PHAT time interpolation factor
 H_MAX_MM = 300.0           # fits pinned at this distance are treated as "far / not located"
+BOARD_PITCH_MM = 39.5      # fitted from broadband takes (MMSA8_0084, MMSA8_0004); used by --levels-only
 
 
 def read_wav(path: Path):
@@ -78,6 +87,48 @@ def analyse_windows(x: np.ndarray, sr: int, win: int, hop: int, band, max_lag: i
         delays.append((k - m) / INTERP / sr)                       # seconds; positive = this mic hears it later
         strength.append(cc[k, np.arange(8)] * nfft * INTERP / (2 * keep.sum()))   # 1.0 = perfect match
     return np.array(times), np.array(power), np.array(ref_mic), np.array(delays), np.array(strength)
+
+
+def robust_speed(t, xs, sel):
+    """Line fit of x over t on the selected windows, dropping stray fits far off the line. Returns (slope, kept)."""
+    sel = sel.copy()
+    for _ in range(3):
+        if sel.sum() < 5:
+            return None, sel
+        slope, icpt = np.polyfit(t[sel], xs[sel], 1)
+        res = xs - (slope * t + icpt)
+        mad = np.median(np.abs(res[sel])) + 1e-9
+        sel &= np.abs(res) <= max(15.0, 4 * mad)
+    return (float(np.polyfit(t[sel], xs[sel], 1)[0]) if sel.sum() >= 5 else None), sel
+
+
+def find_passes(t, xs, hs, span):
+    """Split a track into passes in one direction: a turn is where the smoothed position (median over +-0.5 s) falls
+    back from its furthest point by more than a quarter of the array. Speed per pass from the windows over the array."""
+    sm = np.array([np.median(xs[np.abs(t - ti) <= 0.5]) for ti in t])
+    hyst, d, lo, hi, ext, turns = span / 4, 0, 0, 0, 0, []
+    for i in range(len(t)):
+        if d == 0:
+            lo = i if sm[i] < sm[lo] else lo
+            hi = i if sm[i] > sm[hi] else hi
+            if sm[hi] - sm[lo] > hyst:
+                d, ext = (1, hi) if hi > lo else (-1, lo)
+        elif d * (sm[i] - sm[ext]) >= 0:
+            ext = i
+        elif abs(sm[ext] - sm[i]) > hyst:
+            turns.append(ext)
+            d, ext = -d, i
+    bounds = [0] + turns + [len(t) - 1]
+    passes = []
+    for a, b in zip(bounds[:-1], bounds[1:]):
+        sel = np.zeros(len(t), bool)
+        sel[a:b + 1] = True
+        sel &= (xs >= 0) & (xs <= span)
+        slope, kept = robust_speed(t, xs, sel)
+        if slope is not None and t[kept].max() - t[kept].min() >= 1.0:
+            passes.append({"speed_mm_s": round(slope, 1), "t": [round(float(t[kept].min()), 2), round(float(t[kept].max()), 2)],
+                           "h_median": round(float(np.median(hs[kept])), 1), "windows": int(kept.sum())})
+    return passes
 
 
 class Locator:
@@ -170,6 +221,9 @@ def main(argv=None) -> int:
     ap.add_argument("--pitch-range", type=float, nargs=2, default=[25.0, 80.0], metavar=("LO_MM", "HI_MM"))
     ap.add_argument("--min-snr-db", type=float, default=15.0, help="loudest mic must be this far above its floor")
     ap.add_argument("--max-resid", type=float, default=1.0, help="max rms delay misfit, in samples, to keep a fit")
+    ap.add_argument("--levels-only", action="store_true",
+                    help="no position fit, just the level heatmap (for a pure tone; set --band around it)")
+    ap.add_argument("--label", help="what the source was (e.g. \"1 kHz tone\"), shown in the page's headings")
     ap.add_argument("--no-audio", action="store_true", help="don't embed the audio")
     ap.add_argument("--audio-max-s", type=float, default=180.0, help="skip audio for longer recordings")
     a = ap.parse_args(argv)
@@ -187,8 +241,8 @@ def main(argv=None) -> int:
     usable = excess.max(axis=1) >= a.min_snr_db
 
     pitch_curve = []
-    if a.pitch_mm:
-        pitch = a.pitch_mm
+    if a.pitch_mm or a.levels_only:
+        pitch = a.pitch_mm or BOARD_PITCH_MM
     else:
         pitch, pitch_curve = fit_pitch(times, ref, delays, strength, excess, usable, sr, *a.pitch_range)
 
@@ -198,7 +252,7 @@ def main(argv=None) -> int:
         row = {"t": round(float(times[i]), 4), "loudest": int(ref[i]), "x": None, "h": None, "resid": None,
                "mics": 0, "ok": False}
         w = mic_weights(excess[i], strength[i])
-        if usable[i] and w.sum() >= 4:
+        if usable[i] and w.sum() >= 4 and not a.levels_only:
             xs, hs, resid = loc.fit(delays[i], w, ref[i], sr)
             row.update(x=round(float(xs), 1), h=round(float(hs), 1), resid=round(float(resid), 3), mics=int(w.sum()))
             row["ok"] = bool(resid <= a.max_resid and hs < 0.95 * H_MAX_MM)
@@ -217,20 +271,15 @@ def main(argv=None) -> int:
         t = np.array([r["t"] for r in good])
         xs = np.array([r["x"] for r in good])
         hs = np.array([r["h"] for r in good])
-        # Speed from the windows over the array itself (x between the end mics), where the fit is best constrained.
-        over = (xs >= 0) & (xs <= loc.pos[-1])
-        for _ in range(3):  # robust line: drop stray fits far off the main pass, then refit
-            if over.sum() < 5:
-                break
-            slope, icpt = np.polyfit(t[over], xs[over], 1)
-            res = xs - (slope * t + icpt)
-            mad = np.median(np.abs(res[over])) + 1e-9
-            over &= np.abs(res) <= max(15.0, 4 * mad)
-        if over.sum() >= 5:
-            slope = np.polyfit(t[over], xs[over], 1)[0]
-            summary["speed_mm_s"] = round(float(slope), 1)
-            summary["over_t"] = [round(float(t[over].min()), 2), round(float(t[over].max()), 2)]
-            summary["h_over_median"] = round(float(np.median(hs[over])), 1)
+        # Speed from the windows over the array itself (x between the end mics), where the fit is best constrained,
+        # per pass. The headline speed is the longest pass's (an average over a there-and-back trip means nothing).
+        passes = find_passes(t, xs, hs, loc.pos[-1])
+        summary["passes"] = passes
+        if passes:
+            main_pass = max(passes, key=lambda p: p["t"][1] - p["t"][0])
+            summary["speed_mm_s"] = main_pass["speed_mm_s"]
+            summary["over_t"] = main_pass["t"]
+            summary["h_over_median"] = main_pass["h_median"]
         summary["x_range"] = [round(float(xs.min()), 1), round(float(xs.max()), 1)]
         summary["resid_median"] = round(float(np.median([r["resid"] for r in good])), 3)
 
@@ -244,13 +293,20 @@ def main(argv=None) -> int:
             wr.writerow([r["t"], r["x"], r["h"], r["resid"], r["mics"], int(r["ok"]), r["loudest"]]
                         + [round(float(v), 2) for v in e])
 
+    # Heatmap colour range: 0-40 dB above the floor; a tone (--levels-only) can sit 40+ dB up on every mic, so there it
+    # spans the top 30 dB below the loudest level instead, which shows the nearest mic standing out.
+    ramp_db = [0, 40]
+    if a.levels_only:
+        top = int(math.ceil(np.percentile(excess, 99.5) / 5) * 5)
+        ramp_db = [max(0, top - 30), max(top, 10)]
+
     audio = None
     if not a.no_audio and duration <= a.audio_max_s:
         audio = audio_data_uri(x, sr)
     payload = {
         "file": wav_path.name, "sampleRate": sr, "duration": round(duration, 4),
         "windowMs": a.window_ms, "hopMs": a.hop_ms, "band": a.band, "pitch": pitch,
-        "pitchFitted": not a.pitch_mm, "pitchCurve": [[round(p, 1), round(c, 3)] for p, c in pitch_curve],
+        "pitchFitted": not a.pitch_mm and not a.levels_only, "levelsOnly": a.levels_only, "rampDb": ramp_db, "label": a.label, "pitchCurve": [[round(p, 1), round(c, 3)] for p, c in pitch_curve],
         "mics": [round(float(p), 1) for p in loc.pos], "minSnr": a.min_snr_db, "maxResid": a.max_resid,
         "track": track, "excess": np.round(np.clip(excess, -10, 60), 1).T.tolist(), "summary": summary,
         "audio": audio,
@@ -259,11 +315,11 @@ def main(argv=None) -> int:
 
     print(f"HTML: {out}\nCSV:  {out.with_suffix('.csv')}")
     print(f"{wav_path.name}: {duration:.2f} s, {len(track)} windows, source located in {len(good)}")
-    print(f"mic pitch {pitch:.1f} mm ({'fitted' if not a.pitch_mm else 'given'}); array span {loc.pos[-1]:.0f} mm")
-    if "speed_mm_s" in summary:
-        s = summary
-        print(f"over the array {s['over_t'][0]:.2f}-{s['over_t'][1]:.2f} s: {abs(s['speed_mm_s']):.0f} mm/s toward "
-              f"{'mic7' if s['speed_mm_s'] > 0 else 'mic0'}, median distance from the mic line {s['h_over_median']:.0f} mm")
+    print(f"mic pitch {pitch:.1f} mm ({'fitted' if payload['pitchFitted'] else 'given'}); array span {loc.pos[-1]:.0f} mm"
+          + ("; levels only, no position fit" if a.levels_only else ""))
+    for i, p in enumerate(summary.get("passes", [])):
+        print(f"pass {i + 1} over the array {p['t'][0]:.2f}-{p['t'][1]:.2f} s: {abs(p['speed_mm_s']):.0f} mm/s toward "
+              f"{'mic7' if p['speed_mm_s'] > 0 else 'mic0'}, median distance from the mic line {p['h_median']:.0f} mm")
     if "x_range" in summary:
         print(f"track x {summary['x_range'][0]:.0f} to {summary['x_range'][1]:.0f} mm; median delay misfit "
               f"{summary['resid_median']:.2f} samples")
@@ -371,33 +427,47 @@ const css = n => getComputedStyle(document.querySelector('.viz-root')).getProper
 const T = D.track, N = T.length, M = D.mics.length, span = D.mics[M-1];
 const dt = D.hopMs / 1000;
 let cursor = 0, playing = false;
-$('title').textContent = `${D.file}: moving source`;
+$('title').textContent = D.label ? `${D.label} (${D.file})` : `${D.file}: moving source`;
 $('meta').textContent = `${D.duration.toFixed(2)} s · ${D.sampleRate.toLocaleString()} Hz · ${D.windowMs} ms windows every ${D.hopMs} ms · band ${D.band[0]/1000}-${D.band[1]/1000} kHz · mic pitch ${D.pitch} mm (${D.pitchFitted ? 'fitted from this recording' : 'given'})`;
 
 // ---- summary tiles
 const S = D.summary, tiles = [];
-tiles.push(['Located', `${S.located} / ${S.windows}`, 'windows with a confident fit']);
-if (S.speed_mm_s !== undefined) {
+if (D.levelsOnly) {
+  tiles.push(['Levels only', `${D.band[0]}-${D.band[1]} Hz`, 'each mic\'s level in this band; no position fit']);
+  document.querySelector('.legend .line').parentElement.style.display = 'none';  // no track to show
+  $('height').closest('.card').style.display = 'none';
+  $('table').closest('details').style.display = 'none';
+  const subs = document.querySelectorAll('.card .sub');
+  subs[0].textContent = 'The array seen from the side, to scale. Mics are shaded by how loud they are right now.';
+  subs[1].textContent = 'Each row is a mic at its position; shading is its level above its own noise floor.';
+  $('heat').closest('.card').querySelector('h2').textContent =
+    `${D.label ? `${D.label} · ` : ''}${D.file}: level along the array, ${D.band[0] / 1000}-${D.band[1] / 1000} kHz (${D.rampDb[0]}-${D.rampDb[1]} dB above floor)`;
+}
+else tiles.push(['Located', `${S.located} / ${S.windows}`, 'windows with a confident fit']);
+if (S.passes && S.passes.length > 1) {
+  S.passes.forEach((p, i) => tiles.push([`Pass ${i + 1}`, `${Math.abs(p.speed_mm_s).toFixed(0)} mm/s`,
+    `toward ${p.speed_mm_s > 0 ? 'mic7' : 'mic0'}, ${p.t[0].toFixed(1)}-${p.t[1].toFixed(1)} s, ${p.h_median.toFixed(0)} mm from the mics`]));
+} else if (S.speed_mm_s !== undefined) {
   tiles.push(['Speed over the array', `${Math.abs(S.speed_mm_s).toFixed(0)} mm/s`, `toward ${S.speed_mm_s > 0 ? 'mic7' : 'mic0'}, ${S.over_t[0].toFixed(1)}-${S.over_t[1].toFixed(1)} s`]);
   tiles.push(['Distance from the mics', `${S.h_over_median.toFixed(0)} mm`, 'median while over the array']);
 }
 if (S.x_range) tiles.push(['Path tracked', `${S.x_range[0].toFixed(0)} to ${S.x_range[1].toFixed(0)} mm`, `mic0 = 0, mic7 = ${span.toFixed(0)} mm`]);
-tiles.push(['Mic pitch', `${D.pitch} mm`, D.pitchFitted ? 'fitted from the delays' : 'given']);
+tiles.push(['Mic pitch', `${D.pitch} mm`, D.pitchFitted ? 'fitted from the delays' : (D.levelsOnly ? 'this board\'s, from broadband takes' : 'given')]);
 if (S.resid_median !== undefined) tiles.push(['Fit quality', `${S.resid_median.toFixed(2)} samples`, 'median delay misfit (1 sample = 7 mm)']);
 $('tiles').innerHTML = tiles.map(([k,v,s]) => `<div class="tile"><div class="k">${k}</div><div class="v">${v}</div><div class="s">${s}</div></div>`).join('');
 
-// ---- sequential ramp (one hue), level above floor 0..maxDb
-const maxDb = 40;
+// ---- sequential ramp (one hue), level above floor minDb..maxDb
+const [minDb, maxDb] = D.rampDb;
 function rampColor(db) {
   const stops = [0,1,2,3,4,5,6].map(i => css(`--seq-${i}`));
-  const u = Math.max(0, Math.min(1, db / maxDb)) * (stops.length - 1), i = Math.min(stops.length - 2, Math.floor(u)), f = u - i;
+  const u = Math.max(0, Math.min(1, (db - minDb) / (maxDb - minDb))) * (stops.length - 1), i = Math.min(stops.length - 2, Math.floor(u)), f = u - i;
   const a = hex(stops[i]), b = hex(stops[i+1]);
   return `rgb(${a.map((v,k)=>Math.round(v+(b[k]-v)*f)).join(',')})`;
 }
 function hex(h) { h = h.replace('#',''); return [0,2,4].map(i => parseInt(h.substr(i,2),16)); }
 function paintLegend() {
   $('grad').style.background = `linear-gradient(90deg, ${[0,1,2,3,4,5,6].map(i=>css(`--seq-${i}`)).join(',')})`;
-  $('gradLabel').textContent = `0-${maxDb}+ dB`;
+  $('gradLabel').textContent = `${minDb ? `${minDb}-` : '0-'}${maxDb}+ dB`;
 }
 
 function setup(c, h) {
@@ -441,7 +511,7 @@ function drawSide() {
     g.lineWidth = 2; g.strokeStyle = css('--ring'); g.stroke();
     g.fillStyle = css('--text-primary'); g.textAlign = 'left'; g.textBaseline = 'bottom';
     g.fillText(`x ${r.x.toFixed(0)} mm, ${r.h.toFixed(0)} mm from the line`, Math.min(X(r.x) + 10, w - 190), Y(Math.min(hTop, r.h)) - 8);
-  } else {
+  } else if (!D.levelsOnly) {
     g.fillStyle = css('--muted'); g.textAlign = 'left'; g.textBaseline = 'top'; g.fillText('no confident position at this moment', padL + 6, padT);
   }
 }
@@ -554,7 +624,7 @@ function tick() { if (!playing) return; cursor = audioEl.currentTime; drawAll();
 const rows = T.filter(r => r.ok);
 $('table').innerHTML = '<tr><th>time (s)</th><th>x along array (mm)</th><th>from mic line (mm)</th><th>misfit (samples)</th><th>mics used</th><th>loudest</th></tr>' +
   rows.map(r => `<tr><td>${r.t.toFixed(2)}</td><td>${r.x.toFixed(0)}</td><td>${r.h.toFixed(0)}</td><td>${r.resid.toFixed(2)}</td><td>${r.mics}</td><td>mic${r.loudest}</td></tr>`).join('');
-$('note').textContent = `Method: per ${D.windowMs} ms window, arrival-time differences between mics (GCC-PHAT in ${D.band[0]/1000}-${D.band[1]/1000} kHz) fitted to a point source at distance x along the array and distance h from the mic line, speed of sound 343 m/s, mics ${D.pitch} mm apart in a straight line (mic0 at 0 mm). A window is located only if the loudest mic is at least ${D.minSnr} dB above its noise floor, at least 4 mics hear the source clearly, and the delays fit within ${D.maxResid} sample. Audio is the average of all eight mics, normalised.`;
+$('note').textContent = D.levelsOnly ? `Levels only: per ${D.windowMs} ms window, each mic's level in ${D.band[0]}-${D.band[1]} Hz above its own noise floor (its quietest 10% of windows). No position fit: a pure tone can't be located from arrival times, because its phase across the array is dominated by reflections. Mics ${D.pitch} mm apart in a straight line (mic0 at 0 mm). Audio is the average of all eight mics, normalised.` : `Method: per ${D.windowMs} ms window, arrival-time differences between mics (GCC-PHAT in ${D.band[0]/1000}-${D.band[1]/1000} kHz) fitted to a point source at distance x along the array and distance h from the mic line, speed of sound 343 m/s, mics ${D.pitch} mm apart in a straight line (mic0 at 0 mm). A window is located only if the loudest mic is at least ${D.minSnr} dB above its noise floor, at least 4 mics hear the source clearly, and the delays fit within ${D.maxResid} sample. Audio is the average of all eight mics, normalised.`;
 
 // Open in the middle of the pass over the array, so the side view shows the source at once.
 if (S.over_t) cursor = (S.over_t[0] + S.over_t[1]) / 2;

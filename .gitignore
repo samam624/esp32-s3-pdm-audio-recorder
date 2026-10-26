@@ -15,3 +15,6 @@ Thumbs.db
 # for the small, known sample used by the visualization examples.
 MMSA V2/data/**/*.wav
 !MMSA V2/data/MMSA8_0084.wav
+
+# Arduino CLI build output (binaries; rebuild from source)
+MMSA V2/firmware/**/build/

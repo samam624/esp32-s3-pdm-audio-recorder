@@ -1,0 +1,177 @@
+MODIFIED .025" SQ
+POST HEADERS
+
+   (2.54 mm) .100" PITCH · MTSW/HMTSW SERIES
+
+MTSW/HMTSW                     SERIES -                              PIN CENTERS            - NO. PINS PER ROW - LEAD STYLE -
+
+Board Mates:                      MTSW                                  -1                           01 thru 50                          Specify
+SSW, SSQ, ESW,                                                                                                                        LEAD STYLE
+ESQ, BCS, BSW                  = Modified Strip                = (2.54 mm) .100" Pitch              = .100" (2.54 mm)                  from chart
+CES, SLW, HLE, SSM                                                (All positions filled)              Center Version
+Cable Mates:                     HMTSW
+IDSD, IDSS                                                              -2                           02 thru 25
+                                   = Hi-Temp
+    SPECIFICATIONS              Modified Strip                 = (5.08 mm) .200" Pitch              = .200" (5.08 mm)
+                                                             (Every other position filled)            Center Version
+Insulator Material:
+MTSW: Black Glass                                                                           LEAD       OAL                                 POST    OVERALL
+Filled Polyester                                                                            STYLE                                          (0.00)  LENGTH
+HMTSW: Natural Liquid                                                                                (8.51) .335                            .000
+Crystal Polymer                                                                               - 05   (7.62) .300                            MIN      (OAL)
+Terminal Material:                                                                            - 06  (10.92) .430
+Phosphor Bronze                                                                               - 07  (13.46) .530                      (2.54)
+Plating:                                                                                      - 08  (18.54) .730                       .100
+Au or Sn over                                                                                 - 09  (21.08) .830
+50 µ" (1.27 µm) Ni                                                                            - 10  (23.62) .930                         TAIL
+Operating Temp Range:                                                                         - 11  (26.16) 1.030                     (0.00).000
+-55 °C to +125 °C with Gold                                                                   - 12  (31.24) 1.230
+-55 °C to +105 °C with Tin                                                                    - 13  (36.32) 1.430                         MIN
+                                                                                              - 21
+       PROCESSING
+
+Lead-Free Solderable:
+MTSW: No, Lead Wave Only
+HMTSW: Yes
+
+                                                                                            - 22    (16.00) .630
+
+                                                                                            - 23    (11.30) .445
+
+                                                                                            - 24    (12.19) .480
+
+                             (2.54) .100 x No. of Positions               OAL               - 27    (33.78) 1.330
+                                                                     CA
+           (2.54)                                            (2.48)                         - 28    (28.70) 1.130
+                                                              .098
+--S .100
+
+                                                                     OAL
+
+--D    (5.08)                                                (5.02)
+        .200                                                  .198
+
+                                                             (7.56)  C                                      FOR "A" = (2.29) .090
+                                                              .298                     A
+                                                                                                    LEAD               OAL                 C
+                                                                          OAL                       STYLE                             MAXIMUM
+                                                                                                                                      STRAIGHT
+                                                                     CA                               - 05
+                                                                          OAL                         - 06             (8.51) .335    (5.97) .235
+                                                                                                      - 07
+--T (7.62) .300                                                      C                                - 08             (7.62) .300    (2.79) .110
+                                                                                       A              - 09             (10.92) .430   (6.10) .240
+                                                                                                      - 10             (13.46) .530   (8.64) .340
+                                                                                                      - 11
+                                                                                                      - 12             (18.54) .730   (13.72) .540
+                                                                                                      - 13
+                                                                                                      - 21             (21.08) .830   (16.26) .640
+                                                                                                      - 22
+                                                                                                      - 23             (23.62) .930   (18.80) .740
+                                                                                                      - 24
+                                                                                                      - 27             (26.16) 1.030  (21.34) .840
+                                                                                                      - 28
+--Q .300 (7.62)                                              (7.56)                                                    (31.24) 1.230  (26.42) 1.040
+                                                              .298
+
+                                                                                                                       (36.32) 1.430  (31.50) 1.240
+
+                                                                                                                       (16.00) .630   (11.18) .440
+
+                   MTSW        HMTSW                                                                                   (11.30) .445   (6.48) .255
+
+                                                                                                                       (12.19) .480   (7.37) .290
+
+                   Straight Pin Versions: A=OAL-C- (2.54) .100"                                                        (33.78) 1.330  (28.96) 1.140
+
+                                                                                                                       (28.70) 1.130  (23.88) .940
+
+Note:
+These Series are
+non-standard, non-returnable.
+
+F-226                                          samtec.com?MTSW or samtec.com?HMTSW
+
+       Unless otherwise approved in writing by Samtec, all parts and components are designed and built according to Samtec's specifications which are subject to change without notice.
+- PLATING OPTION - ROW OPTION - POST HEIGHT -                                                            OTHER OPTION                              - POLARIZED OPTION
+
+        -F                   -S                              "XXXX"                                                -RA or -RE                                 "XXX"
+
+= Gold flash on post,    = Single Row                        = "C" Dimension                                             = Right-angle                            = Polarized
+   Matte Tin on tail                                      (Specify post height in                                     (HMTSW -S &-D =              (Specify "XXX" as position number)
+                            -D                                                                                     36 positions maximum)
+         -L                                                        INCHES
+                        = Double Row                   .005" (0.13 mm) increments)                                       -LL
+   = 10 µ" (0.25 µm)
+     Gold on post,           -T                                                                                          = Locking Lead
+                                                                                                           (not available with -RE, not available
+   Matte Tin on tail     = Triple Row
+                                                                                                                in single row 1 or 2 positions)
+        -G                  -Q                                                                           (Available on tails from (2.29 mm) .090"
+
+   = 10 µ" (0.25 µm)    = Double Row                                                                               to (10.16 mm) .400" only)
+     Gold on post,     .200" (5.08 mm)
+                                                                                                                        -LA
+Gold flash on balance      row space
+                                                                                                               = -RA option with -LL Option
+         -T                                                                                                 (Maximum "C" = (13.46 mm) .530")
+
+      = Matte Tin
+
+                       (2.54) .100 x No. of Positions                                           C     D
+
+--S .119 (3.02)                                        (3.09)                                                                                         -RX             D
+--D (5.56) .219                                         .122                                                                                       OPTION         (1.52) .060
+--T .320 (8.12)                                                                                                                                                   (4.06) .160
+--Q .320 (8.12)                                                                                    E                                                   -RA
+                                                                                                C                                                      -RE
+
+                                                       (6.10)
+                                                        .240
+
+                                                                                                                FOR "E" = (2.29) .090 MIN FOR -RA & -RE)
+
+                                                                                                   E     LEAD            OAL                             C              C
+                                                                                                C        STYLE         (8.51) .335                  MAXIMUM        MAXIMUM
+
+                                                                                                           - 05                                      with/-RA        with/-RE
+                                                                                                                                                   Not Available  Not Available
+
+                                                                                                         - 06          (7.62) .300                 Not Available  Not Available
+
+                                                                                                         - 07          (10.92) .430                (3.30) .130    Not Available
+
+                                                       (8.10)                                            - 08          (13.46) .530                (5.84) .230    (3.30) .130
+                                                        .319
+
+                                                                                                         - 09          (18.54) .730                (10.92) .430   (8.38) .330
+
+                                                                                                         - 10          (21.08) .830                (13.46) .530   (10.92) .430
+
+                                                                                                   E     - 11          (23.62) .930                (16.00) .630   (13.46) .530
+                                                                                                C
+                                                                                                         - 12          (26.16) 1.030               (18.54) .730   (16.00) .630
+
+                                                                                                         *- 13         (31.24) 1.230               (23.62) .930   (21.08) .830
+
+                                                                                                         *- 21         (36.32) 1.430               (28.70) 1.130  (26.16) 1.030
+
+                                                                                                         - 22          (16.00) .630                (8.38) .330    (5.84) .230
+
+                                                                                        (8.10)           *- 23         (11.30) .445                (3.68) .145    Not Available
+                                                                                         .319            *- 24         (12.19) .480                (4.57) .180
+
+                 MTSW                                  HMTSW                                       E     *- 27         (33.78) 1.330               (26.16) 1.030  (23.62) .930
+
+                                                                                                         *- 28         (28.70) 1.130               (21.08) .830   (18.54) .730
+
+                                                                                                         * Styles -21, -23, -24, -27 not available with -D Right-angle
+                                                                                                          Styles -13, -21, -23, -24, -27, -28 not available with -T or -Q Right-angle
+
+            Right-Angle Versions (- RA Options): E=OAL-C- (5.33) .210"
+Right-Angle Versions (- RE Options) Single Row Only: E=OAL-C- (7.87) .310"
+
+                                        samtec.com?MTSW or samtec.com?HMTSW                                                                                                       F-226
+
+Unless otherwise approved in writing by Samtec, all parts and components are designed and built according to Samtec's specifications which are subject to change without notice.
+

@@ -15,7 +15,7 @@ Sheet entries to the flex top level `Flex_TL`: `1V8`, `GND`, `CLK` (in), `DO` (o
 
 - Both DOUTs share the `DO` net. That's normal for stereo PDM, because each mic is high-impedance during the other's clock phase.
 - **MIC_L pin 4 carries a red X.** In Altium that's usually a *No-ERC* directive (here, hiding the "multiple outputs on one net" warning), not a break. Confirm on the physical flex: MIC_L DOUT pad to MIC_R DOUT pad should be about 0 Ω.
-- **Supply naming:** the flex calls the mic supply `1V8`, but the user measured **3V3** at every flex pad (2026-10-20), and FPC pin 1 on the main board looks like the 3V3 net. If the mics really were at 1.8 V, the ESP32's 3.3 V clock would exceed the mic's absolute maximum on CLK (Vdd + 0.3 V = 2.1 V), and a 1.8 V DOUT would sit below the ESP32's logic-high threshold. **Confirm with a meter at a mic's VDD (pin 1).** 3.3 V is fine (the mic is rated 1.6–3.6 V).
+- **Supply naming (resolved 2026-10-25):** the flex calls the mic supply `1V8`, and the design feeds it from a 1.8 V LDO (LDO_1V8, TPS7A2018) on FPC pin 1. On the built boards that LDO was **removed and the `1V8` net shorted to 3V3** (user: to drive the mics harder, a capacitance issue), which is why 3V3 was measured at every flex pad (2026-10-20). 3.3 V suits this setup: the mic is rated 1.6–3.6 V, and at 1.8 V the ESP32's 3.3 V clock would exceed the mic's CLK absolute maximum (Vdd + 0.3 V = 2.1 V).
 
 ## IMP34DT05 key facts (datasheet `datasheets/IMP34DT05.pdf`, ST DS12725 Rev 2, Sep 2018)
 

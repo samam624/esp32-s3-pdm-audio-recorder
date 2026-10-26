@@ -389,6 +389,43 @@
     word-break: break-all;
   }
 
+  .levels { display: flex; flex-direction: column; gap: 6px; }
+  .levels[hidden] { display: none; }
+  .levels-head { display: flex; justify-content: space-between; align-items: baseline; }
+  .levels-age { font-size: 10px; color: var(--ink-dim); }
+  .levels-title { font-size: 10px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-dim); font-weight: 600; }
+  .levels table { width: 100%; border-collapse: separate; border-spacing: 2px; font-size: 10.5px; font-variant-numeric: tabular-nums; }
+  .levels th { font-weight: 600; color: var(--ink-dim); font-size: 9px; text-align: center; padding: 1px 0; white-space: nowrap; }
+  .levels td { text-align: center; padding: 3px 0; border-radius: 4px; background: var(--surface-2); color: var(--ink); }
+  .levels td.mic { text-align: left; padding-left: 2px; background: none; color: var(--ink-dim); white-space: nowrap; }
+  .levels td.peak.hot { box-shadow: inset 0 0 0 1.5px #e0a72a; }
+  .levels td.peak.clip { background: color-mix(in srgb, var(--rec) 35%, var(--surface-2)); font-weight: 700; }
+  .levels tr.clip td.mic { color: var(--rec); font-weight: 700; }
+  .levels.stale table { opacity: 0.4; }
+  .levels-note { font-size: 10.5px; color: var(--ink-dim); line-height: 1.5; }
+
+  .cal { display: flex; flex-direction: column; gap: 8px; border-top: 1px solid var(--line); padding-top: 14px; }
+  .cal[hidden] { display: none; }
+  .cal-row { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; font-size: 12px; color: var(--ink-dim); }
+  .cal-row label { display: flex; align-items: center; gap: 6px; }
+  .cal-row input[type="text"], .cal-row input[type="number"], .cal-row select {
+    font: inherit; font-size: 12px; padding: 5px 7px; border-radius: 7px;
+    border: 1px solid var(--line); background: var(--surface-2); color: var(--ink);
+  }
+  .cal-row input[type="text"] { width: 10em; }
+  .cal-row input[type="number"] { width: 4.5em; }
+  .cal-row input[type="range"] { width: 7em; accent-color: var(--accent); }
+  .cal-row input[type="checkbox"] { accent-color: var(--accent); }
+  .cal-row button.action { flex: 1; padding: 9px 12px; font-size: 13px; }
+  .cal table { width: 100%; border-collapse: separate; border-spacing: 2px; font-size: 10.5px; font-variant-numeric: tabular-nums; }
+  .cal th { font-weight: 600; color: var(--ink-dim); font-size: 9px; text-align: center; padding: 1px 0; white-space: nowrap; }
+  .cal td { text-align: center; padding: 3px 0; border-radius: 4px; background: var(--surface-2); color: var(--ink); }
+  .cal td.mic { text-align: left; padding-left: 2px; background: none; color: var(--ink-dim); white-space: nowrap; }
+  .cal td.warn { box-shadow: inset 0 0 0 1.5px #e0a72a; }
+  .cal td.bad { background: color-mix(in srgb, var(--rec) 35%, var(--surface-2)); font-weight: 700; }
+  .cal tr.weak td:not(.mic) { opacity: 0.45; }
+  .cal.running table { opacity: 0.4; }
+
   .compat {
     font-size: 11.5px;
     color: var(--ink-dim);
@@ -429,6 +466,54 @@
       <span class="stat-label">Signal</span>
       <span class="stat-value mono" id="signalStatValue">—</span>
     </div>
+    <div class="stat" id="battStat">
+      <span class="stat-label">Battery</span>
+      <span class="stat-value mono" id="battStatValue">—</span>
+    </div>
+  </div>
+
+  <div class="levels" id="levels" hidden>
+    <div class="levels-head">
+      <span class="levels-title">Live levels · dBFS</span>
+      <span class="levels-age mono" id="levelsAge"></span>
+    </div>
+    <table class="mono" aria-label="Live levels per microphone, in dBFS">
+      <thead>
+        <tr><th>Mic</th><th>Peak</th><th>All</th><th>20–125</th><th>125–500</th><th>0.5–2k</th><th>2–8k</th><th>8–20k</th></tr>
+      </thead>
+      <tbody id="levelsBody"></tbody>
+    </table>
+    <div class="levels-note" id="levelsNote">Band levels in Hz bands, updated 4 times a second, recording or not. 0 dBFS is about 120 dB SPL, where these mics clip. Peak holds its highest value for 1.5 s, is outlined amber above −6 and turns red (⚠ CLIP) at full scale.</div>
+  </div>
+
+  <div class="cal" id="cal" hidden>
+    <div class="levels-head">
+      <span class="levels-title">Calibration check</span>
+      <span class="levels-age mono" id="calAge"></span>
+    </div>
+    <div class="cal-row">
+      <label>Tones, Hz <input type="text" id="calTones" value="1000" inputmode="numeric" aria-label="Tone frequencies in Hz, comma separated, up to 4"></label>
+      <label>Seconds <input type="number" id="calSecs" value="10" min="1" max="120"></label>
+    </div>
+    <div class="cal-row">
+      <label><input type="checkbox" id="calPlay" checked> Play the tones from this computer</label>
+      <label>Volume <input type="range" id="calVol" min="0.02" max="1" step="0.02" value="0.3" aria-label="Tone volume"></label>
+    </div>
+    <div class="cal-row">
+      <button class="action primary" id="calRunBtn">Run check</button>
+      <button class="action" id="calSaveBtn">Save as baseline</button>
+    </div>
+    <div class="cal-row" id="calToneRow" hidden>
+      <label>Show <select id="calToneSel" aria-label="Tone to show"></select></label>
+    </div>
+    <table class="mono" aria-label="Calibration check per microphone">
+      <thead>
+        <tr><th>Mic</th><th>dBFS</th><th>vs base</th><th>vs others</th><th>SNR</th><th>Phase°</th></tr>
+      </thead>
+      <tbody id="calBody"></tbody>
+    </table>
+    <div class="levels-note" id="calNote">Measures every mic at the tones, recording or not. Save a baseline once the wing is installed, with the wind off. Later checks compare each mic to it. "vs others" removes the change all mics share (speaker level, flow on the sound path), so one mic or hole that shifted stands out: amber above 1 dB, red above 3. Grey rows have SNR under 10 dB: play louder or longer. Every check is also logged to CAL.CSV on the card.</div>
+    <div class="levels-note mono" id="calStatus"></div>
   </div>
 
   <div class="connect-row">
@@ -444,6 +529,7 @@
       <div>service&nbsp; 6e400001-b5a3-f393-e0a9-e50e24dcca9e</div>
       <div>control&nbsp; 6e400002-b5a3-f393-e0a9-e50e24dcca9e</div>
       <div>status&nbsp;&nbsp; 6e400003-b5a3-f393-e0a9-e50e24dcca9e</div>
+      <div>levels&nbsp;&nbsp; 6e400005-b5a3-f393-e0a9-e50e24dcca9e</div>
     </div>
     <div class="log mono" id="log"></div>
   </details>
@@ -458,6 +544,7 @@
   const CONTROL_UUID = "6e400002-b5a3-f393-e0a9-e50e24dcca9e";
   const STATUS_UUID = "6e400003-b5a3-f393-e0a9-e50e24dcca9e";
   const TIME_UUID = "6e400004-b5a3-f393-e0a9-e50e24dcca9e";
+  const LEVELS_UUID = "6e400005-b5a3-f393-e0a9-e50e24dcca9e";
 
   // Must match SAMPLE_RATE * CHANNELS * (BITS_PER_SAMPLE/8) in the firmware —
   // used to turn a raw byte count into a trustworthy "audio saved" duration.
@@ -468,6 +555,42 @@
   const FLAG_SD_READY = 0x02;
   const FLAG_LOW_SPACE = 0x04;
   const FLAG_ERROR = 0x08;
+  const FLAG_BATT_LOW = 0x20;  // below the firmware's 3.40 V cutoff: recording stopped, SD card off
+
+  // Battery (status bytes 17-18, mV, firmware from 2026-10-25 on). Rough single-cell Li-ion charge from voltage;
+  // under load and while charging it reads off, so the volts are the number to trust.
+  const BATT_CUTOFF_MV = 3400;  // must match BATLOG_CUTOFF_MV in the firmware
+  const BATT_WARN_MV = 3550;
+  const BATT_WARN_CLEAR_MV = 3600;  // once on, the low warning stays until this (i.e. charging), so noise can't flicker it
+  const BATT_CURVE = [[4200, 100], [4150, 95], [4110, 90], [4080, 85], [4020, 80], [3980, 75], [3950, 70],
+    [3910, 65], [3870, 60], [3850, 55], [3840, 50], [3820, 45], [3800, 40], [3790, 35], [3770, 30], [3750, 25],
+    [3730, 20], [3710, 15], [3690, 10], [3610, 5], [3400, 0]];
+  function battPercent(mv) {
+    if (mv >= BATT_CURVE[0][0]) return 100;
+    for (let i = 1; i < BATT_CURVE.length; i++) {
+      const [v1, p1] = BATT_CURVE[i - 1], [v0, p0] = BATT_CURVE[i];
+      if (mv >= v0) return Math.round(p0 + (p1 - p0) * (mv - v0) / (v1 - v0));
+    }
+    return 0;
+  }
+  // The board's battery readings are noisy, so average the 2-per-second updates over ~8 s, move the shown value
+  // only in 10 mV steps, and give the low warning 50 mV of hysteresis so it doesn't blink on and off.
+  function updateBattery(mv) {
+    if (!mv) {
+      battMv = battAvgMv = 0;
+      battWarn = false;
+      return;
+    }
+    battAvgMv = battAvgMv ? battAvgMv + (mv - battAvgMv) / 16 : mv;
+    if (!battMv || Math.abs(battAvgMv - battMv) >= 10) battMv = Math.round(battAvgMv / 10) * 10;
+    if (battMv < BATT_WARN_MV) battWarn = true;
+    else if (battMv >= BATT_WARN_CLEAR_MV) battWarn = false;
+  }
+  let battMv = 0;       // what the page shows: averaged, moves in 10 mV steps
+  let battAvgMv = 0;     // running average of the device's readings (~8 s)
+  let battWarn = false;  // low-battery warning, on below BATT_WARN_MV, off again at BATT_WARN_CLEAR_MV
+  let battLow = false;
+  let battLoggedMv = 0;  // last voltage written to the log (one line per 50 mV change)
 
   const ERROR_MESSAGES = {
     1: "SD card not ready — recording could not start.",
@@ -501,10 +624,329 @@
   const alertEl = document.getElementById("alert");
   const alertTextEl = document.getElementById("alertText");
   const dataStatValue = document.getElementById("dataStatValue");
+  const levelsEl = document.getElementById("levels");
+  const levelsBody = document.getElementById("levelsBody");
+  const levelsAgeEl = document.getElementById("levelsAge");
+  const levelsNoteEl = document.getElementById("levelsNote");
+  let levelsChar = null;
+  let lastLevelsAt = 0;
+  let clipMask = 0;  // mics clipping in the last ~2 s, from the status (bit N = micN)
+
+  // Live levels table: one row per mic; cells shaded by level in the accent hue (light = quiet, strong = loud).
+  const levelRows = [];
+  for (let m = 0; m < 8; m++) {
+    const tr = document.createElement("tr");
+    const cells = [];
+    for (let i = 0; i < 8; i++) {
+      const td = document.createElement("td");
+      td.textContent = "—";
+      tr.appendChild(td);
+      cells.push(td);
+    }
+    cells[0].className = "mic";
+    cells[0].textContent = "mic" + m;
+    cells[1].className = "peak";
+    levelsBody.appendChild(tr);
+    levelRows.push({ tr, cells });
+  }
+
+  function levelShade(db) {
+    const t = Math.max(0, Math.min(1, (db + 90) / 80));  // -90 dBFS -> no tint, -10 dBFS -> strongest
+    return "color-mix(in srgb, var(--accent) " + Math.round(t * 65) + "%, var(--surface-2))";
+  }
+
+  function fmtDb(v) { return v <= -127 ? "—" : String(v); }
+
+  // Peak hold: each update covers only 250 ms, so a snap or a tap would flash past. Show the highest peak of the last
+  // PEAK_HOLD_MS instead.
+  const PEAK_HOLD_MS = 1500;
+  const peakHold = Array.from({ length: 8 }, () => ({ db: -127, at: 0 }));
+
+  // Levels message (firmware format 1): [0] format, [1] flags, [2] clip mask, [3] bands, then per mic:
+  // peak dBFS, total dBFS, one dBFS per band (all int8; -127 = nothing).
+  function onLevels(event) {
+    const v = event.target.value;
+    if (v.byteLength < 4 || v.getUint8(0) !== 1) return;
+    const bands = v.getUint8(3), per = 2 + bands;
+    if (v.byteLength < 4 + 8 * per) {
+      levelsNoteEl.textContent = "Live levels are cut short by the Bluetooth packet size this browser negotiated (" +
+        v.byteLength + " bytes). Chrome or Edge on a PC, or Bluefy on iPhone, should work.";
+      return;
+    }
+    const mask = v.getUint8(2), now = Date.now();
+    for (let m = 0; m < 8; m++) {
+      const o = 4 + m * per, row = levelRows[m], hold = peakHold[m];
+      const total = v.getInt8(o + 1), clip = (mask >> m) & 1;
+      if (v.getInt8(o) >= hold.db || now - hold.at > PEAK_HOLD_MS) { hold.db = v.getInt8(o); hold.at = now; }
+      const peak = hold.db;
+      row.tr.classList.toggle("clip", !!clip);
+      row.cells[0].textContent = (clip ? "⚠ " : "") + "mic" + m;
+      row.cells[1].textContent = clip ? "CLIP" : fmtDb(peak);
+      row.cells[1].classList.toggle("clip", !!clip);
+      row.cells[1].classList.toggle("hot", !clip && peak > -6);
+      row.cells[2].textContent = fmtDb(total);
+      row.cells[2].style.background = total <= -127 ? "" : levelShade(total);
+      for (let b = 0; b < Math.min(bands, 5); b++) {
+        const db = v.getInt8(o + 2 + b), cell = row.cells[3 + b];
+        cell.textContent = fmtDb(db);
+        cell.style.background = db <= -127 ? "" : levelShade(db);
+      }
+    }
+    lastLevelsAt = Date.now();
+    levelsEl.classList.remove("stale");
+    levelsAgeEl.textContent = "live";
+  }
+
+  // ---- Calibration check (firmware from 2026-10-25 on; see the cal section of the sketch) ----
+  // Control write: 'C', seconds, then up to 4 tones as u16 Hz little-endian. 'K' keeps the last check as the baseline.
+  // Result (cal characteristic): [0] format 1, [1] flags, [2] tones n, [3-4] windows (u16), [5] note, then per tone:
+  // Hz (u16) and per mic: level 0.01 dBFS (i16), vs baseline 0.01 dB (i16), SNR dB (i8), phase 0.1° (i16).
+  const CAL_UUID = "6e400006-b5a3-f393-e0a9-e50e24dcca9e";
+  const SHOW_CAL = false;  // calibration panel hidden until the tone check is proven on the board; set true to show it
+  const CAL_NONE = -32768;
+  const CALF_RECORDING = 0x01, CALF_BASELINE = 0x02, CALF_UNRELIABLE = 0x04, CALF_RUNNING = 0x08;
+  const CAL_WEAK_SNR = 10;
+  const CAL_NOTES = {
+    1: "The board is already running a check.",
+    2: "Tones must be 100–20000 Hz, at most 4, and at least 100 Hz apart.",
+    3: "Stop recording before saving a baseline (writing the board's flash can drop audio).",
+    4: "Run a check first, then save it as the baseline.",
+    5: "Baseline saved on the board (kept through power cycles).",
+    6: "Saving the baseline failed on the board.",
+  };
+  const calEl = document.getElementById("cal");
+  const calBody = document.getElementById("calBody");
+  const calAgeEl = document.getElementById("calAge");
+  const calStatusEl = document.getElementById("calStatus");
+  const calTonesEl = document.getElementById("calTones");
+  const calSecsEl = document.getElementById("calSecs");
+  const calPlayEl = document.getElementById("calPlay");
+  const calVolEl = document.getElementById("calVol");
+  const calRunBtn = document.getElementById("calRunBtn");
+  const calSaveBtn = document.getElementById("calSaveBtn");
+  const calToneRow = document.getElementById("calToneRow");
+  const calToneSel = document.getElementById("calToneSel");
+  let calChar = null;
+  let calRunning = false;
+  let calTimeout = null;
+  let calResult = null;
+  let toneCtx = null;
+  let toneStop = null;
+
+  const calRows = [];
+  for (let m = 0; m < 8; m++) {
+    const tr = document.createElement("tr");
+    const cells = [];
+    for (let i = 0; i < 6; i++) {
+      const td = document.createElement("td");
+      td.textContent = "—";
+      tr.appendChild(td);
+      cells.push(td);
+    }
+    cells[0].className = "mic";
+    cells[0].textContent = "mic" + m;
+    calBody.appendChild(tr);
+    calRows.push({ tr, cells });
+  }
+
+  function parseCalTones() {
+    const parts = calTonesEl.value.split(/[\s,;]+/).filter(Boolean);
+    const tones = parts.map(Number);
+    if (!tones.length || tones.length > 4) return null;
+    for (let i = 0; i < tones.length; i++) {
+      const f = tones[i];
+      if (!Number.isInteger(f) || f < 100 || f > 20000) return null;
+      for (let j = 0; j < i; j++) if (Math.abs(f - tones[j]) < 100) return null;
+    }
+    return tones;
+  }
+
+  // Plays the tones (summed, equal level) through this computer's audio output. Called straight from the click, so
+  // the browser allows audio.
+  function startTones(tones) {
+    stopTones();
+    toneCtx = toneCtx || new AudioContext();
+    toneCtx.resume();
+    const ctx = toneCtx, gain = ctx.createGain(), now = ctx.currentTime;
+    gain.gain.setValueAtTime(0, now);
+    gain.gain.linearRampToValueAtTime(Number(calVolEl.value) / tones.length, now + 0.05);
+    gain.connect(ctx.destination);
+    const oscs = tones.map(f => {
+      const o = ctx.createOscillator();
+      o.type = "sine";
+      o.frequency.value = f;
+      o.connect(gain);
+      o.start(now);
+      return o;
+    });
+    toneStop = () => {
+      const t = ctx.currentTime;
+      gain.gain.cancelScheduledValues(t);
+      gain.gain.setValueAtTime(gain.gain.value, t);
+      gain.gain.linearRampToValueAtTime(0, t + 0.05);
+      oscs.forEach(o => o.stop(t + 0.1));
+    };
+  }
+
+  function stopTones() {
+    if (toneStop) {
+      toneStop();
+      toneStop = null;
+    }
+  }
+
+  function setCalRunning(on, secs) {
+    calRunning = on;
+    calEl.classList.toggle("running", on);
+    calRunBtn.disabled = on || !controlChar;
+    if (calTimeout) {
+      clearTimeout(calTimeout);
+      calTimeout = null;
+    }
+    if (on) {
+      calAgeEl.textContent = "measuring…";
+      calTimeout = setTimeout(() => {
+        setCalRunning(false);
+        stopTones();
+        calStatusEl.textContent = "No result from the board in time. Check the link and try again.";
+      }, ((secs || 120) + 8) * 1000);
+    }
+  }
+
+  function fmtCal(v, scale, digits, signed) {
+    if (v === CAL_NONE) return "—";
+    const x = v / scale;
+    return (signed && x > 0 ? "+" : "") + x.toFixed(digits);
+  }
+
+  function renderCal() {
+    if (!calResult || !calResult.tones.length) return;
+    const t = calResult.tones[Math.min(calToneSel.selectedIndex < 0 ? 0 : calToneSel.selectedIndex, calResult.tones.length - 1)];
+    // "vs others": each mic's change minus the median change of the mics that heard the tone clearly.
+    const shared = t.mics.filter(m => m.delta !== CAL_NONE && m.snr >= CAL_WEAK_SNR).map(m => m.delta).sort((a, b) => a - b);
+    const median = shared.length ? (shared.length % 2 ? shared[(shared.length - 1) / 2]
+      : (shared[shared.length / 2 - 1] + shared[shared.length / 2]) / 2) : null;
+    t.mics.forEach((m, i) => {
+      const row = calRows[i], c = row.cells;
+      const rel = (median === null || m.delta === CAL_NONE) ? CAL_NONE : Math.round(m.delta - median);
+      row.tr.classList.toggle("weak", m.lvl === CAL_NONE || m.snr < CAL_WEAK_SNR);
+      c[1].textContent = fmtCal(m.lvl, 100, 2, false);
+      c[2].textContent = fmtCal(m.delta, 100, 2, true);
+      c[3].textContent = fmtCal(rel, 100, 2, true);
+      c[3].classList.toggle("warn", rel !== CAL_NONE && Math.abs(rel) > 100 && Math.abs(rel) <= 300);
+      c[3].classList.toggle("bad", rel !== CAL_NONE && Math.abs(rel) > 300);
+      c[4].textContent = m.snr <= -127 ? "—" : String(m.snr);
+      c[5].textContent = fmtCal(m.ph, 10, 1, true);
+    });
+  }
+
+  function handleCalValue(v, fromRead) {
+    if (!v || v.byteLength < 6 || v.getUint8(0) !== 1) return;
+    const flags = v.getUint8(1), n = v.getUint8(2), windows = v.getUint16(3, true), note = v.getUint8(5);
+    if (v.byteLength < 6 + n * 58) {
+      // Cut short by the Bluetooth packet size: a read fetches the whole value.
+      if (!fromRead && calChar) calChar.readValue().then(r => handleCalValue(r, true)).catch(err => log("cal read failed: " + err.message));
+      else calStatusEl.textContent = "Result cut short by the Bluetooth packet size (" + v.byteLength + " bytes).";
+      return;
+    }
+    if (note) {
+      calStatusEl.textContent = CAL_NOTES[note] || ("Board note " + note + ".");
+      log("calibration: " + (CAL_NOTES[note] || "note " + note));
+    }
+    if (flags & CALF_RUNNING) {
+      if (!calRunning && note !== 1) setCalRunning(true);
+      return;
+    }
+    if (n) {
+      const tones = [];
+      let o = 6;
+      for (let t = 0; t < n; t++) {
+        const hz = v.getUint16(o, true);
+        o += 2;
+        const mics = [];
+        for (let m = 0; m < 8; m++, o += 7)
+          mics.push({ lvl: v.getInt16(o, true), delta: v.getInt16(o + 2, true), snr: v.getInt8(o + 4), ph: v.getInt16(o + 5, true) });
+        tones.push({ hz, mics });
+      }
+      const prevSel = calToneSel.selectedIndex;
+      calResult = { flags, windows, tones };
+      calToneSel.innerHTML = "";
+      tones.forEach(t => {
+        const opt = document.createElement("option");
+        opt.textContent = t.hz + " Hz";
+        calToneSel.appendChild(opt);
+      });
+      calToneSel.selectedIndex = prevSel >= 0 && prevSel < tones.length ? prevSel : 0;
+      calToneRow.hidden = tones.length < 2;
+      renderCal();
+      calAgeEl.textContent = (flags & CALF_RECORDING ? "while recording · " : "") + windows + " windows · " +
+        new Date().toLocaleTimeString();
+      if (!note) {
+        calStatusEl.textContent = (flags & CALF_UNRELIABLE ? "Too few clean windows (SD card busy?): run it again. " : "") +
+          (flags & CALF_BASELINE ? "" : "No baseline saved yet, so \"vs base\" is empty.");
+      }
+    }
+    if (calRunning) {
+      setCalRunning(false);
+      stopTones();
+    }
+  }
+
+  async function runCalCheck() {
+    if (!controlChar || calRunning) return;
+    const tones = parseCalTones();
+    if (!tones) {
+      calStatusEl.textContent = CAL_NOTES[2];
+      return;
+    }
+    const secs = Math.min(120, Math.max(1, Math.round(Number(calSecsEl.value)) || 10));
+    calSecsEl.value = secs;
+    calStatusEl.textContent = "";
+    if (calPlayEl.checked) {
+      startTones(tones);
+      await new Promise(r => setTimeout(r, 400));  // let the speaker settle before the board starts listening
+    }
+    const msg = new Uint8Array(2 + 2 * tones.length);
+    msg[0] = 0x43;  // 'C'
+    msg[1] = secs;
+    tones.forEach((f, i) => { msg[2 + 2 * i] = f & 0xff; msg[3 + 2 * i] = f >> 8; });
+    try {
+      setCalRunning(true, secs);
+      await controlChar.writeValue(msg);
+      log("sent: calibration check, " + tones.join(", ") + " Hz for " + secs + " s");
+    } catch (err) {
+      setCalRunning(false);
+      stopTones();
+      calStatusEl.textContent = "Write failed: " + err.message;
+      log("error: " + err.message);
+    }
+  }
+
+  async function saveCalBaseline() {
+    if (!controlChar) return;
+    if (recording) {
+      calStatusEl.textContent = CAL_NOTES[3];
+      return;
+    }
+    try {
+      await controlChar.writeValue(new Uint8Array([0x4b]));  // 'K'
+      log("sent: save the last check as the baseline");
+    } catch (err) {
+      calStatusEl.textContent = "Write failed: " + err.message;
+      log("error: " + err.message);
+    }
+  }
+
+  calRunBtn.addEventListener("click", runCalCheck);
+  calSaveBtn.addEventListener("click", saveCalBaseline);
+  calToneSel.addEventListener("change", renderCal);
+
   const storageStat = document.getElementById("storageStat");
   const storageStatValue = document.getElementById("storageStatValue");
   const signalStat = document.getElementById("signalStat");
   const signalStatValue = document.getElementById("signalStatValue");
+  const battStat = document.getElementById("battStat");
+  const battStatValue = document.getElementById("battStatValue");
 
   // Device-side HCI disconnect reasons (status byte 11). Supervision timeout
   // means the radio link itself was lost; the others mean one side chose to
@@ -608,6 +1050,15 @@
       setAlert("No status update from the device in a while — the BLE link may be unstable. Recording confirmation can't be trusted until it recovers.", "warn");
       return;
     }
+    if (clipMask) {
+      setAlert("Clipping on " + clipMicList(clipMask) + ": the pressure there is above the mics' full scale (about " +
+        "120 dB SPL), so those samples are saturated. Lower the speed or exposure, or check the mounting.", "error");
+      return;
+    }
+    if (battLow) {
+      setAlert("Battery below " + (BATT_CUTOFF_MV / 1000).toFixed(2) + " V: the board stopped recording and switched the SD card off to protect it. Charge it.", "error");
+      return;
+    }
     if (currentErrorCode) {
       setAlert(ERROR_MESSAGES[currentErrorCode] || ("Device reported error code " + currentErrorCode), "error");
       return;
@@ -618,6 +1069,10 @@
     }
     if (lowSpace) {
       setAlert("Storage is getting low (" + formatMB(freeSpaceMB) + " free). Recording will stop automatically if it runs out.", "warn");
+      return;
+    }
+    if (battWarn) {
+      setAlert("Battery low (" + (battMv / 1000).toFixed(2) + " V). Recording stops by itself at " + (BATT_CUTOFF_MV / 1000).toFixed(2) + " V.", "warn");
       return;
     }
     setAlert(null);
@@ -636,10 +1091,29 @@
 
     signalStatValue.textContent = (connected && rssi) ? rssi + " dBm · " + signalQuality(rssi) : "—";
     signalStat.classList.toggle("warn", connected && rssi !== 0 && rssi < -80);
+
+    battStatValue.textContent = (connected && battMv) ? (battMv / 1000).toFixed(2) + " V · ~" + battPercent(battMv) + "%" : "—";
+    battStat.classList.toggle("warn", connected && (battLow || battWarn));
+  }
+
+  function clipMicList(mask) {
+    const mics = [];
+    for (let m = 0; m < 8; m++) if ((mask >> m) & 1) mics.push("mic" + m);
+    return mics.join(", ");
   }
 
   function setConnectedUi(isConnected) {
     connected = isConnected;
+    if (!isConnected) {
+      levelsEl.hidden = true;
+      levelsChar = null;
+      clipMask = 0;
+      updateBattery(0);  // start the average afresh on reconnect (it may have been charged meanwhile)
+      calEl.hidden = true;
+      calChar = null;
+      setCalRunning(false);
+      stopTones();
+    }
     connectBtn.disabled = isConnected;
     disconnectBtn.disabled = !isConnected;
     recordBtn.disabled = !isConnected;
@@ -715,6 +1189,15 @@
     const freeMB = value.getUint32(5, true);
     const errCode = value.getUint8(9);
     recordingAudioSecs = value.byteLength >= 16 ? value.getUint32(12, true) : null;
+    const newClipMask = value.byteLength >= 17 ? value.getUint8(16) : 0;
+    updateBattery(value.byteLength >= 19 ? value.getUint16(17, true) : 0);
+    battLow = !!(flags & FLAG_BATT_LOW);
+    if (battMv && (!battLoggedMv || Math.abs(battMv - battLoggedMv) >= 50)) {
+      battLoggedMv = battMv;
+      log("battery: " + (battMv / 1000).toFixed(2) + " V (~" + battPercent(battMv) + "%)");
+    }
+    if (newClipMask && newClipMask !== clipMask) log("clipping on " + clipMicList(newClipMask));
+    clipMask = newClipMask;
 
     // Link diagnostics (firmware with a 12-byte payload only).
     if (value.byteLength >= 12) {
@@ -780,6 +1263,10 @@
   function watchdogTick() {
     if (!connected) return;
     const now = Date.now();
+    if (levelsChar && now - lastLevelsAt > 1500) {
+      levelsEl.classList.add("stale");
+      levelsAgeEl.textContent = "no update";
+    }
     if (now - lastStatusAt > STALE_STATUS_MS) {
       linkStale = true;
     }
@@ -861,7 +1348,38 @@
       await statusChar.startNotifications();
       statusChar.addEventListener("characteristicvaluechanged", onStatusNotify);
 
+      // Live levels (firmware from 2026-10-25 on); older firmware simply has no such characteristic.
+      try {
+        levelsChar = await service.getCharacteristic(LEVELS_UUID);
+        await levelsChar.startNotifications();
+        levelsChar.addEventListener("characteristicvaluechanged", onLevels);
+        lastLevelsAt = Date.now();
+        levelsEl.hidden = false;
+        log("subscribed to live levels");
+      } catch (err) {
+        levelsChar = null;
+        levelsEl.hidden = true;
+        log("no live levels on this firmware (" + err.message + ")");
+      }
+
+      // Calibration checks (firmware from 2026-10-25 on). Older firmware has no cal characteristic; the panel stays
+      // hidden there, since that firmware would treat the 'C' command as a record toggle.
+      try {
+        if (!SHOW_CAL) throw new Error("panel hidden (SHOW_CAL)");
+        calChar = await service.getCharacteristic(CAL_UUID);
+        await calChar.startNotifications();
+        calChar.addEventListener("characteristicvaluechanged", e => handleCalValue(e.target.value, false));
+        calEl.hidden = false;
+        handleCalValue(await calChar.readValue(), true);  // the board's last check, if any
+        log("calibration checks available");
+      } catch (err) {
+        calChar = null;
+        calEl.hidden = true;
+        if (SHOW_CAL) log("no calibration checks on this firmware (" + err.message + ")");
+      }
+
       setConnectedUi(true);
+      calRunBtn.disabled = calRunning;
       setMessage("Connected. Tap the button to start or stop recording.");
       log("connected, subscribed to status notifications");
     } catch (err) {

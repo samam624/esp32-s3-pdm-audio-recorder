@@ -27,7 +27,7 @@ Tested over serial and from a PC acting as the remote (Python `bleak`):
   ```
 
   The folder is made at REC start (start to recording takes ~160 ms, and the audio from the press on is kept), so nothing has to happen after the stop. If the folder can't be made, the take goes in the card's root instead. At boot, the next take number skips existing folders and older firmware's root `MMSA8_NNNN.wav` files.
-- **Recordings are continuous.** Every 30 min (`SEGMENT_SECONDS`), the file is finished and the recording carries on in the next part in the same folder. The switch takes ~20 ms and loses no audio, because the pool keeps filling meanwhile. Join a folder's files in order for the full take. A recording ends only on a stop, a full card ("SD card full", remote error 6) or a low battery. Serial shows each switch as `REC continues in …`, and the stop report gives the whole recording's length and file count.
+- **Recordings are continuous.** Every 30 min (`SEGMENT_SECONDS`), the file is finished and the recording carries on in the next part in the same folder. The switch takes ~20 ms and loses no audio, because the pool keeps filling meanwhile. Join a folder's files in order for the full take. A recording ends only on a stop, a full card ("SD card full", remote error 6, with 256 MB still free: see [the card-full stop](#overnight-soak-and-the-card-full-stop-2026-10-25)) or a low battery. Serial shows each switch as `REC continues in …`, and the stop report gives the whole recording's length and file count.
   - Why: FAT32 caps a file at 4 GiB, which is 93.2 min at 768 KB/s. Before this, the write that hit the cap ended the recording as "SD write failed (card pulled?)". 30-min files (1.38 GB) also stay under the 2 GiB that some WAV readers can't handle. exFAT isn't an option, because this core's FatFs is built without it (`FF_FS_EXFAT 0`), and a standard WAV can't exceed 4 GiB anyway.
 - **Checkpoints every 10 s** (`CHECKPOINT_SECONDS`): the file is synced and its header updated to the length so far (~12–16 ms). A reset, crash or power loss mid-recording leaves a playable file missing at most the last 10 s. Tested: a reset 15 s into a file left a valid 10.0 s WAV. Before, such files were 0 bytes.
 - **The final header is written through a fresh file handle** and read back. After a failed write, the recording's own handle refuses further writes. That's how the 93-minute take of 2026-10-24 ended up with a header saying 0 bytes, which players treat as an empty file.
@@ -35,6 +35,47 @@ Tested over serial and from a PC acting as the remote (Python `bleak`):
 - **The boot scan is one pass** over the card's root (names only), so the next take number is found quickly however many takes there are. Checking number by number took 2.7 s at 155 takes. The next take is one past the highest number on the card, so a deleted take's number isn't reused out of order.
 - **A stop writes the queued audio first**, so the file runs up to the press. Before, the backlog was dropped (0.9 s on one test stop during an SD slowdown, up to ~5.5 s in a long one).
 - Testing: build with `--build-property "compiler.cpp.extra_flags=-DSEGMENT_SECONDS=20"` (keep the `--wrap` property too) to see the switch every 20 s. A 20 s setting gives 19.989 s files, since files hold whole 16 KB blocks. 1800 s comes out exact.
+
+## Clipping warning and live levels (2026-10-25, tested on the board)
+
+- **Peak without the DC offset (2026-10-25).** The peak used to include each mic's DC offset (up to ~300 counts, about −40 dBFS), so a quiet room read −35 to −48 and a finger snap barely moved it. Now it's taken after removing the offset (the previous block's mean). Quiet room: −55 to −58 dBFS; clicks near the board: about −30 on all mics, 22–29 dB up. The page holds each mic's peak for 1.5 s, since one update covers only 250 ms. Clipping is still judged on the raw samples.
+- **Confirmed by hand 2026-10-25:** a finger on a mic set off the clipping alert, and `ble_control.html` works over real Bluetooth in the browser (levels table, alerts).
+
+- **Tested 2026-10-25** from a PC acting as the remote (`bleak`), connected through a 10-min recording: MTU 256, levels 3.9/s (60 bytes, format 1), bands present in 99.7% of messages, total ≥ every band and peak ≥ total in all of them, **no audio lost** with the FFT running. Quiet room with a PC fan: all 8 mics −56 to −60 dBFS overall, loudest in 125–500 Hz. `ble_control.html` was run in headless Chrome on the captured payloads (Web Bluetooth stubbed): the table, the error 6/7 alerts and a mic3 clip (injected into a real payload) all render, with no script errors.
+
+- **Clipping:** every block is scanned for samples at full scale on each mic. For the IMP34DT05, full scale is about 120 dB SPL (−26 dBFS at 94 dB SPL). A clipped stretch of a channel is saturated and not usable. Any clipping prints `!! CLIPPING: mic3 124 …` on serial (at most once a second, while idle too). The stop report gives per-mic counts and percentages, or `Clipping: none`. The health line carries `clip=` (this recording) and `clipmask=`. The remote gets a flag and the clipping mics in status byte 16, and shows a red alert.
+- **Live levels over Bluetooth:** while the remote is connected, a new characteristic (`6e400005…`, notify) sends each mic's peak, total (20 Hz–20 kHz) and 5 band levels (20–125, 125–500, 500–2k, 2k–8k, 8k–20k Hz), all in dBFS, 4 times a second, recording or not. That's handy for checking a mounting on the bench or in the tunnel before recording. The bands come from a 1024-point FFT of every other 21 ms block (Hann window, DC removed, two mics per complex FFT). The analysis is skipped while the SD card is behind, so recording always comes first. The lowest band is coarse, because bins are 47 Hz apart. The maths was checked against known tones (a −20 dBFS tone reads −20.0 in its band). The message is 60 bytes, so the board asks for a larger Bluetooth packet on connect and logs the agreed size (`Bluetooth packet size (MTU)`).
+- **Message format** (version 1): `[0]` format, `[1]` flags (bit0 recording, bit1 bands present), `[2]` clip mask, `[3]` number of bands, then per mic (mic0…mic7): peak, total, and one int8 dBFS per band (−127 = nothing).
+- The PSRAM build only: the FFT needs about 18 KB of internal RAM. Without PSRAM, the remote still gets peaks and clipping.
+
+## Calibration check (2026-10-25; compiled, maths and remote page tested off the board, not yet on the board)
+
+Checks every mic against a known tone without touching the array, recording or not: from the remote page's **Run check**, or serial `c` (1 kHz, 10 s).
+
+- **What it measures:** for each of 1–4 tones (100–20,000 Hz, at least 100 Hz apart), each mic's tone level (dBFS), its SNR, its phase relative to mic0, and its change against a saved baseline. Hann-windowed 8192-sample windows (5.9 Hz bins) are averaged over the check, so the tone stands clear of broadband noise like flow. The noise 47 Hz either side is subtracted.
+- **Accuracy (host test of the same code on synthetic audio, ±60–80 ppm clock offset, DC offsets, rumble):** within 0.1 dB and 0.3° when the broadband noise is as loud overall as the tone; 0.3 dB in 10 s and 0.1 dB in 60 s with noise 20 dB louder than the tone. With no tone, the level reads none.
+- **Baseline:** **Save as baseline** (serial `k`) keeps the last check in flash (NVS), through power cycles. Idle only: writing flash can stall the audio.
+- **"vs others"** on the page is each mic's change minus the median change. A speaker level change, or flow altering the sound path, moves every mic together and cancels out there. A single hole, plug or mic that shifted stands out: amber above 1 dB, red above 3 dB. Rows with SNR under 10 dB are greyed: play the tone louder or check longer.
+- **Tones:** the page can play them through the computer's audio output (WebAudio). Route that to a speaker fixed near the wing, or use any other fixed source playing the same frequencies.
+- **Recording comes first:** a window is dropped if the SD card falls 8+ blocks behind or audio goes missing. The serial result prints the check's worst cost per block, so its load can be watched on the board.
+- **Log:** every result is appended to `/CAL.CSV`: uptime, date, take, position in the recording (s), tone, windows used, then level/SNR/phase/delta per mic. The tones can be found in the WAV and re-analysed later.
+- **Remote:** characteristic `6e400006…` (read/notify) carries the result: `[0]` format 1, `[1]` flags (recording, baseline saved, unreliable, running), `[2]` tones, `[3-4]` windows, `[5]` note, then per tone Hz (u16) and per mic level 0.01 dBFS (i16), delta 0.01 dB (i16), SNR dB (i8), phase 0.1° (i16). Control writes: `'C'`, seconds, tones as u16 Hz; `'K'` saves the baseline. The page shows the panel only on firmware with this characteristic, because older firmware treats `'C'` as a record toggle.
+
+**Suggested use**
+1. **Out of the wing:** clamp the flex under a coupon of the real skin (same hole, same padding plug). Put a small sealed cap with a speaker over one hole at a time and run a check per hole. Calibrate the cap once against a reference mic or sound level meter to turn dBFS into dB SPL. This gives each hole+plug+mic's sensitivity. Repeat at the tones you care about to see what the padding does to the response.
+2. **In the wing:** fix a speaker (tunnel wall or wing root), wind off, run a check, **Save as baseline**.
+3. **At will, during a run:** **Run check** from the page while recording. "vs others" shows whether any hole or plug changed (padding compressed, wet or shifted, a mount loosened). Wind-on checks need a louder tone or a longer check (up to 120 s).
+
+## Overnight soak and the card-full stop (2026-10-25)
+
+- **Soak:** `tools/soak_log.py COM3 --hours 12 --ble` (30-min files, Bluetooth on, the PC connecting every 10 min). One take ran **10.93 h (22 files, 28.15 GB) until the card filled** at 10:46. No reboots or unplanned stops. Internal heap flat (−1 B/h), battery steady at 4.0 V, 21 file switches (slowest 121 ms). 64 of 66 Bluetooth polls worked; the 2 misses were while a phone remote held the board's only connection. 117 SD slowdowns were absorbed (10.7/h), the worst using 2.5 s of the 5.5 s buffer.
+- **Audio lost when the card filled (fixed and tested 2026-10-25).** With ~30 MB left, two writes took 9 s each. The pool overflowed and 12.6 s were dropped, then the write that hit the end failed, and the 5.5 s still queued had nowhere to go: 18 s lost at the very end. Everything before was gap-free. Now:
+  - A recording **stops with `LOW_SPACE_STOP_MB` (256 MB, ~5.7 min of audio) still free**. It writes the queued audio first, like a stop press, prints `SD card full: N MB left…` and the remote shows error 6.
+  - REC with less than that free is refused (`REC ignored: SD card full`, remote error 7).
+  - The remote's low-space warning starts at 1.25 GB (~22 min of recording left).
+  - The free-space estimate used while recording reads ~0.1% high (the card was full at an estimated 29 MB). The reserve covers that.
+  - Testing: build with `--build-property "compiler.cpp.extra_flags=-DLOW_SPACE_STOP_MB=N"` (keep the `--wrap` property too), with N a few hundred MB below the card's free space (`free_mb` in the health line). The recording then stops after a few minutes, without filling the card.
+  - **Tested** that way (reserve 29,896 MB, 450 MB below the card's free space): the recording stopped itself after 614.4 s with **no audio lost**, the card stayed mounted, and the remote got error 6 at once. START from the remote and REC over serial were then refused (error 7, `REC ignored: SD card full`). With the normal build, 20 s started and stopped from the remote lost no audio, and the low-space flag stayed off at 29.9 GB free.
 
 ## Controls
 
@@ -48,6 +89,7 @@ Tested over serial and from a PC acting as the remote (Python `bleak`):
 | Serial `s` | SD-crosstalk snapshot test (idle only; this used to be the 1.5 s hold in Recorder8) |
 | Serial `i` | Button monitor (idle): 20 s of live REC pin levels; the REC LED lights while the pin reads pressed |
 | Serial `p` | PSRAM + button check (idle, PSRAM build): 30 s of PSRAM write/read-back with all LEDs lit, while you press REC; reports errors and presses seen |
+| Serial `c` / `k` | Calibration check at 1 kHz for 10 s (play the tone) / keep the last check as the baseline (idle only). See [Calibration check](#calibration-check-2026-10-25-compiled-maths-and-remote-page-tested-off-the-board-not-yet-on-the-board) |
 
 **Bluetooth confirmation:** all three LEDs flash together.
 
@@ -80,7 +122,9 @@ Every mode change prints a `MODE:` line over serial.
 
 `ble_control.html` (in this folder) is V1's remote page, with the name changed and its "audio saved" duration corrected for 8 channels. Its "audio saved" counts the whole recording across files. The status is 16 bytes since 2026-10-24: bytes 12–15 carry the recording's total seconds, while bytes 1–4 now count the current file only. An older copy of the page still works, but its count restarts at each new file. Open it as a local file in Chrome or Edge (Bluefy on iPhone), press Connect and pick "MMSA V2". It starts and stops recording and shows live bytes written, free space, signal strength and errors. It also sets the board's clock on connect, so WAV files get the right date.
 
-The GATT service is the same as V1's (UUIDs `6e400001…`–`6e400004…`). See `ESP32_devkit_test/ESP32_S3_SD_Recorder/README.md` for the status payload.
+The GATT service is the same as V1's (UUIDs `6e400001…`–`6e400004…`), plus live levels (`6e400005…`) and calibration checks (`6e400006…`). See `ESP32_devkit_test/ESP32_S3_SD_Recorder/README.md` for the status payload.
+
+**Battery meter (2026-10-25, flashed to board 2):** the status is 19 bytes. Bytes 17–18 carry VBAT in mV (u16; running average of the 250 ms readings over ~16 s, since single readings scatter about ±70 mV), and flag `0x20` means VBAT fell below the 3.40 V cutoff (recording stopped, SD card off). The page shows volts and a rough charge % (single-cell Li-ion curve; volts are what to trust under load or while charging). It averages again over ~8 s and moves the shown value in 10 mV steps. It warns below 3.55 V and keeps the warning up until 3.60 V, so noise can't make it blink. It alerts at the cutoff and logs every 50 mV change. (The page side works with the flashed firmware; the ~16 s firmware average needs a reflash.) `/BATLOG.CSV` still records VBAT every 30 s for the full run-down.
 
 ## Build / flash
 
@@ -121,6 +165,8 @@ The same sketch auto-detects PSRAM. Built with `PSRAM=opi` (FQBN as above with `
 ## Known issues
 
 (Fixed 2026-10-24: recordings stopping at 93 min, unplayable files after a failed write or a crash, and the stop dropping queued audio. See [Recording files](#recording-files-2026-10-24-tested-on-board-2).)
+
+(Fixed 2026-10-25, not yet tested by pulling a card: the remote's live levels froze while the card was out, because each once-a-second remount attempt blocked the main loop for ~0.6 s in the SD library's retries. The idle check now sends one CMD0 and mounts only if a card answers, in under 1 ms. And "SD card was removed" stayed on the remote after the card went back in, until the next REC press; a mount now clears it.)
 
 1. **SD card slowdowns (fixed by the PSRAM build; cause not yet pinned down).** Every 1–4 minutes the card spends 3–5 s unable to keep up with 768 KB/s. The internal-RAM buffer (192 ms) lost 0.7–1.3 s of audio each time, with or without Bluetooth (1 in 726 s with it off, 3 in ~550 s with it on). The SD link averages ~1.5 MB/s (SPI at 20 MHz), only 2× the need; the card's 10 MB/s rating applies to its native SD bus with 4 MB-aligned writes, not SPI. Likely cause: the card's internal housekeeping, provoked by FatFs updating its allocation table as the file grows. **Next to try:** time the writes inside a slowdown (slow writes = card, gaps = ESP), and reserve the file up front with FatFs `f_expand` (enabled in this core) so recording is purely sequential.
 2. **Slow SD mount after a reset.** If the board is reset (flashing, the serial reset, a crash) within a few seconds of a recording, the card can refuse to mount for ~8–12 s. IO40 lights when it's ready, and presses before then are ignored with a serial message. A power cycle avoids it. The wake-up clocks from V1 (now in `mountSd()`) didn't cure it.

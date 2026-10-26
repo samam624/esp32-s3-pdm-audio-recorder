@@ -33,7 +33,7 @@ from mmsa_serial import BLE_CONTROL, BLE_NAME, BLE_STATUS, Board, parse_status
 BYTES_PER_S = 48000 * 16
 BLOCK = 16384
 BAD = re.compile(r"WARNING|failed|FAILED|Could not|NOT started|!! audio loss|AUDIO WAS LOST|Boot, reset reason|"
-                 r"[Pp]anic|Guru|abort\(|assert|Backtrace|SD NOT available|card pulled|REC ignored|card full")
+                 r"[Pp]anic|Guru|abort\(|assert|Backtrace|SD NOT available|card pulled|REC ignored|card full|CLIPPING")
 STOP_1 = re.compile(r"REC stop: (\S+), ([\d.]+) s audio \(\d+ bytes\), wall time ([\d.]+) s")
 STOP_N = re.compile(r"REC stop: (\S+) \([\d.]+ s\)\. Recording: ([\d.]+) s audio in (\d+) files from \S+ .*"
                     r"wall time ([\d.]+) s")

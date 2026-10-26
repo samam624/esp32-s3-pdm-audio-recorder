@@ -1,0 +1,493 @@
+EMC Components
+
+Chip beads                                                                                                 RoHS  REACH           Cl                         Pb
+For power line                                                                                                   SVHC-Free    Br
+MPZ series (for automotive)                                                                                                                                 Lead
+                                                                                                                            Halogen                         Free
+                                                                                                                              Free
+
+     AEC-Q200
+
+MPZ1608 type
+
+  FEATURES
+
+       Noise reduction solution for power line.
+       Compared to the MMZ series, has low direct current resistance for compatibility with large currents, optimal for low power consumption.
+       Various frequency characteristics with 5 materials of different features for countermeasures against everything from general signals to
+       high-speed signals.
+       Performs well even in signal lines where low direct current resistance is required.
+       Operating temperature range: -55 to +125°C
+
+APPLICATION
+
+   Various ECUs, powertrains, body controls, and car multimedia (telematics).
+
+PART NUMBER CONSTRUCTION
+
+MPZ          1608              S                471                                                  A  T        D25
+
+Series name  L×W×T dimensions  Material name    Impedance                      Characteristic           Packaging style Internal code
+               1.6×0.8×0.6 mm                 () at 100MHz                           type
+               1.6×0.8×0.8 mm
+
+Please be sure to request delivery specifications that provide further details on the features and specifications of the products for proper and safe use.  (1/7)
+
+Please note that the contents may change without any prior notice due to reasons such as upgrading.
+
+                                                                                                                                                            20190423
+
+                                                                                                        beads_automotive_power_mpz1608_en.fm
+   EMC Components
+
+MPZ1608 type
+
+CHARACTERISTICS SPECIFICATION TABLE
+
+Impedance                                 DC resistance               Rated current          Thickness T  Part No.
+
+[100MHz]
+
+( )                   Tolerance           ( )max.                     (A)max.                (mm)
+
+470                   ±25%                0.150                       1.0                    0.8          MPZ1608B471ATD25
+
+26                    ±25%                0.007                       6.0                    0.6          MPZ1608S260ATDH5
+
+30                    ±10                 0.010                       5                      0.6          MPZ1608S300ATDH5
+
+60                    ±25%                0.020                       3.5                    0.6          MPZ1608S600ATDH5
+
+100                   ±25%                0.030                       3                      0.6          MPZ1608S101ATDH5
+
+120                   ±25%                0.045                       2.0                    0.6          MPZ1608S121ATDH5
+
+180                   ±25%                0.050                       2.0                    0.6          MPZ1608S181ATDH5
+
+220                   ±25%                0.050                       2.2                    0.8          MPZ1608S221ATD25
+
+330                   ±25%                0.080                       1.7                    0.8          MPZ1608S331ATD25
+
+470                   ±25%                0.150                       1.0                    0.8          MPZ1608S471ATD25
+
+600                   ±25%                0.150                       1                      0.8          MPZ1608S601ATD25
+
+1000                  ±25%                0.300                       0.8                    0.8          MPZ1608S102ATD25
+
+390                   ±25%                0.120                       1.2                    0.8          MPZ1608R391ATD25
+
+60                    ±25%                0.030                       2.3                    0.8          MPZ1608Y600BTD25
+
+100                   ±25%                0.040                       2                      0.8          MPZ1608Y101BTD25
+
+150                   ±25%                0.050                       1.8                    0.8          MPZ1608Y151BTD25
+
+220                   ±25%                0.100                       1.5                    0.8          MPZ1608Y221BTD25
+
+30                    ±10                 0.060                       1.8                    0.8          MPZ1608D300BTD25
+
+60                    ±25%                0.100                       1.2                    0.8          MPZ1608D600BTD25
+
+100                   ±25%                0.150                       1                      0.8          MPZ1608D101BTD25
+
+ Please refer to the graph of rated current vs. temperature characteristics (derating) about the rating current at 85°C or more in temperature of the product.
+
+Measurement equipment
+
+Measurement item                   Product No.                        Manufacturer
+Impedance                          E4991A+16192A                      Keysight Technologies
+DC resistance                      Type-7556                          Yokogawa
+
+ Equivalent measurement equipment may be used.
+
+Rated current vs. temperature characteristics (derating)
+      7
+
+                   6
+
+Rated current (A)  5
+
+                   4
+
+                   3
+
+                   2
+
+                   1
+
+                   0            5 25 45 65         85 105 125
+                   -55 -35 -15   Temperature (°C)
+
+                      S260A        S300A         S600A         S101A
+                      Y600B        S221A
+                      Y151B,D300B                S121A,S181A,Y101B
+                      R391A,D600B
+                      S102A               S331A         Y221B
+
+                                          B471A,S471A,S601A,D101B
+
+Please be sure to request delivery specifications that provide further details on the features and specifications of the products for proper and safe use.  (2/7)
+
+Please note that the contents may change without any prior notice due to reasons such as upgrading.
+
+                                                                                                                                                            20190423
+
+                                                                                                          beads_automotive_power_mpz1608_en.fm
+   EMC Components
+
+MPZ1608 type
+
+Z VS. FREQUENCY CHARACTERISTICS (BY SERIES)
+
+MPZ1608B series                                   MPZ1608S series                                                  MPZ1608R series
+
+              500         MPZ1608B471A                        1200        MPZ1608S331A       MPZ1608S102A               500
+              400                                             1000        MPZ1608S221A           MPZ1608S601A                                 MPZ1608R391A
+              300                                                        MPZ1608S181A             MPZ1608S471A
+              200                                              900                                                      400
+              100                                              800      MPZ1608S121A
+Impedance ()                                      Impedance () 700     MPZ1608S101A                                Impedance ()  300
+                 0                                             600    MPZ1608S600A
+                   1                                                 MPZ1608S260A
+                                                                     MPZ1608S300A
+
+                                                                500
+
+                                                                400                                                              200
+
+                                                                300
+
+                                                                200                                                              100
+
+                                                                100
+
+                      10  100        1000  10000                0    1  10              100  1000 10000                          0
+
+                                                                                                                                      1  10  100  1000                    10000
+
+                          Frequency (MHz)                                   Frequency (MHz)                                                  Frequency (MHz)
+
+MPZ1608Y series                                   MPZ1608D series
+
+     350                                               600
+                       MPZ1608Y221B                                        MPZ1608D101B
+
+     300                                               500
+               MPZ1608Y151B
+Impedance ()                                      Impedance ()  400 MPZ1608D600B
+     250                                                        300
+
+             MPZ1608Y101B
+     200
+
+              150
+
+              100                                               200
+
+              50                                                100
+                                                                   0
+                          MPZ1608Y600B                               1                       MPZ1608D300B
+
+              0    1  10  100        1000  10000                        10              100  1000  10000
+
+                          Frequency (MHz)                                   Frequency (MHz)
+
+              Please be sure to request delivery specifications that provide further details on the features and specifications of the products for proper and safe use.  (3/7)
+
+              Please note that the contents may change without any prior notice due to reasons such as upgrading.
+
+                                                                                                                                                                          20190423
+
+                                                                                                                                 beads_automotive_power_mpz1608_en.fm
+   EMC Components
+
+MPZ1608 type
+
+Z, X, R VS. FREQUENCY CHARACTERISTICS
+
+MPZ1608B471ATD25                                                       MPZ1608S260ATDH5                                         MPZ1608S300ATDH5
+
+              500                                                                    40                                                       40
+              400
+Impedance ()  300                                                                    35                                         Impedance ()  35
+              200
+              100         Z                                            Impedance ()  30                                                       30
+
+                 01                                                                  25              Z                                        25            ZR
+                                                                                                           R
+                             R                                                       20                                                       20
+                                                                                                                X
+                                                                                     15                                                       15
+
+                                                                                     10                                                       10
+                                                                                                                                               5X
+                                               X                                     5
+
+                      10 100 1000 10000 01                                                   10      100           1000  10000                0   1     10  100                  1000          10000
+                          Frequency (MHz)
+                                                                                                 Frequency (MHz)                                            Frequency (MHz)
+
+MPZ1608S600ATDH5                                                       MPZ1608S101ATDH5                                         MPZ1608S121ATDH5
+
+100                                                                                  160                                           200
+                                                                                     140
+Impedance ()  80                                                       Impedance ()  120             Z                          Impedance ()  150
+                                            Z                                        100                 R                                                               ZR
+
+              60                                                                      80                                                      100
+                                               R                                      60
+                                                                                      40
+              40                                                                      20
+
+              20                                                                        0                   X                                 50
+                                                       X                                  1                                                                                           X
+
+              0  1    10        100                  1000       10000                                                                         0
+
+                          Frequency (MHz)                                                    10      100           1000  10000                    1     10  100                          1000  10000
+
+                                                                                                 Frequency (MHz)                                            Frequency (MHz)
+
+MPZ1608S181ATDH5                                                       MPZ1608S221ATD25                                         MPZ1608S331ATD25
+
+Impedance ()  300               Z                                      Impedance ()  300             ZR                         Impedance ()  450           Z
+              250                  R                                                 250                                                      400                 R
+              200                                                                    200                                                      350
+              150                                    X                               150                       X                              300                            X
+              100                                                                    100                                                      250
+                      10        100                       1000  10000                            10  100           1000  10000                200       10  100                          1000  10000
+               50                                                                     50                                                      150
+                 0                                                                      0                                                     100
+                   1                                                                      1
+                                                                                                                                               50
+                                                                                                                                                 0
+                                                                                                                                                   1
+
+                          Frequency (MHz)                                                            Frequency (MHz)                                        Frequency (MHz)
+
+MPZ1608S471ATD25                                                       MPZ1608S601ATD25                                         MPZ1608S102ATD25
+
+Impedance ()  700            ZR                                        Impedance ()  800             Z                          Impedance ()  1200          ZR
+              600                                                                    700                 R                                    1000
+              500                                                                    600
+              400                                 X                                  500                    X                                  800                   X
+              300                                                                    400                                                       600
+              200     10        100                       1000  10000                300         10  100           1000  10000                 400      10  100                          1000  10000
+              100                                                                    200                                                       200
+                                                                                     100
+                 0                                                                                                                                 0
+                   1                                                                    0                                                           1
+                                                                                          1
+
+                          Frequency (MHz)                                                            Frequency (MHz)                                        Frequency (MHz)
+
+MPZ1608R391ATD25                                                       MPZ1608Y600BTD25                                         MPZ1608Y101BTD25
+
+              500                                                                    140                                            200
+                                                                                     120
+Impedance ()  400                                                      Impedance ()  100                    Z                   Impedance ()  150
+                                         Z                                                                      R                                                             Z
+                                                                                      80
+              300                                                                     60                                                      100 R
+                                                                                      40
+                                            R                                         20
+              200
+                                                                                        0
+              100                                                                         1                                                   50
+                 0
+                   1                              X                                                                X                                                                     X
+
+                      10        100                       1000  10000                        10      100           1000  10000                    0  1  10  100                          1000  10000
+
+                          Frequency (MHz)                                                        Frequency (MHz)                                            Frequency (MHz)
+
+              Please be sure to request delivery specifications that provide further details on the features and specifications of the products for proper and safe use.                       (4/7)
+
+              Please note that the contents may change without any prior notice due to reasons such as upgrading.
+
+                                                                                                                                                                                               20190423
+
+                                                                                                                                                     beads_automotive_power_mpz1608_en.fm
+   EMC Components
+
+MPZ1608 type
+
+Z, X, R VS. FREQUENCY CHARACTERISTICS
+
+MPZ1608Y151BTD25                                      MPZ1608Y221BTD25                                             MPZ1608D300BTD25
+
+              300                                                   350                                                          250
+              250                                                   300
+Impedance ()  200                                     Impedance ()  250         Z                                  Impedance ()  200
+              150                                                   200           R
+              100         Z                                         150                                                          150
+                           R                                        100                                                          100 Z
+               50
+                 0                                                   50              X                                           50                                       R
+                   1                                                   0
+                               X                                         1                                                                                    X
+
+                      10  100     1000         10000                        10  100  1000              10000                     0    1  10  100  1000 10000
+
+                          Frequency (MHz)                                       Frequency (MHz)                                              Frequency (MHz)
+
+MPZ1608D600BTD25                                      MPZ1608D101BTD25
+
+Impedance ()  350                          Z          Impedance ()  600                             Z
+              300                                                   500
+              250                          XR                       400
+              200                                                   300
+              150                                                   200         R                X
+              100                                                   100
+                      10  100     1000         10000                        10  100  1000              10000
+               50                                                      0
+                 0                                                       1
+                   1
+                          Frequency (MHz)                                       Frequency (MHz)
+
+              Please be sure to request delivery specifications that provide further details on the features and specifications of the products for proper and safe use.     (5/7)
+
+              Please note that the contents may change without any prior notice due to reasons such as upgrading.
+
+                                                                                                                                                                          20190423
+
+                                                                                                                                      beads_automotive_power_mpz1608_en.fm
+   EMC Components                                                              PACKAGING STYLE
+
+MPZ1608 type                                                                   REEL DIMENSIONS
+
+  SHAPE & DIMENSIONS                                                                                     2.0±0.5
+
+                        1.6±0.15
+
+0.8±0.15
+
+                                                                                                                                                ø60min.
+
+T
+
+             0.3±0.2                   Thickness(T)                                                   ø13±0.2                 1.0
+                                       0.6±0.15mm                                                      ø21±0.8
+                                       0.8±0.15mm                                          ø180±2.0                                                                  +2.0
+
+                                       Dimensions in mm                                                                                           8.4 -0.0
+                                                                                                                                                   14.4max.
+
+                                                                                                                                           Dimensions in mm
+
+RECOMMENDED LAND PATTERN                                                       TAPE DIMENSIONS
+
+                                                                                           Sprocket                      +0.1 2.0±0.05  4.0±0.1          1.75±0.1
+                                                                                           hole                      1.5 -0                                  3.5±0.05
+
+                                       0.8
+
+             0.6      0.8  0.6                                                          B                                                                                8.0±0.3
+
+                           Dimensions in mm                                    K                                  A           4.0±0.1
+
+RECOMMENDED REFLOW PROFILE                                                           Type                                A        B                       Cavity
+                                                                                  MPZ1608                            1.1±0.2  1.9±0.2
+                                                                                                                                                Dimensions in mm
+
+                                                                                                                                                     K
+                                                                                                                                                1.1max.
+
+                           Preheating                     Soldering   Natural
+                                                                      cooling
+                                                             Peak                 160min.                            Taping            200min.
+                                                        250 to 260°C
+
+Temperature                                      230°C                230°C            Drawing direction                                                         300min.
+                                                                                                                                                         Dimensions in mm
+             150°C                        180°C            10s                 PACKAGE QUANTITY
+                           60 to 120s                   30 to 60s                   Package quantity                          4,000 pcs/reel
+
+                                                                                  TEMPERATURE RANGE, INDIVIDUAL WEIGHT
+
+                                                                                  Type                            Operating            Storage           Individual
+                                                                                                                                                           weight
+                                                                                           temperature range temperature range                              3 mg
+                                                                                                                                                            4 mg
+                                       Time                                    t=0.6mm     -55 to +125°C                      -55 to +125°C
+
+                                                                               t=0.8mm     -55 to +125°C                      -55 to +125°C
+
+                                                                                The storage temperature range is for after the assembly.
+
+             Please be sure to request delivery specifications that provide further details on the features and specifications of the products for proper and safe use.           (6/7)
+
+             Please note that the contents may change without any prior notice due to reasons such as upgrading.
+
+                                                                                                                                                                         20190423
+
+                                                                                                                              beads_automotive_power_mpz1608_en.fm
+EMC Components
+
+          REMINDERS FOR USING THESE PRODUCTS
+
+                               Before using these products, be sure to request the delivery specifications.
+
+                           SAFETY REMINDERS
+
+                    Please pay sufficient attention to the warnings for safe designing when using this products.
+
+                                                             REMINDERS
+
+The storage period is within 12 months. Be sure to follow the storage conditions (temperature: 5 to 40°C, humidity: 10 to 75% RH or
+less).
+If the storage period elapses, the soldering of the terminal electrodes may deteriorate.
+
+Do not use or store in locations where there are conditions such as gas corrosion (salt, acid, alkali, etc.).
+
+Before soldering, be sure to preheat components.
+The preheating temperature should be set so that the temperature difference between the solder temperature and chip temperature
+does not exceed 150°C.
+
+Soldering corrections after mounting should be within the range of the conditions determined in the specifications.
+If overheated, a short circuit, performance deterioration, or lifespan shortening may occur.
+
+When embedding a printed circuit board where a chip is mounted to a set, be sure that residual stress is not given to the chip due to
+the overall distortion of the printed circuit board and partial distortion such as at screw tightening portions.
+
+Self heating (temperature increase) occurs when the power is turned ON, so the tolerance should be sufficient for the set thermal
+design.
+
+Carefully lay out the coil for the circuit board design of the non-magnetic shield type.
+A malfunction may occur due to magnetic interference.
+
+Use a wrist band to discharge static electricity in your body through the grounding wire.
+
+Do not expose the products to magnets or magnetic fields.
+
+Do not use for a purpose outside of the contents regulated in the delivery specifications.
+
+The products listed on this catalog are intended for use in general electronic equipment (AV equipment, telecommunications equip-
+ment, home appliances, amusement equipment, computer equipment, personal equipment, office equipment, measurement equip-
+ment, industrial robots) under a normal operation and use condition.
+The products are not designed or warranted to meet the requirements of the applications listed below, whose performance and/or qual-
+ity require a more stringent level of safety or reliability, or whose failure, malfunction or trouble could cause serious damage to society,
+person or property.
+If you intend to use the products in the applications listed below or if you have special requirements exceeding the range or conditions
+set forth in the each catalog, please contact us.
+
+(1) Aerospace/aviation equipment                             (8) Public information-processing equipment
+(2) Transportation equipment (electric trains, ships, etc.)  (9) Military equipment
+(3) Medical equipment                                        (10) Electric heating apparatus, burning equipment
+(4) Power-generation control equipment                       (11) Disaster prevention/crime prevention equipment
+(5) Atomic energy-related equipment                          (12) Safety equipment
+(6) Seabed equipment                                         (13) Other applications that are not considered general-purpose
+(7) Transportation control equipment
+                                                                   applications
+
+When designing your equipment even for general-purpose applications, you are kindly requested to take into consideration securing pro-
+tection circuit/device or providing backup circuits in your equipment.
+
+Please be sure to request delivery specifications that provide further details on the features and specifications of the products for proper and safe use.  (7/7)
+
+Please note that the contents may change without any prior notice due to reasons such as upgrading.
+
+                                                                                                                                                            20190423
+
+                                                                                                     beads_automotive_power_mpz1608_en.fm
+

@@ -1,17 +1,17 @@
-# Battery shunt voltage, 2026-10-24
+# Battery series-resistor voltage, 2026-10-24
 
-Voltage across a **1 Ω resistor in series with the battery + line** of the MMSA V2 board, logged with Scopy's voltmeter (`Channel_0_DC_RMS`, in volts in the CSVs). The values below and in the plots are in mV. Through a 1 Ω shunt, 1 mV corresponds to 1 mA of battery current, within the resistor's tolerance. Negative values mean current flowing into the battery (charging).
+Voltage across a **1 Ω resistor in series with the battery + line** of the MMSA V2 board, logged with Scopy's voltmeter (`Channel_0_DC_RMS`, in volts in the CSVs). The values below and in the plots are in mV. Through the 1 Ω resistor, 1 mV corresponds to 1 mA of battery current, within the resistor's tolerance. Negative values mean current flowing into the battery (charging).
 
 | File | Logged (local time) | What was running |
 |---|---|---|
 | `Power Measurements - Preliminary Test.csv` | 14:31–14:34 | First check of the setup |
 | `Power Measurements - Idle (Nothing Running).csv` | 14:42–14:43 | Idle |
 | `Power Measurements - Charging (Plugged into USB).csv` | 14:50–15:00 | USB plugged in, battery charging |
-| `Power Measurements - Recording Only (No SD or BL).csv` | 15:02–15:06 | Stepped through the modes in the table below |
+| `Power Measurements - Recording Only (No SD or BL).csv` | 15:02–15:06 | Stepped through the modes in the table below. Despite the file name, "+ Mics" means recording to the SD card (card in, REC LED blinking). |
 
 Averages worked out in the CSVs (the side columns of each file show which rows were selected):
 
-| Condition | Average shunt voltage |
+| Condition | Average voltage across the resistor |
 |---|---|
 | Preliminary test | 73.8 mV |
 | Idle (nothing running) | 75.3 mV |
@@ -21,7 +21,7 @@ Averages worked out in the CSVs (the side columns of each file show which rows w
 | Baseline + mics + Bluetooth | 141.1 mV |
 | Baseline + Bluetooth | 102.9 mV |
 
-The shunt drops 80–140 mV while the board runs, so the board ran slightly below the battery voltage.
+The series resistor drops 80–140 mV while the board runs, so the board ran slightly below the battery voltage.
 
 ## Plots
 

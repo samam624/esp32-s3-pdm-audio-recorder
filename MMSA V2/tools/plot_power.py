@@ -1,9 +1,9 @@
-"""Plot the battery shunt logs (Scopy voltmeter CSVs across a 1-ohm resistor in the battery + line).
+"""Plot the board's battery logs (Scopy voltmeter CSVs across a 1-ohm resistor in series with the battery + line).
 
 Usage:  python plot_power.py ../data/power/2026-10-24
 Writes power_<folder>.png (and, for a log with marked steps, _stages.png and _vs_baseline.png) into that folder.
-Values are the measured voltage across the shunt (Channel_0_DC_RMS), plotted in mV; with a 1-ohm shunt that is
-numerically the current in mA. Negative = current into the battery (charging). Segments someone selected in a
+Values are the measured voltage across the series resistor (Channel_0_DC_RMS), plotted in mV, as measured (not
+converted to current). Negative = current into the battery (charging). Segments someone selected in a
 CSV's side columns (pairs of timestamp / value columns, e.g. "Baseline + Mics") are shaded and labelled with their
 mean.
 """
@@ -21,12 +21,12 @@ INK, INK2, MUTED, GRID, AXIS, SURFACE = "#0b0b0b", "#52514e", "#898781", "#e1e0d
 TRACE, BAND = "#2a78d6", "#cde2fb"
 TITLE = "ESP32 PDM MEMS BOARD CURRENT CHARACTERIZATION"
 SUBTITLE = "Voltage across 1 Ω series resistor on VBAT+"
-YLABEL = "shunt voltage (mV)"
+YLABEL = "series resistor voltage (mV)"
 NAMES = {"Charging Battery": "Charging", "Baseline + Mics": "+ mics", "Baseline + Mics + BL": "+ mics + Bluetooth",
          "Baseling + Bl": "Baseline + Bluetooth", "Baseline + Bl": "Baseline + Bluetooth"}
 TITLES = {"Preliminary Test": "Preliminary test", "Idle (Nothing Running)": "Idle (nothing running)",
           "Charging (Plugged into USB)": "Charging from USB",
-          "Recording Only (No SD or BL)": "Recording only (no SD writes), steps as marked in the CSV"}
+          "Recording Only (No SD or BL)": "Steps as marked in the CSV (+ mics = recording to the SD card)"}
 
 
 def secs(t: str) -> int:

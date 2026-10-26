@@ -7,7 +7,9 @@
 //   REC short press      start / stop recording (acts on release)
 //   REC hold 1 s         Bluetooth on / off (works while recording too)
 //   serial 'r' / 'b'     same as short press / hold;  's' = SD-crosstalk snapshot test (idle only)
+//   serial 'c' / 'k'     calibration check (1 kHz, 10 s) / keep the last check as the baseline (see the cal section)
 //   Bluetooth remote     ble_control.html in this folder (Chrome/Edge, or Bluefy on iPhone): start/stop + live status
+//                        + calibration checks
 //
 // Continuous recording: every SEGMENT_SECONDS (30 min) the file is closed and the recording carries on in the next one
 // in the take's folder (MMSA8_0001_02.wav, ...) with no audio lost, so a recording only ends on a stop, a full card or
@@ -52,6 +54,7 @@
 #include <map>
 #include <vector>
 #include <functional>
+#include <Preferences.h>
 // The BLE library gives BLEService a private destructor and never deletes services, so every Bluetooth on/off cycle
 // leaked one (~850 bytes, measured 2026-10-24). Opening up access for the BLE library headers only lets bleStop()
 // delete it. Access specifiers don't change object layout in GCC, and every system header is included above, so
@@ -118,6 +121,15 @@ static_assert(SEGMENT_BYTES >= BLOCK_BYTES, "SEGMENT_SECONDS is too short");
 #endif
 #define CHECKPOINT_BYTES ((uint32_t)CHECKPOINT_SECONDS * SAMPLE_RATE * FRAME_BYTES)
 
+// Space kept free on the card. A recording stops cleanly (queued audio written, remote error 6) once the card is down
+// to LOW_SPACE_STOP_MB (~5.7 min of audio), and a new one won't start below it (error 7). A card written to its last
+// few MB stalls: in the 2026-10-25 soak, two writes with ~30 MB left took 9 s each, overflowing the 5.5 s pool, and
+// 18 s were lost before the write that hit the end failed. Override with -DLOW_SPACE_STOP_MB=N (a big value tests
+// the stop without filling a card).
+#ifndef LOW_SPACE_STOP_MB
+#define LOW_SPACE_STOP_MB 256
+#endif
+
 // RAM budget. The audio pool is sized at boot to leave SD_HEAP_HEADROOM for SD/FS (as in Recorder8) plus
 // BLE_HEAP_RESERVE so Bluetooth can be switched on later. Measured 2026-10-24: the radio controller keeps ~35 KB from
 // the boot warm-up on (see the controller wrap), and switching Bluetooth on takes ~40 KB more (printed each time as
@@ -147,27 +159,46 @@ static_assert(SEGMENT_BYTES >= BLOCK_BYTES, "SEGMENT_SECONDS is too short");
 #define BLE_DEVICE_NAME       "MMSA V2"
 #define BLE_SERVICE_UUID      "6e400001-b5a3-f393-e0a9-e50e24dcca9e"
 #define BLE_CONTROL_CHAR_UUID "6e400002-b5a3-f393-e0a9-e50e24dcca9e"  // write: 1 start, 0 stop, other = toggle
-#define BLE_STATUS_CHAR_UUID  "6e400003-b5a3-f393-e0a9-e50e24dcca9e"  // read/notify: 12-byte status, below
+#define BLE_STATUS_CHAR_UUID  "6e400003-b5a3-f393-e0a9-e50e24dcca9e"  // read/notify: 17-byte status, below
 #define BLE_TIME_CHAR_UUID    "6e400004-b5a3-f393-e0a9-e50e24dcca9e"  // write: uint32 local time (WAV file dates)
+#define BLE_LEVELS_CHAR_UUID  "6e400005-b5a3-f393-e0a9-e50e24dcca9e"  // notify: live per-mic levels (levels section)
+#define BLE_CAL_CHAR_UUID     "6e400006-b5a3-f393-e0a9-e50e24dcca9e"  // read/notify: calibration check result (cal section)
 #define BLE_STATUS_MS         500    // status heartbeat to a connected remote
-#define LOW_SPACE_WARN_MB     200
+#define LOW_SPACE_WARN_MB     (LOW_SPACE_STOP_MB + 1024)  // remote's low-space warning: ~22 min of recording left
 
-// Status payload (16 bytes, little-endian): [0] flags, [1-4] bytes in the current/last file, [5-8] SD free MB,
+// Status payload (17 bytes, little-endian): [0] flags, [1-4] bytes in the current/last file, [5-8] SD free MB,
 // [9] error code, [10] RSSI dBm (int8, 0 = not measured), [11] HCI reason of the last disconnect (0 = none),
-// [12-15] seconds of audio in the whole current/last recording (all its files). Older remotes read only the first 12.
+// [12-15] seconds of audio in the whole current/last recording (all its files), [16] mics that clipped in the last
+// CLIP_HOLD_MS (bit N = micN). Older remotes read only what they know.
 #define STATUS_FLAG_RECORDING 0x01
 #define STATUS_FLAG_SD_READY  0x02
 #define STATUS_FLAG_LOW_SPACE 0x04
 #define STATUS_FLAG_ERROR     0x08
+#define STATUS_FLAG_CLIPPING  0x10
+#define STATUS_FLAG_BATT_LOW  0x20  // VBAT fell below BATLOG_CUTOFF_MV: recording stopped, SD card switched off
 // Error codes, numbered as the remote page expects.
 enum : uint8_t { RERR_NONE = 0, RERR_SD_NOT_READY = 1, RERR_WRITE_FAILED = 2, RERR_CARD_REMOVED = 3,
-                 RERR_OPEN_FAILED = 5, RERR_CARD_FULL = 6 };
-enum : uint8_t { CMD_STOP = 0, CMD_START = 1, CMD_TOGGLE = 2 };
+                 RERR_OPEN_FAILED = 5, RERR_CARD_FULL = 6, RERR_LOW_SPACE = 7 };
+enum : uint8_t { CMD_STOP = 0, CMD_START = 1, CMD_TOGGLE = 2, CMD_CAL = 3, CMD_CAL_SAVE = 4 };
 enum : uint8_t { MODE_BLE_OFF = 0, MODE_BLE_ADV = 1, MODE_BLE_CONN = 2 };
 enum : uint8_t { BLERES_NONE = 0, BLERES_ON, BLERES_OFF, BLERES_FAILED };
 #define EVT_TOGGLE      (1u << 0)
 #define EVT_STATUS      (1u << 1)
 #define EVT_READVERTISE (1u << 2)
+#define EVT_LEVELS      (1u << 3)
+#define EVT_CAL         (1u << 4)
+
+// Calibration check request and result (see the cal section). Defined here, ahead of every function, because the
+// Arduino build puts its generated function prototypes above the first function.
+#define CAL_MAX_TONES 4
+struct CalSpec { uint8_t seconds, n; uint16_t hz[CAL_MAX_TONES]; };
+struct CalResult {  // also the NVS baseline record
+  uint8_t ver, n;
+  uint16_t hz[CAL_MAX_TONES];
+  int16_t lvl[CAL_MAX_TONES][CHANNELS];  // 0.01 dBFS
+  int16_t ph[CAL_MAX_TONES][CHANNELS];   // 0.1 degree, re mic0
+};
+#define CAL_RESULT_VER 1
 
 SPIClass sdSPI(FSPI);
 static i2s_chan_handle_t rx = NULL;
@@ -194,6 +225,8 @@ static uint32_t hWorstWriteUs = 0;             // slowest block write since the 
 static uint32_t recStartMs = 0;
 static volatile uint32_t dmaOverflows = 0;
 static volatile uint32_t poolDrops = 0;      // blocks lost because no free block was available
+static volatile uint32_t streamGaps = 0;     // any discarded read, recording or idle (the calibration check drops
+                                             // a window that spans one)
 static uint32_t maxWriteUs = 0;
 static uint64_t sumWriteUs = 0;              // total SD write time this recording (average write speed)
 static uint32_t writes = 0;
@@ -296,6 +329,7 @@ static void readerTask(void *) {
         size_t got = 0;
         i2s_channel_read(rx, scratch, sizeof(scratch), &got, portMAX_DELAY);
         if (rec) poolDrops++;
+        streamGaps++;
         cur = -1;
         continue;
       }
@@ -341,6 +375,10 @@ static void setSdReady(bool ready) {
   sdReady = ready;
   digitalWrite(LED_SD, ready ? HIGH : LOW);
   if (changed && ready) {
+    // A card is back: clear the remote's "no card" errors, which described the state that just ended (before
+    // 2026-10-25 "SD card was removed" stayed up until the next REC press). Errors about a recording that stopped
+    // (write failed, couldn't open a file, card full) stay until the next REC, so they aren't missed.
+    if (errorCode == RERR_CARD_REMOVED || errorCode == RERR_SD_NOT_READY) errorCode = RERR_NONE;
     refreshFreeSpace();
     // Scan forward from the current number, never back to 1 within a boot: V1 once overwrote an earlier take when a
     // flaky remount made SD.exists() miss a file and the scan restarted from 1.
@@ -352,7 +390,11 @@ static void setSdReady(bool ready) {
   if (changed) bleStatusChanged();
 }
 
-static bool mountSd() {
+// probeFirst (the idle check for a card, every SD_REMOUNT_MS while there is none): mount only if a card answers CMD0
+// (go idle) with R1 = 0x01, which takes < 1 ms. With no card, SD.begin() spends ~0.6 s in retries (3 x 100 ms per
+// command, twice), and that stalled loop() for 0.6 s in every second while the card was out: the remote's live levels
+// froze (2026-10-25). Not used at boot or after a failed write, where a busy card needs SD.begin()'s longer waits.
+static bool mountSd(bool probeFirst = false) {
   SD.end();
   sdSPI.end();
   sdSPI.begin(SD_SCK, SD_MISO, SD_MOSI, SD_CS);
@@ -363,7 +405,19 @@ static bool mountSd() {
   digitalWrite(SD_CS, HIGH);
   sdSPI.beginTransaction(SPISettings(400000, MSBFIRST, SPI_MODE0));
   for (int i = 0; i < 10; i++) sdSPI.transfer(0xFF);
+  bool answered = true;
+  if (probeFirst) {
+    static const uint8_t CMD0[6] = {0x40, 0, 0, 0, 0, 0x95};
+    digitalWrite(SD_CS, LOW);
+    for (uint8_t b : CMD0) sdSPI.transfer(b);
+    uint8_t r = 0xFF;
+    for (int i = 0; i < 9 && (r & 0x80); i++) r = sdSPI.transfer(0xFF);  // R1 comes within 8 bytes
+    digitalWrite(SD_CS, HIGH);
+    sdSPI.transfer(0xFF);
+    answered = r == 0x01;
+  }
   sdSPI.endTransaction();
+  if (!answered) return false;
   return SD.begin(SD_CS, sdSPI, SD_HZ) && SD.cardType() != CARD_NONE;
 }
 
@@ -385,7 +439,7 @@ static void updateSdPresence() {
   } else {
     if (now - lastCheck < SD_REMOUNT_MS) return;
     lastCheck = now;
-    setSdReady(mountSd());
+    setSdReady(mountSd(true));
   }
 }
 
@@ -471,6 +525,606 @@ static void startPdm() {
   // NO pull-downs on the data lines (they killed mic1 and degraded mic4/5 on 2026-10-21).
 }
 
+// ---------------- Clipping and live levels ----------------
+// Clipping: every block is scanned for samples at full scale. A clipped sample means the mic or the PDM converter
+// saturated (above about 120 dB SPL for the IMP34DT05: -26 dBFS at 94 dB SPL), so that stretch of that channel is not
+// usable. Reported on serial at most once a second, per mic in the stop report and HEALTH line, and to the remote
+// (status flag + byte 16), which shows a warning.
+// Live levels: while the remote is connected, every other block is analysed (DC removed, Hann window, 1024-point FFT,
+// two mics per complex FFT) into LEVEL_BANDS bands. Every LEVELS_MS each mic's peak, total and band levels go to the
+// remote in one notification. Analysis is skipped while the SD card is behind, so recording always comes first.
+#define CLIP_LEVEL     32767  // |sample| at or above this is at full scale
+#define CLIP_HOLD_MS   2000   // a clip keeps its warning up this long
+#define CLIP_REPORT_MS 1000   // serial clip report at most this often
+#define LEVELS_MS      250    // live levels to the remote, 4 a second
+#define LEVEL_BANDS    5
+#define FFT_N          BLOCK_FRAMES  // 1024 frames = one pool block per FFT; bins 46.9 Hz apart
+#define LEVELS_MSG_BYTES (4 + CHANNELS * (2 + LEVEL_BANDS))
+// Band edges in Hz: roughly two octaves each across the mics' range. The remote page labels them the same way.
+static const uint16_t BAND_EDGE_HZ[LEVEL_BANDS + 1] = {20, 125, 500, 2000, 8000, 20000};
+static uint32_t clipTotal[CHANNELS];          // clipped samples in the current/last recording
+static uint32_t clipWin[CHANNELS];            // clipped samples since the last serial report
+static uint32_t clipLastMs[CHANNELS];         // when each mic last clipped (0 = not this boot)
+static volatile uint8_t clipMask = 0;         // mics that clipped in the last CLIP_HOLD_MS (bit N = micN)
+static uint16_t peakWin[CHANNELS];            // highest |sample| since the last levels message
+static float bandAcc[CHANNELS][LEVEL_BANDS];  // summed band mean squares since the last levels message
+static uint16_t bandBlocks = 0;               // blocks analysed into bandAcc
+static uint32_t levelsBlockCount = 0;
+static float *fftRe = NULL, *fftIm = NULL, *fftWin = NULL, *twCos = NULL, *twSin = NULL;
+static float fftWinPow = 0;                   // sum of the squared window (power scaling)
+static uint16_t bandLo[LEVEL_BANDS], bandHi[LEVEL_BANDS];  // FFT bins of each band
+static portMUX_TYPE levelsMux = portMUX_INITIALIZER_UNLOCKED;
+static uint8_t levelsMsg[LEVELS_MSG_BYTES];   // built by loop(), sent by bleTask
+
+// ~18 KB of internal RAM for the FFT, so only on the PSRAM build, which has plenty spare (the internal-RAM build needs
+// its RAM for the audio pool and Bluetooth). Without it the remote still gets peaks and clipping, just no bands.
+static bool levelsInit() {
+  if (!poolInPsram) return false;
+  const uint32_t caps = MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT;
+  fftRe = (float *)heap_caps_malloc(FFT_N * sizeof(float), caps);
+  fftIm = (float *)heap_caps_malloc(FFT_N * sizeof(float), caps);
+  fftWin = (float *)heap_caps_malloc(FFT_N * sizeof(float), caps);
+  twCos = (float *)heap_caps_malloc(FFT_N / 2 * sizeof(float), caps);
+  twSin = (float *)heap_caps_malloc(FFT_N / 2 * sizeof(float), caps);
+  if (!fftRe || !fftIm || !fftWin || !twCos || !twSin) {
+    free(fftRe), free(fftIm), free(fftWin), free(twCos), free(twSin);
+    fftRe = fftIm = fftWin = twCos = twSin = NULL;
+    return false;
+  }
+  fftWinPow = 0;
+  for (int i = 0; i < FFT_N; i++) {
+    fftWin[i] = 0.5f - 0.5f * cosf(2.0f * (float)PI * i / FFT_N);  // periodic Hann
+    fftWinPow += fftWin[i] * fftWin[i];
+  }
+  for (int k = 0; k < FFT_N / 2; k++) {
+    twCos[k] = cosf(2.0f * (float)PI * k / FFT_N);
+    twSin[k] = -sinf(2.0f * (float)PI * k / FFT_N);
+  }
+  const float df = (float)SAMPLE_RATE / FFT_N;
+  for (int b = 0; b < LEVEL_BANDS; b++) {
+    int lo = (int)ceilf(BAND_EDGE_HZ[b] / df), hi = (int)ceilf(BAND_EDGE_HZ[b + 1] / df) - 1;
+    bandLo[b] = lo < 1 ? 1 : lo;
+    bandHi[b] = hi > FFT_N / 2 - 1 ? FFT_N / 2 - 1 : hi;
+  }
+  return true;
+}
+
+// In-place radix-2 complex FFT of FFT_N points (forward).
+static void fftInPlace(float *re, float *im) {
+  for (int i = 1, j = 0; i < FFT_N; i++) {
+    int bit = FFT_N >> 1;
+    for (; j & bit; bit >>= 1) j ^= bit;
+    j ^= bit;
+    if (i < j) {
+      float t = re[i]; re[i] = re[j]; re[j] = t;
+      t = im[i]; im[i] = im[j]; im[j] = t;
+    }
+  }
+  for (int len = 2; len <= FFT_N; len <<= 1) {
+    int half = len >> 1, step = FFT_N / len;
+    for (int i = 0; i < FFT_N; i += len)
+      for (int k = 0; k < half; k++) {
+        float wr = twCos[k * step], wi = twSin[k * step];
+        int a = i + k, b = a + half;
+        float tr = re[b] * wr - im[b] * wi, ti = re[b] * wi + im[b] * wr;
+        re[b] = re[a] - tr;
+        im[b] = im[a] - ti;
+        re[a] += tr;
+        im[a] += ti;
+      }
+  }
+}
+
+// Clip and peak scan of one block (every block, recording or idle). The peak is taken after removing each mic's DC
+// offset (the previous block's mean): the offsets (up to ~300 counts, about -40 dBFS) held the quiet-room peak near
+// -36 dBFS, so a finger snap barely moved it (2026-10-25). Clipping is judged on the raw samples.
+static int32_t dcPrev[CHANNELS];
+static void scanBlock(const int16_t *s) {
+  uint32_t now = millis();
+  int32_t sum[CHANNELS] = {0};
+  for (int f = 0; f < BLOCK_FRAMES; f++, s += CHANNELS)
+    for (int c = 0; c < CHANNELS; c++) {
+      int v = s[c];
+      sum[c] += v;
+      int ac = v - dcPrev[c];
+      uint16_t p = (uint16_t)min(ac < 0 ? -ac : ac, 65535);
+      if (p > peakWin[c]) peakWin[c] = p;
+      uint16_t a = (uint16_t)(v < 0 ? -v : v);
+      if (a >= CLIP_LEVEL) {
+        clipWin[c]++;
+        if (recording) clipTotal[c]++;
+        clipLastMs[c] = now ? now : 1;
+      }
+    }
+  for (int c = 0; c < CHANNELS; c++) dcPrev[c] = sum[c] / BLOCK_FRAMES;
+}
+
+// Band levels of one block, into bandAcc. Two mics per complex FFT: real part = mic p, imaginary part = mic p+1.
+static void analyzeBlock(const int16_t *s) {
+  const float scale = 2.0f / ((float)FFT_N * fftWinPow);  // one-sided band mean square from |X|^2
+  for (int p = 0; p < CHANNELS; p += 2) {
+    float m0 = 0, m1 = 0;
+    for (int f = 0; f < FFT_N; f++) {
+      m0 += s[f * CHANNELS + p];
+      m1 += s[f * CHANNELS + p + 1];
+    }
+    m0 /= FFT_N;
+    m1 /= FFT_N;
+    for (int f = 0; f < FFT_N; f++) {
+      fftRe[f] = (s[f * CHANNELS + p] - m0) * fftWin[f];
+      fftIm[f] = (s[f * CHANNELS + p + 1] - m1) * fftWin[f];
+    }
+    fftInPlace(fftRe, fftIm);
+    // Split the two real spectra: A_k = (Z_k + conj Z_{N-k}) / 2, B_k = (Z_k - conj Z_{N-k}) / 2i.
+    for (int b = 0; b < LEVEL_BANDS; b++) {
+      float pa = 0, pb = 0;
+      for (int k = bandLo[b]; k <= bandHi[b]; k++) {
+        float zr = fftRe[k], zi = fftIm[k], cr = fftRe[FFT_N - k], ci = -fftIm[FFT_N - k];
+        float ar = 0.5f * (zr + cr), ai = 0.5f * (zi + ci);
+        float br = 0.5f * (zi - ci), bi = -0.5f * (zr - cr);
+        pa += ar * ar + ai * ai;
+        pb += br * br + bi * bi;
+      }
+      bandAcc[p][b] += pa * scale;
+      bandAcc[p + 1][b] += pb * scale;
+    }
+  }
+  bandBlocks++;
+}
+
+// ---------------- Calibration check ----------------
+// Measures one to four known tones on all 8 mics, recording or not, so the array can be checked in place without
+// touching it: from the remote ('C' on the control characteristic) or serial 'c'. Something has to play the tones:
+// the remote page can play them through the computer's audio output, or any fixed speaker can. Each mic's response at
+// each tone comes from Hann-windowed 8192-sample windows (bins 5.9 Hz apart, so a tone stands well clear of broadband
+// noise such as flow), averaged over the requested seconds:
+//   level  tone level in dBFS (sine amplitude re full scale), after subtracting the noise measured 47 Hz either side
+//   snr    tone over that noise in the same bandwidth, dB (below ~10 dB the level is unreliable)
+//   phase  phase relative to mic0 at the tone, from the averaged cross-spectrum (the tone is coherent across mics;
+//          flow noise mostly isn't, so it averages out)
+//   delta  level minus the saved baseline at the same frequency
+// The baseline (serial 'k', remote 'K'; idle only, since writing flash can stall the audio) is kept in NVS, so it
+// survives power cycles. Every result is appended to /CAL.CSV with the take and the position in the recording, so the
+// tones can also be found and re-analysed in the WAV. A window that sees the SD card behind (8+ blocks queued) or a gap
+// in the audio stream is dropped, so recording always comes first.
+#define CAL_WIN            8192                    // samples per window (171 ms)
+#define CAL_WIN_BLOCKS     (CAL_WIN / BLOCK_FRAMES)
+#define CAL_SIDE_BINS      8                       // noise measured this many bins either side of a tone (46.9 Hz)
+#define CAL_NF             (CAL_MAX_TONES * 3)     // per tone: the tone, the bin below, the bin above
+#define CAL_MIN_WINDOWS    5                       // fewer than this: the result is flagged unreliable
+#define CAL_BEHIND_BLOCKS  8
+#define CAL_DEFAULT_HZ     1000
+#define CAL_DEFAULT_S      10
+#define CAL_MAX_S          120
+#define CAL_MIN_HZ         100
+#define CAL_MAX_HZ         20000
+#define CAL_MIN_SPACING_HZ 100                     // closer tones would sit in each other's noise bins
+#define CAL_FILE           "/CAL.CSV"
+#define CAL_NONE           INT16_MIN               // no value (no tone found, no baseline)
+#define CAL_MSG_BYTES(n)   (6 + (n) * (2 + CHANNELS * 7))
+#define CAL_MSG_MAX        CAL_MSG_BYTES(CAL_MAX_TONES)
+// Remote message flags and notes (byte [1] and [5] of the cal message; see calBuildMsg()).
+#define CALF_RECORDING  0x01
+#define CALF_BASELINE   0x02
+#define CALF_UNRELIABLE 0x04
+#define CALF_RUNNING    0x08
+enum : uint8_t { CALN_OK = 0, CALN_BUSY, CALN_BAD_TONES, CALN_SAVE_NEEDS_IDLE, CALN_NOTHING_TO_SAVE, CALN_SAVED,
+                 CALN_SAVE_FAILED };
+// CalSpec and CalResult are defined with the globals at the top (the Arduino build's generated prototypes need them).
+
+static portMUX_TYPE calMux = portMUX_INITIALIZER_UNLOCKED;
+static CalSpec calReq;                     // from the remote (NimBLE task), taken by loop()
+static bool calActive = false;
+static CalSpec cal;                        // the check running
+static uint32_t calBlocksLeft = 0, calWindows = 0, calDropped = 0, calMaxUs = 0, calGapMark = 0;
+static int calWinPos = 0;                  // blocks into the current window
+static float calPr[CAL_NF], calPi[CAL_NF], calRr[CAL_NF], calRi[CAL_NF];  // phasor e^{-jwn} and its per-sample step
+static float calXr[CAL_NF][CHANNELS], calXi[CAL_NF][CHANNELS];            // this window's DFT values
+static float calQr, calQi, calQsr, calQsi;                                // Hann phasor e^{j2pi n/N} and its step
+static float calP[CAL_MAX_TONES][CHANNELS], calN[CAL_MAX_TONES][CHANNELS];   // summed tone and noise power
+static float calCr[CAL_MAX_TONES][CHANNELS], calCi[CAL_MAX_TONES][CHANNELS]; // summed cross-spectrum with mic0
+static CalResult calLast, calBase;
+static int8_t calLastSnr[CAL_MAX_TONES][CHANNELS];
+static bool calHaveLast = false, calHaveBase = false, calLastRec = false;
+static float calLastRecSecs = -1;          // position in the recording when the last check started (-1 idle)
+static uint8_t calMsg[CAL_MSG_MAX];
+static uint16_t calMsgLen = 0;
+
+// Checks and fills in a request (0 seconds or tones = defaults). Returns a CALN_ note.
+static uint8_t calCheckSpec(CalSpec &s) {
+  if (s.seconds == 0) s.seconds = CAL_DEFAULT_S;
+  if (s.seconds > CAL_MAX_S) s.seconds = CAL_MAX_S;
+  if (s.n == 0) {
+    s.n = 1;
+    s.hz[0] = CAL_DEFAULT_HZ;
+  }
+  if (s.n > CAL_MAX_TONES) return CALN_BAD_TONES;
+  for (int t = 0; t < s.n; t++) {
+    if (s.hz[t] < CAL_MIN_HZ || s.hz[t] > CAL_MAX_HZ) return CALN_BAD_TONES;
+    for (int u = 0; u < t; u++)
+      if (abs((int)s.hz[t] - (int)s.hz[u]) < CAL_MIN_SPACING_HZ) return CALN_BAD_TONES;
+  }
+  return CALN_OK;
+}
+
+static void calDspStart(const CalSpec &s) {
+  cal = s;
+  const float side = (float)CAL_SIDE_BINS * SAMPLE_RATE / CAL_WIN;
+  for (int t = 0; t < s.n; t++) {
+    const float f[3] = {(float)s.hz[t], s.hz[t] - side, s.hz[t] + side};
+    for (int j = 0; j < 3; j++) {
+      int k = t * 3 + j;
+      float w = 2.0f * (float)PI * f[j] / SAMPLE_RATE;
+      calRr[k] = cosf(w);
+      calRi[k] = -sinf(w);
+      calPr[k] = 1.0f;
+      calPi[k] = 0.0f;
+    }
+    for (int c = 0; c < CHANNELS; c++) calP[t][c] = calN[t][c] = calCr[t][c] = calCi[t][c] = 0.0f;
+  }
+  float qw = 2.0f * (float)PI / CAL_WIN;
+  calQsr = cosf(qw);
+  calQsi = sinf(qw);
+  calWinPos = 0;
+  calWindows = calDropped = calMaxUs = 0;
+  calBlocksLeft = (uint32_t)s.seconds * SAMPLE_RATE / BLOCK_FRAMES;
+}
+
+// One block into the current window. dc: each mic's offset (removed before the window).
+static void calDspBlock(const int16_t *s, const int32_t *dc) {
+  if (calWinPos == 0) {
+    memset(calXr, 0, sizeof(calXr));
+    memset(calXi, 0, sizeof(calXi));
+    calQr = 1.0f;
+    calQi = 0.0f;
+  }
+  const int nf = cal.n * 3;
+  float x[CHANNELS];
+  for (int f = 0; f < BLOCK_FRAMES; f++, s += CHANNELS) {
+    float w = 0.5f - 0.5f * calQr;  // periodic Hann over the window
+    for (int c = 0; c < CHANNELS; c++) x[c] = (float)(s[c] - dc[c]) * w;
+    for (int k = 0; k < nf; k++) {
+      float pr = calPr[k], pi = calPi[k];
+      float *xr = calXr[k], *xi = calXi[k];
+      for (int c = 0; c < CHANNELS; c++) {
+        xr[c] += x[c] * pr;
+        xi[c] += x[c] * pi;
+      }
+      calPr[k] = pr * calRr[k] - pi * calRi[k];
+      calPi[k] = pr * calRi[k] + pi * calRr[k];
+    }
+    float qr = calQr * calQsr - calQi * calQsi;
+    calQi = calQr * calQsi + calQi * calQsr;
+    calQr = qr;
+  }
+  // Renormalise the phasors once a block (float rounding grows slowly over many rotations).
+  for (int k = 0; k < nf; k++) {
+    float m = 1.0f / sqrtf(calPr[k] * calPr[k] + calPi[k] * calPi[k]);
+    calPr[k] *= m;
+    calPi[k] *= m;
+  }
+  float m = 1.0f / sqrtf(calQr * calQr + calQi * calQi);
+  calQr *= m;
+  calQi *= m;
+  calWinPos++;
+}
+
+// A finished window: add its tone power, noise power and cross-spectrum with mic0.
+static void calDspWindowEnd() {
+  for (int t = 0; t < cal.n; t++) {
+    const int k = t * 3;
+    const float x0r = calXr[k][0], x0i = calXi[k][0];
+    for (int c = 0; c < CHANNELS; c++) {
+      const float xr = calXr[k][c], xi = calXi[k][c];
+      calP[t][c] += xr * xr + xi * xi;
+      float lo = calXr[k + 1][c] * calXr[k + 1][c] + calXi[k + 1][c] * calXi[k + 1][c];
+      float hi = calXr[k + 2][c] * calXr[k + 2][c] + calXi[k + 2][c] * calXi[k + 2][c];
+      calN[t][c] += 0.5f * (lo + hi);
+      calCr[t][c] += xr * x0r + xi * x0i;  // X_c * conj(X_0)
+      calCi[t][c] += xi * x0r - xr * x0i;
+    }
+  }
+  calWindows++;
+}
+
+// Turns the sums into calLast / calLastSnr. A Hann window sums to N/2, so a sine of amplitude A gives |X| = A N / 4.
+static void calDspResult() {
+  CalResult &r = calLast;
+  r.ver = CAL_RESULT_VER;
+  r.n = cal.n;
+  const float toFs = 16.0f / ((float)CAL_WIN * CAL_WIN) / (32768.0f * 32768.0f);  // |X|^2 -> (A / full scale)^2
+  for (int t = 0; t < CAL_MAX_TONES; t++) {
+    r.hz[t] = t < cal.n ? cal.hz[t] : 0;
+    for (int c = 0; c < CHANNELS; c++) {
+      r.lvl[t][c] = r.ph[t][c] = CAL_NONE;
+      calLastSnr[t][c] = -127;
+      if (t >= cal.n || !calWindows || !MIC_FITTED[c]) continue;
+      float p = calP[t][c] / calWindows, n = calN[t][c] / calWindows, sig = p - n;
+      if (sig > 0) {
+        float db = 10.0f * log10f(sig * toFs);
+        r.lvl[t][c] = (int16_t)lroundf(constrain(db, -320.0f, 30.0f) * 100.0f);
+        float snr = n > 0 ? 10.0f * log10f(sig / n) : 127.0f;
+        calLastSnr[t][c] = (int8_t)lroundf(constrain(snr, -127.0f, 127.0f));
+      }
+    }
+    // Phase only where both this mic and mic0 found the tone (otherwise it's the phase of noise).
+    for (int c = 0; t < cal.n && c < CHANNELS; c++) {
+      if (r.lvl[t][c] == CAL_NONE || r.lvl[t][0] == CAL_NONE) continue;
+      r.ph[t][c] = c == 0 ? 0 : (int16_t)lroundf(atan2f(calCi[t][c], calCr[t][c]) * 1800.0f / (float)PI);
+    }
+  }
+}
+
+// Level minus the baseline's at the same frequency, 0.01 dB (CAL_NONE if either is missing).
+static int16_t calDelta(int t, int c) {
+  if (!calHaveBase || calLast.lvl[t][c] == CAL_NONE) return CAL_NONE;
+  for (int u = 0; u < calBase.n && u < CAL_MAX_TONES; u++)
+    if (calBase.hz[u] == calLast.hz[t] && calBase.lvl[u][c] != CAL_NONE)
+      return (int16_t)constrain((int)calLast.lvl[t][c] - calBase.lvl[u][c], -32767, 32767);
+  return CAL_NONE;
+}
+
+// Remote message: [0] format 1, [1] flags (CALF_*), [2] tones n, [3-4] windows used (u16), [5] note (CALN_*),
+// then per tone: Hz (u16), and per mic (mic0..mic7): level 0.01 dBFS (i16), delta vs baseline 0.01 dB (i16),
+// SNR dB (i8), phase re mic0 0.1 degree (i16). INT16_MIN = no value. Little-endian. n = 0 while running.
+static void calBuildMsg(bool running, uint8_t note) {
+  uint8_t m[CAL_MSG_MAX];
+  int n = (!running && calHaveLast) ? calLast.n : 0;
+  m[0] = 1;
+  m[1] = (calLastRec ? CALF_RECORDING : 0) | (calHaveBase ? CALF_BASELINE : 0) |
+         (n && calWindows < CAL_MIN_WINDOWS ? CALF_UNRELIABLE : 0) | (running ? CALF_RUNNING : 0);
+  m[2] = (uint8_t)n;
+  uint16_t w = (uint16_t)min(calWindows, (uint32_t)65535);
+  memcpy(m + 3, &w, 2);
+  m[5] = note;
+  int o = 6;
+  for (int t = 0; t < n; t++) {
+    memcpy(m + o, &calLast.hz[t], 2);
+    o += 2;
+    for (int c = 0; c < CHANNELS; c++) {
+      int16_t d = calDelta(t, c);
+      memcpy(m + o, &calLast.lvl[t][c], 2);
+      memcpy(m + o + 2, &d, 2);
+      m[o + 4] = (uint8_t)calLastSnr[t][c];
+      memcpy(m + o + 5, &calLast.ph[t][c], 2);
+      o += 7;
+    }
+  }
+  portENTER_CRITICAL(&calMux);
+  memcpy(calMsg, m, o);
+  calMsgLen = o;
+  portEXIT_CRITICAL(&calMux);
+  bleWake(EVT_CAL);
+}
+
+static void calPrintResult() {
+  Serial.printf("CAL done: %lu windows (%lu dropped), %s, baseline %s%s\n", (unsigned long)calWindows,
+                (unsigned long)calDropped, calLastRec ? "recording" : "idle", calHaveBase ? "saved" : "none",
+                calWindows < CAL_MIN_WINDOWS ? "  ** too few windows, unreliable **" : "");
+  if (calLastRec) Serial.printf("  started at %.1f s into take %d\n", calLastRecSecs, takeIndex);
+  for (int t = 0; t < calLast.n; t++) {
+    Serial.printf("  %u Hz:\n", calLast.hz[t]);
+    for (int c = 0; c < CHANNELS; c++) {
+      int16_t l = calLast.lvl[t][c], d = calDelta(t, c), p = calLast.ph[t][c];
+      Serial.printf("    mic%d %8s dBFS  snr %4d dB  phase %7s  vs base %7s dB\n", c,
+                    l == CAL_NONE ? "none" : String(l / 100.0f, 2).c_str(), (int)calLastSnr[t][c],
+                    p == CAL_NONE ? "-" : String(p / 10.0f, 1).c_str(),
+                    d == CAL_NONE ? "-" : String(d / 100.0f, 2).c_str());
+    }
+  }
+  Serial.printf("  check cost: worst %lu us per 21.3 ms block\n", (unsigned long)calMaxUs);
+}
+
+// One line per tone in /CAL.CSV (header on a new file).
+static void calLogCsv() {
+  if (!sdReady || batlogStopped) return;
+  bool fresh = !SD.exists(CAL_FILE);
+  File f = SD.open(CAL_FILE, FILE_APPEND);
+  if (!f) {
+    Serial.println("CAL: couldn't open " CAL_FILE);
+    return;
+  }
+  if (fresh) {
+    f.print("uptime_s,date,take,rec_s,tone_hz,windows,dropped,baseline");
+    for (int c = 0; c < CHANNELS; c++) f.printf(",mic%d_dbfs,mic%d_snr_db,mic%d_phase_deg,mic%d_delta_db", c, c, c, c);
+    f.println();
+  }
+  char date[24] = "";
+  time_t now = time(NULL);
+  if (now > 1600000000) {
+    struct tm tmv;
+    localtime_r(&now, &tmv);
+    strftime(date, sizeof(date), "%Y-%m-%d %H:%M:%S", &tmv);
+  }
+  for (int t = 0; t < calLast.n; t++) {
+    f.printf("%lu,%s,%d,%.1f,%u,%lu,%lu,%d", (unsigned long)(millis() / 1000), date, calLastRec ? takeIndex : 0,
+             calLastRecSecs, calLast.hz[t], (unsigned long)calWindows, (unsigned long)calDropped, calHaveBase ? 1 : 0);
+    for (int c = 0; c < CHANNELS; c++) {
+      int16_t l = calLast.lvl[t][c], d = calDelta(t, c), p = calLast.ph[t][c];
+      f.print(',');
+      if (l != CAL_NONE) f.printf("%.2f", l / 100.0f);
+      f.printf(",%d,", (int)calLastSnr[t][c]);
+      if (p != CAL_NONE) f.printf("%.1f", p / 10.0f);
+      f.print(',');
+      if (d != CAL_NONE) f.printf("%.2f", d / 100.0f);
+    }
+    f.println();
+  }
+  f.close();
+}
+
+static void calStart(CalSpec s) {
+  if (calActive) {
+    Serial.println("CAL ignored: a check is already running");
+    calBuildMsg(true, CALN_BUSY);
+    return;
+  }
+  uint8_t note = calCheckSpec(s);
+  if (note != CALN_OK) {
+    Serial.printf("CAL refused: 1-%d tones, each %d-%d Hz and at least %d Hz apart\n", CAL_MAX_TONES, CAL_MIN_HZ,
+                  CAL_MAX_HZ, CAL_MIN_SPACING_HZ);
+    calBuildMsg(false, note);
+    return;
+  }
+  calDspStart(s);
+  calLastRec = recording;
+  calLastRecSecs = recording ? sessionSecsDone + (float)dataBytes / (SAMPLE_RATE * FRAME_BYTES) : -1.0f;
+  calActive = true;
+  Serial.printf("CAL: measuring");
+  for (int t = 0; t < s.n; t++) Serial.printf(" %u", s.hz[t]);
+  Serial.printf(" Hz on all mics for %u s%s. Play the tone(s) now.\n", s.seconds,
+                recording ? " (the recording carries on)" : "");
+  calBuildMsg(true, CALN_OK);
+}
+
+// Called for every block (after scanBlock, which leaves this block's mean in dcPrev).
+static void calBlock(const int16_t *s) {
+  if (!calActive) return;
+  uint32_t t0 = micros();
+  if (uxQueueMessagesWaiting(fullQ) >= CAL_BEHIND_BLOCKS) {
+    if (calWinPos) calDropped++;  // the SD card is behind: drop this window, recording comes first
+    calWinPos = 0;
+  } else {
+    if (calWinPos == 0) calGapMark = streamGaps + dmaOverflows;
+    calDspBlock(s, dcPrev);
+    if (calWinPos == CAL_WIN_BLOCKS) {
+      if (streamGaps + dmaOverflows == calGapMark) calDspWindowEnd();
+      else calDropped++;  // audio went missing inside this window
+      calWinPos = 0;
+    }
+  }
+  uint32_t dt = micros() - t0;
+  if (dt > calMaxUs) calMaxUs = dt;
+  if (calBlocksLeft) calBlocksLeft--;
+  if (calBlocksLeft) return;
+  calActive = false;
+  calDspResult();
+  calHaveLast = true;
+  calPrintResult();
+  calLogCsv();
+  calBuildMsg(false, CALN_OK);
+}
+
+static void calSaveBaseline() {
+  uint8_t note = CALN_SAVED;
+  if (recording) {
+    Serial.println("Baseline NOT saved: stop recording first (writing flash can stall the audio)");
+    note = CALN_SAVE_NEEDS_IDLE;
+  } else if (!calHaveLast || calActive) {
+    Serial.println("Baseline NOT saved: run a check first (serial c, or the remote)");
+    note = CALN_NOTHING_TO_SAVE;
+  } else {
+    Preferences p;
+    bool ok = p.begin("mmsacal", false) && p.putBytes("base", &calLast, sizeof(calLast)) == sizeof(calLast);
+    p.end();
+    if (ok) {
+      calBase = calLast;
+      calHaveBase = true;
+      Serial.println("Baseline saved (kept through power cycles); later checks report each mic against it");
+      if (sdReady && !batlogStopped) {
+        File f = SD.open(CAL_FILE, FILE_APPEND);
+        if (f) {
+          f.printf("# baseline saved from the check above, uptime %lu s\n", (unsigned long)(millis() / 1000));
+          f.close();
+        }
+      }
+    } else {
+      Serial.println("Baseline NOT saved: NVS write failed");
+      note = CALN_SAVE_FAILED;
+    }
+  }
+  calBuildMsg(false, note);
+}
+
+static void calLoadBaseline() {
+  Preferences p;
+  if (p.begin("mmsacal", true)) {
+    CalResult b;
+    if (p.getBytesLength("base") == sizeof(b) && p.getBytes("base", &b, sizeof(b)) == sizeof(b) &&
+        b.ver == CAL_RESULT_VER && b.n >= 1 && b.n <= CAL_MAX_TONES) {
+      calBase = b;
+      calHaveBase = true;
+    }
+    p.end();
+  }
+  if (!calHaveBase) {
+    Serial.println("Calibration baseline: none saved");
+    return;
+  }
+  Serial.print("Calibration baseline: saved at");
+  for (int t = 0; t < calBase.n; t++) Serial.printf(" %u", calBase.hz[t]);
+  Serial.println(" Hz");
+}
+
+// Called by loop() for every block. Band analysis only while the remote is connected, on every other block, and only
+// when the SD card isn't behind.
+static void levelsBlock(const int16_t *s) {
+  scanBlock(s);
+  calBlock(s);
+  if (fftRe && bleConnected && (++levelsBlockCount & 1) && uxQueueMessagesWaiting(fullQ) < 4) analyzeBlock(s);
+}
+
+static int8_t msToDbfs(float ms) {
+  if (ms <= 0) return -127;
+  float db = 10.0f * log10f(ms / (32768.0f * 32768.0f / 2.0f));  // 0 dBFS = full-scale sine
+  return (int8_t)(db < -127 ? -127 : (db > 3 ? 3 : lroundf(db)));
+}
+
+// Every LEVELS_MS while connected: [0] format 1, [1] flags (bit0 recording, bit1 bands present), [2] clip mask,
+// [3] number of bands, then per mic (mic0..mic7): peak dBFS, total 20 Hz-20 kHz dBFS, one dBFS per band (all int8).
+static void buildLevels() {
+  uint8_t m[LEVELS_MSG_BYTES];
+  m[0] = 1;
+  m[1] = (recording ? 1 : 0) | (bandBlocks ? 2 : 0);
+  m[2] = clipMask;
+  m[3] = LEVEL_BANDS;
+  for (int c = 0; c < CHANNELS; c++) {
+    uint8_t *d = m + 4 + c * (2 + LEVEL_BANDS);
+    float pk = peakWin[c] ? 20.0f * log10f(peakWin[c] / 32768.0f) : -127;
+    d[0] = (uint8_t)(int8_t)(pk < -127 ? -127 : lroundf(pk));
+    float tot = 0;
+    for (int b = 0; b < LEVEL_BANDS; b++) {
+      tot += bandAcc[c][b];
+      d[2 + b] = (uint8_t)(bandBlocks ? msToDbfs(bandAcc[c][b] / bandBlocks) : -127);
+      bandAcc[c][b] = 0;
+    }
+    d[1] = (uint8_t)(bandBlocks ? msToDbfs(tot / bandBlocks) : -127);
+    peakWin[c] = 0;
+  }
+  bandBlocks = 0;
+  portENTER_CRITICAL(&levelsMux);
+  memcpy(levelsMsg, m, sizeof(m));
+  portEXIT_CRITICAL(&levelsMux);
+  bleWake(EVT_LEVELS);
+}
+
+static uint32_t clipSum() {  // clipped samples in the current/last recording, all mics
+  uint32_t n = 0;
+  for (int c = 0; c < CHANNELS; c++) n += clipTotal[c];
+  return n;
+}
+
+// Every CLIP_REPORT_MS: serial warning for any mic that clipped since the last report, and the remote's clip mask.
+static void reportClipping() {
+  uint32_t now = millis();
+  uint8_t mask = 0;
+  char list[96];
+  int n = 0;
+  for (int c = 0; c < CHANNELS; c++) {
+    if (clipLastMs[c] && now - clipLastMs[c] < CLIP_HOLD_MS) mask |= 1 << c;
+    if (clipWin[c] && n < (int)sizeof(list) - 24)
+      n += snprintf(list + n, sizeof(list) - n, " mic%d %lu", c, (unsigned long)clipWin[c]);
+    clipWin[c] = 0;
+  }
+  if (n)
+    Serial.printf("!! CLIPPING%s:%s samples at full scale in the last second (over ~120 dB SPL); that audio is "
+                  "saturated\n", recording ? "" : " (not recording)", list);
+  if (mask != clipMask) {
+    clipMask = mask;
+    bleStatusChanged();
+  }
+}
+
 // ---------------- Recording ----------------
 // File numbering. Each SD.exists() takes ~7 ms, so scanning from 1 at every REC press got slower with every file on
 // the card (~290 ms at 43 files). Instead the scan runs when the card mounts (setSdReady()), and a REC press only
@@ -521,7 +1175,17 @@ static String partPath(int part) {
 
 static void drainFullBlocks() {
   int idx;
-  while (xQueueReceive(fullQ, &idx, 0) == pdTRUE) xQueueSend(freeQ, &idx, 0);
+  while (xQueueReceive(fullQ, &idx, 0) == pdTRUE) {
+    xQueueSend(freeQ, &idx, 0);
+    streamGaps++;  // discarded audio: a calibration window spanning it is dropped
+  }
+}
+
+// Free space during (or after) a recording, estimated from the space at its start: asking the card means a FAT scan.
+// It reads ~0.1% high (the card was full at an estimated 29 MB of 28.2 GB in the 2026-10-25 soak).
+static uint32_t recFreeMb() {
+  uint32_t usedMb = (uint32_t)((sessionBytesDone + dataBytes) >> 20);
+  return freeMbAtStart > usedMb ? freeMbAtStart - usedMb : 0;
 }
 
 static void startRecording() {
@@ -530,6 +1194,13 @@ static void startRecording() {
     Serial.println(batlogStopped ? "REC ignored: battery below cutoff, SD card disabled to protect it."
                                  : "REC ignored: not ready, no SD card mounted (IO40 off).");
     errorCode = RERR_SD_NOT_READY;
+    bleStatusChanged();
+    return;
+  }
+  if (freeMb <= LOW_SPACE_STOP_MB) {
+    Serial.printf("REC ignored: SD card full (%lu MB free; recordings stop with %d MB left, see LOW_SPACE_STOP_MB).\n",
+                  (unsigned long)freeMb, LOW_SPACE_STOP_MB);
+    errorCode = RERR_LOW_SPACE;
     bleStatusChanged();
     return;
   }
@@ -564,6 +1235,7 @@ static void startRecording() {
   checkpoints = checkpointFails = maxCheckpointUs = 0;
   writeErrors = 0;
   stopPressMs = 0;
+  memset(clipTotal, 0, sizeof(clipTotal));
   maxWriteUs = 0;
   sumWriteUs = 0;
   writes = 0;
@@ -674,6 +1346,19 @@ static void stopRecording() {
   if (writeErrors)
     Serial.printf("  SD write errors recovered from: %lu (each started a new file, no audio lost)\n",
                   (unsigned long)writeErrors);
+  {  // per-mic clipping over the whole recording
+    char list[160];
+    int n = 0;
+    uint64_t frames = totalBytes / FRAME_BYTES;
+    for (int c = 0; c < CHANNELS; c++)
+      if (clipTotal[c] && n < (int)sizeof(list) - 32)
+        n += snprintf(list + n, sizeof(list) - n, " mic%d %lu (%.3f%%)", c, (unsigned long)clipTotal[c],
+                      frames ? 100.0 * clipTotal[c] / frames : 0.0);
+    if (n)
+      Serial.printf("  CLIPPING (samples at full scale):%s -> those mics' audio is saturated in places\n", list);
+    else
+      Serial.println("  Clipping: none");
+  }
   Serial.printf("  DMA overflows %lu, pool drops %lu, worst SD write %.1f ms, min free blocks %d/%d -> %s\n",
                 (unsigned long)dmaOverflows, (unsigned long)poolDrops, maxWriteUs / 1000.0f, minFreeBlocks, poolBlocks,
                 (dmaOverflows == 0 && poolDrops == 0) ? "NO AUDIO LOST" : "AUDIO WAS LOST");
@@ -684,9 +1369,7 @@ static void stopRecording() {
                   poolBlocks - minFreeBlocks,
                   (unsigned long)((poolBlocks - minFreeBlocks) * BLOCK_FRAMES * 1000UL / SAMPLE_RATE),
                   poolInPsram ? " (PSRAM pool)" : "");
-  // Estimate rather than ask the card: this also runs after a failed write, when the card may be gone.
-  uint32_t usedMb = (uint32_t)(totalBytes >> 20);
-  freeMb = freeMbAtStart > usedMb ? freeMbAtStart - usedMb : 0;
+  freeMb = recFreeMb();  // an estimate: this also runs after a failed write, when the card may be gone
   printMode();
   bleStatusChanged();
 }
@@ -791,11 +1474,12 @@ static bool recordBlock(int idx) {
   sumWriteUs += dt;
   writes++;
   if (w != BLOCK_BYTES) {
-    // A full card fails like a pulled one. Tell them apart by the space there was when the recording began.
-    uint32_t usedMb = (uint32_t)((sessionBytesDone + dataBytes) >> 20);
-    bool full = freeMbAtStart <= usedMb + 32;
+    // A full card fails like a pulled one. Tell them apart by the space there was when the recording began. (A fallback:
+    // recordings normally stop at LOW_SPACE_STOP_MB, see loop(), so this means the free-space estimate was off.)
+    bool full = recFreeMb() <= 32;
     if (!full && recoverWrite(src)) {
       dataBytes += BLOCK_BYTES;  // the block went into the new file
+      levelsBlock((const int16_t *)src);
       return true;
     }
     Serial.println(full ? "SD card full, stopping. The recording's files are complete."
@@ -808,6 +1492,7 @@ static bool recordBlock(int idx) {
   }
   dataBytes += BLOCK_BYTES;
   if (dataBytes - checkpointAt >= CHECKPOINT_BYTES) checkpointWav();
+  levelsBlock((const int16_t *)src);  // clipping and live levels (src: the block as written)
   return true;
 }
 
@@ -1052,8 +1737,12 @@ static void printStatus() {
 #define BATLOG_MS        30000
 #define VBAT_SAMPLE_MS   250
 #define BATLOG_CUTOFF_MV 3400
+#define VBAT_SMOOTH_N    64     // remote's VBAT: running average over ~64 readings (~16 s). Single readings scatter
+                                // about +-70 mV; a 2 s average still wandered +-20 mV and flickered the page's warning.
 
 static uint32_t vbN = 0, vbSum = 0, vbMin = UINT32_MAX, vbMax = 0;
+static float vbatFilt = 0.0f;            // float so the slow average doesn't stall on integer rounding
+static volatile uint16_t vbatMvNow = 0;  // smoothed VBAT for the remote (see VBAT_SMOOTH_N), 0 = not read yet
 
 static uint32_t readVbatMv() {
   uint32_t s = 0;
@@ -1089,6 +1778,8 @@ static void batlogStart() {
   analogReadResolution(12);
   analogSetPinAttenuation(VBAT_PIN, ADC_11db);
   uint32_t mv = readVbatMv();
+  vbatFilt = (float)mv;
+  vbatMvNow = (uint16_t)mv;
   char line[160];
   if (mv < BATLOG_CUTOFF_MV) {
     // Booting on an almost-empty battery (e.g. brownout reset loop): don't write to the card at all.
@@ -1116,6 +1807,8 @@ static void batlogUpdate() {
   if (now - lastSample < VBAT_SAMPLE_MS) return;
   lastSample = now;
   uint32_t mv = readVbatMv();
+  vbatFilt = vbatFilt > 0.0f ? vbatFilt + ((float)mv - vbatFilt) / VBAT_SMOOTH_N : (float)mv;
+  vbatMvNow = (uint16_t)(vbatFilt + 0.5f);
   vbN++;
   vbSum += mv;
   if (mv < vbMin) vbMin = mv;
@@ -1190,7 +1883,8 @@ extern "C" esp_err_t __wrap_esp_ipc_call_blocking(uint32_t cpu_id, esp_ipc_func_
 
 static BLEServer *bleServer = NULL;
 static BLEService *bleService = NULL;
-static BLECharacteristic *bleControlChr = NULL, *bleTimeChr = NULL, *bleStatusChr = NULL;
+static BLECharacteristic *bleControlChr = NULL, *bleTimeChr = NULL, *bleStatusChr = NULL, *bleLevelsChr = NULL,
+                         *bleCalChr = NULL;
 static ble_gap_event_listener bleGapListener;
 static size_t bleHeapAtFirstStart = 0;  // free RAM just before Bluetooth was first switched on (leak check)
 static uint32_t bleCycles = 0;
@@ -1200,7 +1894,22 @@ class ControlCallbacks : public BLECharacteristicCallbacks {
     String v = c->getValue();
     if (v.length() == 0) return;
     uint8_t b = (uint8_t)v[0];
-    uint8_t cmd = (b == 1 || b == '1') ? CMD_START : (b == 0 || b == '0') ? CMD_STOP : CMD_TOGGLE;
+    uint8_t cmd;
+    if (b == 'C') {
+      // Calibration check: 'C', seconds (u8, 0 = default), then 0-4 tones as u16 Hz little-endian (none = 1 kHz).
+      CalSpec s = {};
+      s.seconds = v.length() > 1 ? (uint8_t)v[1] : 0;
+      for (size_t i = 2; i + 1 < v.length() && s.n < CAL_MAX_TONES; i += 2)
+        s.hz[s.n++] = (uint16_t)((uint8_t)v[i] | ((uint8_t)v[i + 1] << 8));
+      portENTER_CRITICAL(&calMux);
+      calReq = s;
+      portEXIT_CRITICAL(&calMux);
+      cmd = CMD_CAL;
+    } else if (b == 'K') {
+      cmd = CMD_CAL_SAVE;  // keep the last check as the baseline
+    } else {
+      cmd = (b == 1 || b == '1') ? CMD_START : (b == 0 || b == '0') ? CMD_STOP : CMD_TOGGLE;
+    }
     xQueueSend(cmdQ, &cmd, 0);
   }
 };
@@ -1268,7 +1977,13 @@ static int onBleGapEvent(struct ble_gap_event *event, void *) {
         if (ble_gap_conn_find(event->connect.conn_handle, &desc) == 0)
           Serial.printf("Bluetooth link up: interval %.2f ms, latency %u, supervision timeout %u ms\n",
                         desc.conn_itvl * 1.25f, desc.conn_latency, desc.supervision_timeout * 10);
+        // Ask for bigger packets: the live-levels message is 60 bytes, and the default ATT packet carries only 20.
+        // Some browsers (Chrome on Windows, iOS) negotiate this themselves; asking from this side covers the rest.
+        ble_gattc_exchange_mtu(event->connect.conn_handle, NULL, NULL);
       }
+      break;
+    case BLE_GAP_EVENT_MTU:
+      Serial.printf("Bluetooth packet size (MTU): %u bytes\n", (unsigned)event->mtu.value);
       break;
     case BLE_GAP_EVENT_CONN_UPDATE:
       if (event->conn_update.status == 0 && ble_gap_conn_find(event->conn_update.conn_handle, &desc) == 0)
@@ -1307,7 +2022,11 @@ static void bleSendStatus() {
   if (sdReady) flags |= STATUS_FLAG_SD_READY;
   if (sdReady && mb < LOW_SPACE_WARN_MB) flags |= STATUS_FLAG_LOW_SPACE;
   if (err != RERR_NONE) flags |= STATUS_FLAG_ERROR;
-  uint8_t p[16];
+  uint8_t clips = clipMask;
+  if (clips) flags |= STATUS_FLAG_CLIPPING;
+  if (batlogStopped) flags |= STATUS_FLAG_BATT_LOW;
+  uint16_t vbat = vbatMvNow;
+  uint8_t p[19];
   p[0] = flags;
   memcpy(p + 1, &bytes, 4);
   memcpy(p + 5, &mb, 4);
@@ -1315,6 +2034,8 @@ static void bleSendStatus() {
   p[10] = (uint8_t)bleRssi;
   p[11] = bleLastDisconnectReason;
   memcpy(p + 12, &recSecs, 4);
+  p[16] = clips;
+  memcpy(p + 17, &vbat, 2);  // battery, mV (smoothed; see batlogUpdate())
   bleStatusChr->setValue(p, sizeof(p));
   if (bleConnected) bleStatusChr->notify();
 }
@@ -1346,13 +2067,25 @@ static bool bleStart() {
   bleServer = BLEDevice::createServer();
   bleServer->setCallbacks(&serverCb);
   ble_gap_event_listener_register(&bleGapListener, onBleGapEvent, NULL);  // EALREADY after a restart is fine
-  bleService = bleServer->createService(BLE_SERVICE_UUID);
+  bleService = bleServer->createService(BLEUUID(BLE_SERVICE_UUID), 30);  // room for 5 characteristics
   bleControlChr = bleService->createCharacteristic(BLE_CONTROL_CHAR_UUID, BLECharacteristic::PROPERTY_WRITE);
   bleControlChr->setCallbacks(&controlCb);
   bleTimeChr = bleService->createCharacteristic(BLE_TIME_CHAR_UUID, BLECharacteristic::PROPERTY_WRITE);
   bleTimeChr->setCallbacks(&timeCb);
   bleStatusChr = bleService->createCharacteristic(BLE_STATUS_CHAR_UUID,
                                                   BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
+  bleLevelsChr = bleService->createCharacteristic(BLE_LEVELS_CHAR_UUID,
+                                                  BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
+  bleCalChr = bleService->createCharacteristic(BLE_CAL_CHAR_UUID,
+                                               BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
+  {
+    uint8_t m[CAL_MSG_MAX];
+    portENTER_CRITICAL(&calMux);
+    uint16_t len = calMsgLen;
+    memcpy(m, calMsg, len);
+    portEXIT_CRITICAL(&calMux);
+    if (len) bleCalChr->setValue(m, len);  // the last check, for the remote's first read
+  }
   bleSendStatus();  // initial value for the remote's first read
   bleService->start();
   BLEAdvertising *adv = BLEDevice::getAdvertising();
@@ -1385,7 +2118,9 @@ static void bleStop() {
   delete bleControlChr;
   delete bleTimeChr;
   delete bleStatusChr;
-  bleControlChr = bleTimeChr = bleStatusChr = NULL;
+  delete bleLevelsChr;
+  delete bleCalChr;
+  bleControlChr = bleTimeChr = bleStatusChr = bleLevelsChr = bleCalChr = NULL;
   bleService = NULL;
   bleServer = NULL;
   bleConnected = false;
@@ -1421,9 +2156,10 @@ static void bleWarmUp() {
 
 static void bleTask(void *) {
   bleWarmUp();
+  uint32_t lastStatus = 0;
   for (;;) {
     uint32_t ev = 0;
-    xTaskNotifyWait(0, UINT32_MAX, &ev, pdMS_TO_TICKS(BLE_STATUS_MS));  // timeout = status heartbeat
+    xTaskNotifyWait(0, UINT32_MAX, &ev, pdMS_TO_TICKS(BLE_STATUS_MS));
     if (ev & EVT_TOGGLE) {
       if (bleOn) {
         bleStop();
@@ -1435,10 +2171,32 @@ static void bleTask(void *) {
     }
     if (!bleOn) continue;
     if ((ev & EVT_READVERTISE) && !bleConnected) BLEDevice::startAdvertising();
-    uint16_t h = bleConnHandle;
-    int8_t rssi;
-    if (bleConnected && h != BLE_HS_CONN_HANDLE_NONE && ble_gap_conn_rssi(h, &rssi) == 0) bleRssi = rssi;
-    bleSendStatus();
+    if ((ev & EVT_LEVELS) && bleConnected && bleLevelsChr) {
+      uint8_t m[LEVELS_MSG_BYTES];
+      portENTER_CRITICAL(&levelsMux);
+      memcpy(m, levelsMsg, sizeof(m));
+      portEXIT_CRITICAL(&levelsMux);
+      bleLevelsChr->setValue(m, sizeof(m));
+      bleLevelsChr->notify();
+    }
+    if ((ev & EVT_CAL) && bleCalChr) {
+      uint8_t m[CAL_MSG_MAX];
+      portENTER_CRITICAL(&calMux);
+      uint16_t len = calMsgLen;
+      memcpy(m, calMsg, len);
+      portEXIT_CRITICAL(&calMux);
+      bleCalChr->setValue(m, len);
+      if (bleConnected) bleCalChr->notify();
+    }
+    // Status on a change, and as a heartbeat every BLE_STATUS_MS. Levels wake this task 4 times a second, so the
+    // heartbeat keeps its own clock rather than relying on the wait timing out.
+    if ((ev & ~EVT_LEVELS) || millis() - lastStatus >= BLE_STATUS_MS) {
+      uint16_t h = bleConnHandle;
+      int8_t rssi;
+      if (bleConnected && h != BLE_HS_CONN_HANDLE_NONE && ble_gap_conn_rssi(h, &rssi) == 0) bleRssi = rssi;
+      bleSendStatus();
+      lastStatus = millis();
+    }
   }
 }
 
@@ -1448,14 +2206,11 @@ static void bleTask(void *) {
 #define HEALTH_MS 60000
 static void printHealth() {
   uint32_t secs = sessionSecsDone + dataBytes / (SAMPLE_RATE * FRAME_BYTES);
-  uint32_t mb = freeMb;
-  if (recording) {
-    uint32_t usedMb = (uint32_t)((sessionBytesDone + dataBytes) >> 20);
-    mb = freeMbAtStart > usedMb ? freeMbAtStart - usedMb : 0;
-  }
+  uint32_t mb = recording ? recFreeMb() : freeMb;
   int backlog = poolBlocks - (hMinFree < poolBlocks ? hMinFree : poolBlocks);
   Serial.printf("HEALTH: up=%lu rec=%d take=%d part=%lu recsecs=%lu free_mb=%lu heap=%u heapmin=%u heapblk=%u "
-                "psram=%u backlog_ms=%lu write_ms=%.1f ovf=%lu drops=%lu ble=%d sd=%d sderr=%lu btnnoise=%lu\n",
+                "psram=%u backlog_ms=%lu write_ms=%.1f ovf=%lu drops=%lu ble=%d sd=%d sderr=%lu btnnoise=%lu clip=%lu "
+                "clipmask=%u\n",
                 (unsigned long)(millis() / 1000), recording ? 1 : 0, takeIndex, (unsigned long)sessionFiles,
                 (unsigned long)secs, (unsigned long)mb, (unsigned)heap_caps_get_free_size(MALLOC_CAP_INTERNAL),
                 (unsigned)heap_caps_get_minimum_free_size(MALLOC_CAP_INTERNAL),
@@ -1463,7 +2218,8 @@ static void printHealth() {
                 (unsigned)heap_caps_get_free_size(MALLOC_CAP_SPIRAM),
                 (unsigned long)(backlog * BLOCK_FRAMES * 1000UL / SAMPLE_RATE), hWorstWriteUs / 1000.0f,
                 (unsigned long)dmaOverflows, (unsigned long)poolDrops, bleMode(), sdReady ? 1 : 0,
-                (unsigned long)sdErrorsSinceBoot, (unsigned long)buttonNoise);
+                (unsigned long)sdErrorsSinceBoot, (unsigned long)buttonNoise, (unsigned long)clipSum(),
+                (unsigned)clipMask);
   hMinFree = poolBlocks;
   hWorstWriteUs = 0;
 }
@@ -1549,6 +2305,9 @@ void setup() {
                 (unsigned)heapBefore,
                 (unsigned)heap_caps_get_free_size(MALLOC_CAP_INTERNAL), (unsigned)(keep - BLE_HEAP_RESERVE),
                 sdReady ? "" : " incl. a later card mount", BLE_HEAP_RESERVE);
+  Serial.printf("Clip warning on (full scale ~120 dB SPL). Live levels to the remote: %s\n",
+                levelsInit() ? "peak + 5 bands (20-125, 125-500, 500-2k, 2k-8k, 8k-20k Hz), 4 a second"
+                             : "peak and clipping only (no PSRAM for the band analysis)");
   xTaskCreatePinnedToCore(readerTask, "i2sReader", 4096, NULL, configMAX_PRIORITIES - 2, NULL, 0);
 
   resetStatus();
@@ -1563,7 +2322,9 @@ void setup() {
   Serial.println("REC: short press = start/stop recording, hold 1 s = Bluetooth on/off.");
   Serial.println("     Flashes on all LEDs: 2 short = Bluetooth ON, 1 long = OFF, 5 fast = failed.");
   Serial.println("Serial: r = record, b = Bluetooth, h = health line, s = SD-crosstalk snapshot test, p = PSRAM + button "
-                 "check, i = button monitor.");
+                 "check, i = button monitor, c = calibration check (1 kHz, 10 s), k = keep the last check as the "
+                 "baseline.");
+  calLoadBaseline();
   Serial.println("LEDs: IO40 record ready (SD mounted), IO41 loudness, IO42 blinks while recording.");
   if (BLE_ON_AT_BOOT) requestBleToggle();
   printMode();
@@ -1648,10 +2409,28 @@ void loop() {
     }
 #endif
     if ((c == 'i' || c == 'I') && !recording) buttonMonitor();
+    if (c == 'c') {
+      CalSpec s = {};  // defaults: 1 kHz for 10 s
+      calStart(s);
+    }
+    if (c == 'k') calSaveBaseline();
   }
   if (toggle) recording ? stopRecordingAtPress() : startRecording();
   uint8_t cmd;
   while (xQueueReceive(cmdQ, &cmd, 0) == pdTRUE) {
+    if (cmd == CMD_CAL) {
+      portENTER_CRITICAL(&calMux);
+      CalSpec s = calReq;
+      portEXIT_CRITICAL(&calMux);
+      Serial.println("CAL via Bluetooth remote");
+      calStart(s);
+      continue;
+    }
+    if (cmd == CMD_CAL_SAVE) {
+      Serial.println("CAL baseline save via Bluetooth remote");
+      calSaveBaseline();
+      continue;
+    }
     bool want = cmd == CMD_TOGGLE ? !recording : cmd == CMD_START;
     if (want == recording) {
       bleStatusChanged();  // already in that state: just re-confirm to the remote
@@ -1700,8 +2479,17 @@ void loop() {
       }
     } else {
       accumulateStatus((const int16_t *)pool[idx], BLOCK_FRAMES);
+      levelsBlock((const int16_t *)pool[idx]);  // clipping and live levels while idle too (e.g. checking a mount)
     }
     xQueueSend(freeQ, &idx, 0);
+    // Stop before the card fills up (see LOW_SPACE_STOP_MB), writing the queued audio first, as a stop press does.
+    // "SD card full" is what tools/soak_log.py looks for.
+    if (recording && recFreeMb() <= LOW_SPACE_STOP_MB) {
+      Serial.printf("SD card full: %lu MB left, the reserve kept so the card never fills to the end (it stalls there). "
+                    "Stopping; the recording's files are complete.\n", (unsigned long)recFreeMb());
+      errorCode = RERR_CARD_FULL;  // set first: stopRecording() sends the status, and a failed write overrides it
+      stopRecordingAtPress();
+    }
   }
 
   if (!updateFlash()) {
@@ -1723,10 +2511,18 @@ void loop() {
   }
   updateSdPresence();
   batlogUpdate();
-  static uint32_t lastHealth = 0;
+  static uint32_t lastHealth = 0, lastClipReport = 0, lastLevels = 0;
   if (millis() - lastHealth >= HEALTH_MS) {
     lastHealth = millis();
     printHealth();
+  }
+  if (millis() - lastClipReport >= CLIP_REPORT_MS) {
+    lastClipReport = millis();
+    reportClipping();
+  }
+  if (bleConnected && millis() - lastLevels >= LEVELS_MS) {
+    lastLevels = millis();
+    buildLevels();
   }
   if (millis() - lastStatus >= STATUS_MS) {
     lastStatus = millis();
