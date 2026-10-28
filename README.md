@@ -24,6 +24,24 @@ As of October 24, 2026, two MMSA V2 boards are assembled and running the same re
 
 The detailed [MMSA V2 firmware notes](MMSA%20V2/firmware/MMSA_V2_Recorder_BLE/README.md) contain the build settings, controls, test history, and known issues.
 
+## Hardware
+
+<p align="center">
+  <img src="docs/images/mmsa_v2_bench_setup.jpg" alt="MMSA V2 board on the bench with flex microphone array, LiPo cell and microSD card" width="48%">
+  <img src="docs/images/mmsa_v2_board_closeup.jpg" alt="Close-up of the assembled MMSA V2 board showing the FPC connector, USB-C port, and BOOT/REC/RES buttons" width="48%">
+</p>
+
+*Left: assembled board running on a LiPo cell with the flex microphone array and microSD card. Right: close-up of the FPC array connector, USB-C port, and control buttons.*
+
+The main board was designed from scratch (custom PCB, ESP32-S3 module, LiPo charging, 3.3 V and 1.8 V regulators, USB-C, microSD, and an FPC connector to the flex microphone array).
+
+<p align="center">
+  <img src="docs/images/mmsa_v2_pcb_layout.png" alt="MMSA V2 PCB layout showing copper layers and component placement" width="48%">
+  <img src="docs/images/mmsa_v2_pcb_3d.png" alt="MMSA V2 PCB 3D render" width="48%">
+</p>
+
+*PCB layout (left) and 3D render (right). Schematic views and the netlist are in [`MMSA V2/reference/`](MMSA%20V2/reference/).*
+
 ## System architecture
 
 ```mermaid
@@ -59,6 +77,24 @@ The microphone reader and SD writer are separated so that short storage stalls d
 | [`ESP32_S3_USB_Mic/`](ESP32_S3_USB_Mic/) | Earlier USB Audio Class microphone firmware |
 | [`damping_tests/`](damping_tests/) and [`070926 Data/`](070926%20Data/) | Preliminary microphone-covering recordings and attenuation analysis |
 | [`presentation/`](presentation/) | Editable project presentation source and generated slide deck |
+
+## Selected results
+
+**Acoustic source tracking.** A moving 1 kHz tone and white noise are traced along the array; each row is one microphone, shaded by its level above its own noise floor. The source is visible sweeping across the eight positions.
+
+![Array level maps for a 1 kHz tone and white noise](MMSA%20V2/data/team_update_2026-10-25/1_array_levels_tone_vs_noise.png)
+
+**Battery run-down.** Recording all eight channels with Bluetooth connected ran for 6.5 h on a 1200 mAh cell before the 3.40 V cutoff.
+
+![Battery voltage during a 6.5 hour recording run-down](MMSA%20V2/data/team_update_2026-10-25/batlog_2026-10-25_rundown.png)
+
+**Power characterization.** Current draw measured across a series resistor for each operating configuration.
+
+![Current draw by configuration](MMSA%20V2/data/team_update_2026-10-25/2_current_draw_by_config.png)
+
+**Microphone covering study (preliminary).** Bench comparison of pop-filter and other coverings against a bare microphone, using a hairdryer as a wind source. These are not wind-tunnel results.
+
+![Microphone damping study summary](070926%20Data/mic_damping_summary.png)
 
 ## Known limitations and next steps
 
