@@ -2,7 +2,7 @@
 
 Usage:  python verify_card.py H:\\  [--segment-seconds 1800] [--stress ../data/stress/stress_XXXX.json]
 
-For each take folder /MMSA8_NNNN/ it checks:
+For each take folder /MMSA8_NNNN/ (or /MMSA8_NNNN_<name>/) it checks:
   - every file is a complete WAV: 8 ch, 48 kHz, 16-bit, and the header's length matches the file
   - the parts are numbered 01, 02, ... with no gaps, and every part but the last is a full file
   - each join between parts is smooth (the sample step across the join is in the normal range of the audio around it)
@@ -78,7 +78,7 @@ def main():
     ap.add_argument("--stress", help="stress_test.py results .json, to check the takes its resets cut off")
     a = ap.parse_args()
     root = Path(a.card)
-    takes = sorted(p for p in root.iterdir() if p.is_dir() and re.fullmatch(r"MMSA8_\d{4}", p.name))
+    takes = sorted(p for p in root.iterdir() if p.is_dir() and re.fullmatch(r"MMSA8_\d{4}(_[A-Za-z0-9_-]+)?", p.name))
     loose = sorted(p for p in root.iterdir() if p.is_file() and p.suffix.lower() == ".wav")
     infos = {t: {p: wav_info(p) for p in sorted(t.glob("*.wav"))} for t in takes}
 
@@ -106,7 +106,7 @@ def main():
         want = [f"{t.name}_{k:02d}.wav" for k in range(1, len(parts) + 1)]
         if names != want:
             issues.append(f"parts named {names}, expected {want}")
-        n = int(t.name[-4:])
+        n = int(t.name[6:10])  # MMSA8_NNNN, or MMSA8_NNNN_<name> (named from the remote)
         for k, (p, i) in enumerate(parts):
             last = k == len(parts) - 1
             if not i["ok"] and last and p.stat().st_size <= 44:

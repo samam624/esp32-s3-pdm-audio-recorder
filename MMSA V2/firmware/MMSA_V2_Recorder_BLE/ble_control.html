@@ -69,7 +69,10 @@
     margin: 0;
     min-height: 100vh;
     display: flex;
-    align-items: center;
+    /* Keep tall content inside the page's scrollable area. When space is
+       available, safe center still centers the panel vertically. */
+    align-items: flex-start;
+    align-items: safe center;
     justify-content: center;
     padding: 32px 16px;
     background: var(--bg);
@@ -160,6 +163,39 @@
     0%, 100% { opacity: 1; }
     50% { opacity: 0.25; }
   }
+
+  .take-name {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .take-name input {
+    width: 100%;
+    font-size: 15px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: var(--surface-2);
+    color: var(--ink);
+  }
+
+  .take-name input::placeholder { color: var(--ink-dim); opacity: 0.7; }
+
+  .take-name input:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 1px;
+  }
+
+  .take-name-preview {
+    font-size: 11.5px;
+    line-height: 1.5;
+    color: var(--ink-dim);
+    overflow-wrap: anywhere;
+    min-height: 17px;
+  }
+
+  .take-name-preview strong { color: var(--ink); font-weight: 600; }
 
   .stage {
     display: flex;
@@ -443,6 +479,13 @@
     <span class="pill" id="statusPill"><span class="dot"></span><span id="statusPillText">Disconnected</span></span>
   </header>
 
+  <div class="take-name">
+    <label class="eyebrow" for="takeNameInput">Recording name</label>
+    <input class="mono" id="takeNameInput" type="text" maxlength="48" placeholder="e.g. wing_15ms_run1"
+           autocomplete="off" autocapitalize="off" spellcheck="false" aria-describedby="takeNamePreview">
+    <div class="take-name-preview mono" id="takeNamePreview"></div>
+  </div>
+
   <div class="stage">
     <button class="record-btn" id="recordBtn" disabled aria-label="Start recording">
       <span class="glyph"></span>
@@ -530,6 +573,7 @@
       <div>control&nbsp; 6e400002-b5a3-f393-e0a9-e50e24dcca9e</div>
       <div>status&nbsp;&nbsp; 6e400003-b5a3-f393-e0a9-e50e24dcca9e</div>
       <div>levels&nbsp;&nbsp; 6e400005-b5a3-f393-e0a9-e50e24dcca9e</div>
+      <div>name&nbsp;&nbsp;&nbsp;&nbsp; 6e400007-b5a3-f393-e0a9-e50e24dcca9e</div>
     </div>
     <div class="log mono" id="log"></div>
   </details>
@@ -545,6 +589,7 @@
   const STATUS_UUID = "6e400003-b5a3-f393-e0a9-e50e24dcca9e";
   const TIME_UUID = "6e400004-b5a3-f393-e0a9-e50e24dcca9e";
   const LEVELS_UUID = "6e400005-b5a3-f393-e0a9-e50e24dcca9e";
+  const NAME_UUID = "6e400007-b5a3-f393-e0a9-e50e24dcca9e";
 
   // Must match SAMPLE_RATE * CHANNELS * (BITS_PER_SAMPLE/8) in the firmware —
   // used to turn a raw byte count into a trustworthy "audio saved" duration.
@@ -1113,6 +1158,8 @@
       calChar = null;
       setCalRunning(false);
       stopTones();
+      nameChar = null;
+      boardName = null;
     }
     connectBtn.disabled = isConnected;
     disconnectBtn.disabled = !isConnected;
@@ -1133,6 +1180,7 @@
       statusPill.className = "pill ok";
       statusPillText.textContent = "Connected";
     }
+    renderNamePreview();
     updateStatsUi();
     refreshAlert();
   }
@@ -1155,6 +1203,7 @@
     } else {
       stopElapsedTimer();
     }
+    renderNamePreview();
   }
 
   function startElapsedTimer() {
@@ -1341,6 +1390,7 @@
       statusChar = await service.getCharacteristic(STATUS_UUID);
 
       await syncClock(service);
+      await setupNameChar(service);
 
       const initial = await statusChar.readValue();
       processStatusValue(initial);
@@ -1403,6 +1453,17 @@
     if (!controlChar) return;
     recordBtn.disabled = true;
     try {
+      if (!recording && nameChar) {
+        // The name must reach the board before the start, or the take would get the old one.
+        clearTimeout(nameDebounce);
+        try {
+          await pushName();
+        } catch (err) {
+          setMessage("Couldn't send the recording name, so recording wasn't started: " + err.message, true);
+          log("error sending name: " + err.message);
+          return;
+        }
+      }
       await controlChar.writeValue(new Uint8Array([recording ? 0 : 1]));
       log("sent: " + (recording ? "stop" : "start"));
     } catch (err) {
@@ -1412,6 +1473,118 @@
       recordBtn.disabled = false;
     }
   }
+
+  // ---- Recording name (firmware from 2026-10-29 on) ----
+  // The board adds the name after the take number: /MMSA8_0086_wing_15ms/MMSA8_0086_wing_15ms_01.wav. It keeps the
+  // name for every take after (REC button too) until it is changed here; a reset clears it. Name characteristic:
+  // write the name as text; read/notify "<next take number>\n<name>\n<current or last take folder>".
+  const TAKE_LABEL_MAX = 32;  // must match TAKE_LABEL_MAX in the firmware
+  const NAME_STORE_KEY = "mmsa.takeName";
+  const takeNameInput = document.getElementById("takeNameInput");
+  const takeNamePreview = document.getElementById("takeNamePreview");
+  let nameChar = null;
+  let boardName = null;            // last name message from the board: { next, label, current }
+  let nameWrite = Promise.resolve();
+  let nameDebounce = null;
+
+  // Same rule as sanitizeTakeLabel() in the firmware: keep letters, digits and '-'; any other run becomes one '_'.
+  function cleanLabel(text) {
+    let out = "", gap = false;
+    for (const c of text) {
+      if (out.length >= TAKE_LABEL_MAX) break;
+      if (!/^[A-Za-z0-9-]$/.test(c)) {
+        gap = true;
+        continue;
+      }
+      if (gap && out) {
+        out += "_";
+        if (out.length >= TAKE_LABEL_MAX) break;
+      }
+      gap = false;
+      out += c;
+    }
+    return out;
+  }
+
+  function folderFor(num, label) {
+    return "MMSA8_" + (num ? String(num).padStart(4, "0") : "####") + (label ? "_" + label : "");
+  }
+
+  function renderNamePreview() {
+    const label = cleanLabel(takeNameInput.value);
+    takeNamePreview.textContent = "";
+    if (connected && !nameChar) {
+      takeNamePreview.textContent = "This board's firmware can't take names yet (flash the 2026-10-29 build). " +
+        "Recordings are numbered only.";
+      return;
+    }
+    if (connected && recording && boardName && boardName.current) {
+      takeNamePreview.append("Recording to ");
+      const now = document.createElement("strong");
+      now.textContent = boardName.current + "/";
+      takeNamePreview.append(now, document.createElement("br"));
+    }
+    takeNamePreview.append(recording ? "Next one: " : "Saves as ");
+    const next = document.createElement("strong");
+    next.textContent = folderFor(connected && boardName ? boardName.next : 0, label) + "/";
+    takeNamePreview.append(next);
+    if (!label) takeNamePreview.append(" · add a name to tag it");
+  }
+
+  function handleNameValue(value, fromRead) {
+    const parts = new TextDecoder().decode(value).split("\n");
+    if (parts.length < 3) {
+      // Cut short by the Bluetooth packet size: a read fetches the whole value.
+      if (!fromRead && nameChar) nameChar.readValue().then(v => handleNameValue(v, true)).catch(() => {});
+      return;
+    }
+    const prev = boardName;
+    boardName = { next: parseInt(parts[0], 10) || 0, label: parts[1], current: parts[2] };
+    if (prev && boardName.current && prev.current !== boardName.current) log("take folder: /" + boardName.current + "/");
+    renderNamePreview();
+  }
+
+  // Sends the field's name to the board unless it already has it. Writes are queued so two never overlap.
+  function pushName() {
+    if (!nameChar) return Promise.resolve();
+    nameWrite = nameWrite.catch(() => {}).then(async () => {
+      const label = cleanLabel(takeNameInput.value);
+      if (!nameChar || (boardName && boardName.label === label)) return;
+      // A lone space clears the name (the board cleans it to nothing); an empty write isn't allowed everywhere.
+      await nameChar.writeValue(new TextEncoder().encode(label || " "));
+      boardName = Object.assign({ next: 0, current: "" }, boardName, { label });
+      log("recording name set: " + (label || "(none)"));
+      renderNamePreview();
+    });
+    return nameWrite;
+  }
+
+  async function setupNameChar(service) {
+    try {
+      nameChar = await service.getCharacteristic(NAME_UUID);
+      nameChar.addEventListener("characteristicvaluechanged", e => handleNameValue(e.target.value, false));
+      await nameChar.startNotifications();
+      handleNameValue(await nameChar.readValue(), true);
+      await pushName();  // so the board's REC button uses this name too
+    } catch (err) {
+      nameChar = null;
+      boardName = null;
+      log("no recording names on this firmware (" + err.message + ")");
+    }
+  }
+
+  try { takeNameInput.value = localStorage.getItem(NAME_STORE_KEY) || ""; } catch (e) { }
+  takeNameInput.addEventListener("input", () => {
+    try { localStorage.setItem(NAME_STORE_KEY, takeNameInput.value); } catch (e) { }
+    renderNamePreview();
+    clearTimeout(nameDebounce);
+    nameDebounce = setTimeout(() => pushName().catch(err => log("error sending name: " + err.message)), 700);
+  });
+  takeNameInput.addEventListener("keydown", e => {
+    if (e.key === "Enter") takeNameInput.blur();
+  });
+  takeNameInput.addEventListener("change", () => pushName().catch(err => log("error sending name: " + err.message)));
+  renderNamePreview();
 
   connectBtn.addEventListener("click", connect);
   disconnectBtn.addEventListener("click", disconnect);

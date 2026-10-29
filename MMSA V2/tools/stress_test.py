@@ -70,7 +70,7 @@ def record(name, passed, details, issues):
         print("    - " + i)
 
 
-RECOVERED = re.compile(r"SD write failed in (/MMSA8_(\d{4})/MMSA8_\d{4}_(\d\d)\.wav) at .*recovered")
+RECOVERED = re.compile(r"SD write failed in (/MMSA8_(\d{4})[^/]*/MMSA8_\d{4}[^/]*_(\d\d)\.wav) at .*recovered")
 recovered_parts: list[dict] = []  # files that ended early because the recorder recovered from a write error
 
 

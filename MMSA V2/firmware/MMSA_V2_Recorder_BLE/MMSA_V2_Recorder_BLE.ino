@@ -2,6 +2,8 @@
 // Built from bringup/MMSA_V2_Recorder8 (left unchanged as the bring-up reference). The audio path is identical:
 // hardware PDM->PCM, 48 kHz, 16-bit, 8 mics on 4 data lines, shared clock IO4. Each recording (take) goes in its own
 // folder: /MMSA8_0001/MMSA8_0001_01.wav, then /MMSA8_0002/MMSA8_0002_01.wav, ...
+// A name set from the remote page goes after the number: /MMSA8_0003_wing_15ms/MMSA8_0003_wing_15ms_01.wav. It stays
+// set for every following take (REC button too) until the page changes or clears it; a reset clears it.
 //
 // Controls
 //   REC short press      start / stop recording (acts on release)
@@ -163,6 +165,7 @@ static_assert(SEGMENT_BYTES >= BLOCK_BYTES, "SEGMENT_SECONDS is too short");
 #define BLE_TIME_CHAR_UUID    "6e400004-b5a3-f393-e0a9-e50e24dcca9e"  // write: uint32 local time (WAV file dates)
 #define BLE_LEVELS_CHAR_UUID  "6e400005-b5a3-f393-e0a9-e50e24dcca9e"  // notify: live per-mic levels (levels section)
 #define BLE_CAL_CHAR_UUID     "6e400006-b5a3-f393-e0a9-e50e24dcca9e"  // read/notify: calibration check result (cal section)
+#define BLE_NAME_CHAR_UUID    "6e400007-b5a3-f393-e0a9-e50e24dcca9e"  // read/write/notify: take name (see takeLabel)
 #define BLE_STATUS_MS         500    // status heartbeat to a connected remote
 #define LOW_SPACE_WARN_MB     (LOW_SPACE_STOP_MB + 1024)  // remote's low-space warning: ~22 min of recording left
 
@@ -187,6 +190,7 @@ enum : uint8_t { BLERES_NONE = 0, BLERES_ON, BLERES_OFF, BLERES_FAILED };
 #define EVT_READVERTISE (1u << 2)
 #define EVT_LEVELS      (1u << 3)
 #define EVT_CAL         (1u << 4)
+#define EVT_NAME        (1u << 5)
 
 // Calibration check request and result (see the cal section). Defined here, ahead of every function, because the
 // Arduino build puts its generated function prototypes above the first function.
@@ -250,6 +254,15 @@ static volatile bool failNextWrite = false;  // serial 'F' (test builds only): t
 #endif
 static String takeDir;                       // its folder, "/MMSA8_0001" ("" = card root; see startRecording())
 static void findNextFreeFile();
+
+// Take name, written by the remote (name characteristic) and used by every take started after that. Only letters,
+// digits and '-' are kept; any other run of characters becomes one '_' (so "15 m/s run #2" -> "15_m_s_run_2").
+// takeLabel is written by the NimBLE host task and takeBase by loop(); both are read by the other side too, so every
+// access outside loop()'s own reads of takeBase goes through takeLabelMux.
+#define TAKE_LABEL_MAX 32
+static char takeLabel[TAKE_LABEL_MAX + 1] = "";
+static char takeBase[TAKE_LABEL_MAX + 12] = "";  // current/last take's name: "MMSA8_0001" or "MMSA8_0001_wing_15ms"
+static portMUX_TYPE takeLabelMux = portMUX_INITIALIZER_UNLOCKED;
 
 // Bluetooth state. bleOn is written only by bleTask; the others by the NimBLE host task's callbacks.
 static volatile bool bleOn = false;
@@ -387,7 +400,7 @@ static void setSdReady(bool ready) {
     Serial.printf("SD: next recording will go in /MMSA8_%04d/ (%.1f GB free; scan took %lu ms)\n", nextFileIndex,
                   freeMb / 1024.0f, (unsigned long)(millis() - t0));
   }
-  if (changed) bleStatusChanged();
+  if (changed) bleWake(EVT_STATUS | EVT_NAME);  // the name message carries the next take number
 }
 
 // probeFirst (the idle check for a card, every SD_REMOUNT_MS while there is none): mount only if a card answers CMD0
@@ -1168,9 +1181,42 @@ static void scanTakes() {
 
 // Path of file `part` (1, 2, ...) of the current take.
 static String partPath(int part) {
-  char name[48];
-  snprintf(name, sizeof(name), "%s/MMSA8_%04d_%02d.wav", takeDir.c_str(), takeIndex, part);
+  char name[2 * (TAKE_LABEL_MAX + 12) + 16];
+  snprintf(name, sizeof(name), "%s/%s_%02d.wav", takeDir.c_str(), takeBase, part);
   return String(name);
+}
+
+// Cleans a take name from the remote into `out` (TAKE_LABEL_MAX + 1 bytes): see takeLabel.
+static void sanitizeTakeLabel(const char *in, size_t n, char *out) {
+  size_t o = 0;
+  bool gap = false;
+  for (size_t i = 0; i < n && o < TAKE_LABEL_MAX; i++) {
+    char c = in[i];
+    bool keep = (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '-';
+    if (!keep) {
+      gap = true;
+      continue;
+    }
+    if (gap && o) {
+      out[o++] = '_';
+      if (o >= TAKE_LABEL_MAX) break;
+    }
+    gap = false;
+    out[o++] = c;
+  }
+  out[o] = 0;
+}
+
+// The name characteristic's value, as text: "<next take number>\n<name for the next take>\n<current or last take's
+// folder, no leading slash>". The remote reads it back to show what the next folder will be called.
+static size_t takeNameMsg(char *m, size_t size) {
+  char label[TAKE_LABEL_MAX + 1], base[sizeof(takeBase)];
+  portENTER_CRITICAL(&takeLabelMux);
+  memcpy(label, takeLabel, sizeof(label));
+  memcpy(base, takeBase, sizeof(base));
+  portEXIT_CRITICAL(&takeLabelMux);
+  int len = snprintf(m, size, "%d\n%s\n%s", nextFileIndex, label, base);
+  return len < 0 ? 0 : ((size_t)len < size ? (size_t)len : size - 1);
 }
 
 static void drainFullBlocks() {
@@ -1210,11 +1256,20 @@ static void startRecording() {
   drainFullBlocks();
   findNextFreeFile();
   takeIndex = nextFileIndex++;
-  char dir[16];
-  snprintf(dir, sizeof(dir), "/MMSA8_%04d", takeIndex);
+  char label[TAKE_LABEL_MAX + 1];
+  portENTER_CRITICAL(&takeLabelMux);
+  memcpy(label, takeLabel, sizeof(label));
+  portEXIT_CRITICAL(&takeLabelMux);
+  char base[sizeof(takeBase)];
+  if (label[0]) snprintf(base, sizeof(base), "MMSA8_%04d_%s", takeIndex, label);
+  else snprintf(base, sizeof(base), "MMSA8_%04d", takeIndex);
+  portENTER_CRITICAL(&takeLabelMux);
+  memcpy(takeBase, base, sizeof(base));
+  portEXIT_CRITICAL(&takeLabelMux);
+  String dir = String("/") + base;
   // If the take's folder can't be made, record into the card's root rather than not at all.
-  takeDir = SD.mkdir(dir) ? String(dir) : String("");
-  if (!takeDir.length()) Serial.printf("Could not make folder %s; recording into the card's root.\n", dir);
+  takeDir = SD.mkdir(dir) ? dir : String("");
+  if (!takeDir.length()) Serial.printf("Could not make folder %s; recording into the card's root.\n", dir.c_str());
   String name = partPath(1);
   wav = SD.open(name, FILE_WRITE);
   if (!wav) {
@@ -1248,7 +1303,7 @@ static void startRecording() {
   recording = true;
   Serial.printf("REC start: %s (8 ch; file opened in %lu ms)\n", name.c_str(), (unsigned long)(recStartMs - tStart));
   printMode();
-  bleStatusChanged();
+  bleWake(EVT_STATUS | EVT_NAME);
 }
 
 // ---------------- PSRAM + button check (serial 'p', idle only) ----------------
@@ -1884,7 +1939,17 @@ extern "C" esp_err_t __wrap_esp_ipc_call_blocking(uint32_t cpu_id, esp_ipc_func_
 static BLEServer *bleServer = NULL;
 static BLEService *bleService = NULL;
 static BLECharacteristic *bleControlChr = NULL, *bleTimeChr = NULL, *bleStatusChr = NULL, *bleLevelsChr = NULL,
-                         *bleCalChr = NULL;
+                         *bleCalChr = NULL, *bleNameChr = NULL;
+#define NAME_MSG_MAX 96  // "9999\n" + name + "\n" + folder name
+
+// Puts the current take-name message (see takeNameMsg()) on the name characteristic, notifying a connected remote.
+static void bleSendName() {
+  if (!bleNameChr) return;
+  char m[NAME_MSG_MAX];
+  size_t len = takeNameMsg(m, sizeof(m));
+  bleNameChr->setValue((uint8_t *)m, len);
+  if (bleConnected) bleNameChr->notify();
+}
 static ble_gap_event_listener bleGapListener;
 static size_t bleHeapAtFirstStart = 0;  // free RAM just before Bluetooth was first switched on (leak check)
 static uint32_t bleCycles = 0;
@@ -1949,8 +2014,24 @@ class ServerCallbacks : public BLEServerCallbacks {
   }
 };
 
+// The remote writes the name for the next takes (UTF-8 text; empty = no name). It's cleaned (see takeLabel) and the
+// cleaned name echoed back on the same characteristic, so the page shows what the folder will really be called.
+class NameCallbacks : public BLECharacteristicCallbacks {
+  void onWrite(BLECharacteristic *c) override {
+    String v = c->getValue();
+    char clean[TAKE_LABEL_MAX + 1];
+    sanitizeTakeLabel(v.c_str(), v.length(), clean);
+    portENTER_CRITICAL(&takeLabelMux);
+    memcpy(takeLabel, clean, sizeof(clean));
+    portEXIT_CRITICAL(&takeLabelMux);
+    Serial.printf("Take name set over Bluetooth: %s\n", clean[0] ? clean : "(none)");
+    bleWake(EVT_NAME);
+  }
+};
+
 static ControlCallbacks controlCb;
 static TimeCallbacks timeCb;
+static NameCallbacks nameCb;
 static ServerCallbacks serverCb;
 
 static const char *disconnectReasonText(uint8_t hci) {
@@ -2067,7 +2148,7 @@ static bool bleStart() {
   bleServer = BLEDevice::createServer();
   bleServer->setCallbacks(&serverCb);
   ble_gap_event_listener_register(&bleGapListener, onBleGapEvent, NULL);  // EALREADY after a restart is fine
-  bleService = bleServer->createService(BLEUUID(BLE_SERVICE_UUID), 30);  // room for 5 characteristics
+  bleService = bleServer->createService(BLEUUID(BLE_SERVICE_UUID), 30);  // 30 handles; the 6 below use 17
   bleControlChr = bleService->createCharacteristic(BLE_CONTROL_CHAR_UUID, BLECharacteristic::PROPERTY_WRITE);
   bleControlChr->setCallbacks(&controlCb);
   bleTimeChr = bleService->createCharacteristic(BLE_TIME_CHAR_UUID, BLECharacteristic::PROPERTY_WRITE);
@@ -2086,6 +2167,10 @@ static bool bleStart() {
     portEXIT_CRITICAL(&calMux);
     if (len) bleCalChr->setValue(m, len);  // the last check, for the remote's first read
   }
+  bleNameChr = bleService->createCharacteristic(BLE_NAME_CHAR_UUID, BLECharacteristic::PROPERTY_READ |
+                                                BLECharacteristic::PROPERTY_WRITE | BLECharacteristic::PROPERTY_NOTIFY);
+  bleNameChr->setCallbacks(&nameCb);
+  bleSendName();    // initial value for the remote's first read
   bleSendStatus();  // initial value for the remote's first read
   bleService->start();
   BLEAdvertising *adv = BLEDevice::getAdvertising();
@@ -2120,7 +2205,8 @@ static void bleStop() {
   delete bleStatusChr;
   delete bleLevelsChr;
   delete bleCalChr;
-  bleControlChr = bleTimeChr = bleStatusChr = bleLevelsChr = bleCalChr = NULL;
+  delete bleNameChr;
+  bleControlChr = bleTimeChr = bleStatusChr = bleLevelsChr = bleCalChr = bleNameChr = NULL;
   bleService = NULL;
   bleServer = NULL;
   bleConnected = false;
@@ -2188,6 +2274,7 @@ static void bleTask(void *) {
       bleCalChr->setValue(m, len);
       if (bleConnected) bleCalChr->notify();
     }
+    if (ev & EVT_NAME) bleSendName();
     // Status on a change, and as a heartbeat every BLE_STATUS_MS. Levels wake this task 4 times a second, so the
     // heartbeat keeps its own clock rather than relying on the wait timing out.
     if ((ev & ~EVT_LEVELS) || millis() - lastStatus >= BLE_STATUS_MS) {
