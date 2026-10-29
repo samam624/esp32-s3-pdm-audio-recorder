@@ -8,6 +8,7 @@
 // Controls
 //   REC short press      start / stop recording (acts on release)
 //   REC hold 1 s         Bluetooth on / off (works while recording too)
+//   BOOT hold 2 s        deep sleep (3 slow flashes); REC or BOOT wakes it into idle (see the sleep section)
 //   serial 'r' / 'b'     same as short press / hold;  's' = SD-crosstalk snapshot test (idle only)
 //   serial 'c' / 'k'     calibration check (1 kHz, 10 s) / keep the last check as the baseline (see the cal section)
 //   Bluetooth remote     ble_control.html in this folder (Chrome/Edge, or Bluefy on iPhone): start/stop + live status
@@ -53,6 +54,9 @@
 #include <host/ble_hs.h>
 #include <esp_bt.h>
 #include <esp_ipc.h>
+#include <esp_sleep.h>
+#include <driver/gpio.h>
+#include <driver/rtc_io.h>
 #include <map>
 #include <vector>
 #include <functional>
@@ -179,6 +183,7 @@ static_assert(SEGMENT_BYTES >= BLOCK_BYTES, "SEGMENT_SECONDS is too short");
 #define STATUS_FLAG_ERROR     0x08
 #define STATUS_FLAG_CLIPPING  0x10
 #define STATUS_FLAG_BATT_LOW  0x20  // VBAT fell below BATLOG_CUTOFF_MV: recording stopped, SD card switched off
+#define STATUS_FLAG_SLEEPING  0x40  // going to deep sleep (BOOT hold): the link is about to close on purpose
 // Error codes, numbered as the remote page expects.
 enum : uint8_t { RERR_NONE = 0, RERR_SD_NOT_READY = 1, RERR_WRITE_FAILED = 2, RERR_CARD_REMOVED = 3,
                  RERR_OPEN_FAILED = 5, RERR_CARD_FULL = 6, RERR_LOW_SPACE = 7 };
@@ -260,7 +265,8 @@ static void findNextFreeFile();
 // takeLabel is written by the NimBLE host task and takeBase by loop(); both are read by the other side too, so every
 // access outside loop()'s own reads of takeBase goes through takeLabelMux.
 #define TAKE_LABEL_MAX 32
-static char takeLabel[TAKE_LABEL_MAX + 1] = "";
+// In RTC memory, so the name survives deep sleep (see the sleep section); a reset or power-up still clears it.
+static RTC_DATA_ATTR char takeLabel[TAKE_LABEL_MAX + 1] = "";
 static char takeBase[TAKE_LABEL_MAX + 12] = "";  // current/last take's name: "MMSA8_0001" or "MMSA8_0001_wing_15ms"
 static portMUX_TYPE takeLabelMux = portMUX_INITIALIZER_UNLOCKED;
 
@@ -268,6 +274,7 @@ static portMUX_TYPE takeLabelMux = portMUX_INITIALIZER_UNLOCKED;
 static volatile bool bleOn = false;
 static volatile bool bleConnected = false;
 static volatile bool bleStopping = false;    // shutting down: don't restart advertising on the disconnect
+static volatile bool goingToSleep = false;   // set by goToSleep(); sent to the remote as STATUS_FLAG_SLEEPING
 static volatile int8_t bleRssi = 0;
 static volatile uint8_t bleLastDisconnectReason = 0;
 static volatile uint16_t bleConnHandle = BLE_HS_CONN_HANDLE_NONE;
@@ -2106,6 +2113,7 @@ static void bleSendStatus() {
   uint8_t clips = clipMask;
   if (clips) flags |= STATUS_FLAG_CLIPPING;
   if (batlogStopped) flags |= STATUS_FLAG_BATT_LOW;
+  if (goingToSleep) flags |= STATUS_FLAG_SLEEPING;
   uint16_t vbat = vbatMvNow;
   uint8_t p[19];
   p[0] = flags;
@@ -2311,8 +2319,118 @@ static void printHealth() {
   hWorstWriteUs = 0;
 }
 
+// ---------------- Deep sleep (hold BOOT 2 s, or serial 'z') ----------------
+// Idle draws ~70-80 mA (CPU at 240 MHz, PDM clock and 8 mics, LEDs, SD card), which empties a 150 mAh cell in ~2 h.
+// Holding BOOT for SLEEP_HOLD_MS puts the board in deep sleep: any recording is finished first, Bluetooth is switched
+// off cleanly, the SD card is unmounted (and kept deselected), the mic clock is stopped (mics power down) and the LEDs
+// go dark. A press of REC or BOOT wakes it (RES too, as a normal reset). Waking is a fresh boot into idle (~1 s); it
+// doesn't start a recording. The take name and the clock survive sleep, and Bluetooth comes back on if it was on.
+// Unmodified boards (REC on IO35, not a wake-capable pin) wake on BOOT or RES only.
+#define BOOT_BTN_PIN  0
+#define SLEEP_HOLD_MS 2000
+static const uint16_t FLASH_SLEEP[] = {150, 400, 200, 400, 200, 400, 150};  // 3 slow flashes = going to sleep
+static RTC_DATA_ATTR bool sleepBleWasOn = false;  // Bluetooth state when the board went to sleep
+
+static bool recCanWake() { return buttonEnabled && rtc_gpio_is_valid_gpio((gpio_num_t)BUTTON_PIN); }
+
+static void goToSleep(const char *why) {
+  Serial.printf("SLEEP (%s): finishing up...\n", why);
+  goingToSleep = true;
+  if (recording) stopRecordingAtPress();
+  sleepBleWasOn = bleOn;
+  if (bleConnected) {
+    // Let the remote get the final status (recording stopped, going to sleep) before the link closes. Without this the
+    // switch-off could overtake it, and the page warned that the link dropped mid-recording (2026-10-29).
+    bleStatusChanged();
+    delay(300);
+  }
+  if (bleOn) {
+    requestBleToggle();
+    for (int i = 0; i < 300 && bleOn; i++) delay(10);  // a clean disconnect, so the remote page sees it
+  }
+  if (sdReady && !batlogStopped) {
+    char line[64];
+    snprintf(line, sizeof(line), "# sleep, %s, vbat_mV=%u", why, (unsigned)vbatMvNow);
+    batlogAppend(line);
+  }
+  startFlash(FLASH_SLEEP, sizeof(FLASH_SLEEP) / sizeof(FLASH_SLEEP[0]));
+  while (updateFlash()) delay(5);
+  // A button still held would wake the board at once.
+  uint32_t t0 = millis();
+  while (digitalRead(BOOT_BTN_PIN) == LOW || (buttonEnabled && digitalRead(BUTTON_PIN) == LOW)) {
+    if (millis() - t0 > 10000) {
+      Serial.println("SLEEP cancelled: a button stayed down for 10 s (stuck or shorted?).");
+      goingToSleep = false;
+      return;
+    }
+    delay(10);
+  }
+  delay(50);  // release bounce
+
+  SD.end();
+  setSdReady(false);
+  // Card deselected (CS high) so it drops to standby, and the mic clock held low so the mics power down. These pins
+  // would otherwise float in sleep. setup() releases the holds.
+  gpio_reset_pin((gpio_num_t)SD_CS);
+  gpio_set_direction((gpio_num_t)SD_CS, GPIO_MODE_OUTPUT);
+  gpio_set_level((gpio_num_t)SD_CS, 1);
+  gpio_hold_en((gpio_num_t)SD_CS);
+  gpio_reset_pin((gpio_num_t)MIC_CLK_PIN);  // detaches the PDM clock
+  gpio_set_direction((gpio_num_t)MIC_CLK_PIN, GPIO_MODE_OUTPUT);
+  gpio_set_level((gpio_num_t)MIC_CLK_PIN, 0);
+  gpio_hold_en((gpio_num_t)MIC_CLK_PIN);
+  gpio_deep_sleep_hold_en();
+  ledcWrite(LED_LEVEL, 0);
+  digitalWrite(LED_SD, LOW);
+  digitalWrite(LED_REC, LOW);
+
+  // Wake on REC or BOOT pressed (low). Both have external 10k pull-ups; the internal RTC ones are added in case.
+  uint64_t mask = 1ULL << BOOT_BTN_PIN;
+  if (recCanWake()) mask |= 1ULL << BUTTON_PIN;
+  for (int p = 0; p < 64; p++) {
+    if (!(mask & (1ULL << p))) continue;
+    rtc_gpio_pullup_en((gpio_num_t)p);
+    rtc_gpio_pulldown_dis((gpio_num_t)p);
+  }
+  esp_sleep_pd_config(ESP_PD_DOMAIN_RTC_PERIPH, ESP_PD_OPTION_ON);  // keeps those pull-ups powered (a few uA)
+  esp_sleep_enable_ext1_wakeup_io(mask, ESP_EXT1_WAKEUP_ANY_LOW);
+  Serial.printf("SLEEP: press %s to wake.\n", recCanWake() ? "REC or BOOT" : "BOOT (or RES)");
+  Serial.flush();
+  delay(20);
+  esp_deep_sleep_start();
+}
+
+// BOOT held SLEEP_HOLD_MS = sleep. Only counts once BOOT has been seen up since boot, so a BOOT press that wakes the
+// board can't put it straight back to sleep if it's held a little long.
+static void handleBootButton() {
+  static bool armed = false;
+  static uint32_t downAt = 0;
+  if (digitalRead(BOOT_BTN_PIN) == HIGH) {
+    armed = true;
+    downAt = 0;
+    return;
+  }
+  if (!armed) return;
+  if (!downAt) downAt = millis() | 1;
+  else if (millis() - downAt >= SLEEP_HOLD_MS) {
+    armed = false;
+    goToSleep("BOOT held");
+  }
+}
+
 // ---------------- setup / loop ----------------
 void setup() {
+  // Back from deep sleep: release the pins goToSleep() held, before anything uses them.
+  gpio_deep_sleep_hold_dis();
+  gpio_hold_dis((gpio_num_t)SD_CS);
+  gpio_hold_dis((gpio_num_t)MIC_CLK_PIN);
+  bool woke = esp_sleep_get_wakeup_cause() == ESP_SLEEP_WAKEUP_EXT1;
+  uint64_t wakePins = woke ? esp_sleep_get_ext1_wakeup_status() : 0;
+  if (woke) {  // both wake pins were switched to RTC IO for sleep: back to normal GPIO use
+    rtc_gpio_deinit((gpio_num_t)BOOT_BTN_PIN);
+    if (rtc_gpio_is_valid_gpio((gpio_num_t)BUTTON_PIN)) rtc_gpio_deinit((gpio_num_t)BUTTON_PIN);
+  }
+  pinMode(BOOT_BTN_PIN, INPUT_PULLUP);
   Serial.begin(115200);
   // USB serial must never block. With USB plugged into a PC that isn't reading the port, each print otherwise
   // waits up to 100 ms (up to ~2 s total), stalling loop() long enough to miss REC presses.
@@ -2335,6 +2453,13 @@ void setup() {
   ledcWrite(LED_LEVEL, 0);
 
   Serial.printf("\nBoot, reset reason: %s\n", resetReasonName());
+  if (woke) {
+    bool byRec = wakePins & (1ULL << BUTTON_PIN);
+    Serial.printf("Woke from sleep: %s pressed%s.\n", byRec ? "REC" : (wakePins & 1ULL) ? "BOOT" : "a button",
+                  sleepBleWasOn ? "; switching Bluetooth back on" : "");
+    // The REC press that woke the board must not count as a record press: wait for 0.5 s of quiet first.
+    if (byRec) btnState = BTN_AFTER_HOLD;
+  }
   if (buttonEnabled)
     Serial.printf("REC button on IO%d reads %s.\n", BUTTON_PIN,
                   digitalRead(BUTTON_PIN) ? "HIGH (released, as expected)" : "LOW (pressed or shorted to GND?)");
@@ -2408,12 +2533,14 @@ void setup() {
 #endif
   Serial.println("REC: short press = start/stop recording, hold 1 s = Bluetooth on/off.");
   Serial.println("     Flashes on all LEDs: 2 short = Bluetooth ON, 1 long = OFF, 5 fast = failed.");
-  Serial.println("Serial: r = record, b = Bluetooth, h = health line, s = SD-crosstalk snapshot test, p = PSRAM + button "
-                 "check, i = button monitor, c = calibration check (1 kHz, 10 s), k = keep the last check as the "
-                 "baseline.");
+  Serial.printf("BOOT: hold 2 s = sleep (3 slow flashes); wake with %s.\n",
+                recCanWake() ? "REC or BOOT" : "BOOT or RES (REC on this pin can't wake the chip)");
+  Serial.println("Serial: r = record, b = Bluetooth, z = sleep, h = health line, s = SD-crosstalk snapshot test, p = "
+                 "PSRAM + button check, i = button monitor, c = calibration check (1 kHz, 10 s), k = keep the last "
+                 "check as the baseline.");
   calLoadBaseline();
   Serial.println("LEDs: IO40 record ready (SD mounted), IO41 loudness, IO42 blinks while recording.");
-  if (BLE_ON_AT_BOOT) requestBleToggle();
+  if (BLE_ON_AT_BOOT || (woke && sleepBleWasOn)) requestBleToggle();
   printMode();
 }
 
@@ -2476,8 +2603,10 @@ static bool handleButton() {
 void loop() {
   static uint32_t lastStatus = 0;
   bool toggle = handleButton();
+  handleBootButton();
   if (Serial.available()) {
     char c = Serial.read();
+    if (c == 'z' || c == 'Z') goToSleep("serial 'z'");
     if (c == 'r' || c == 'R') {
       Serial.println("'r'");
       toggle = true;

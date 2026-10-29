@@ -601,6 +601,7 @@
   const FLAG_LOW_SPACE = 0x04;
   const FLAG_ERROR = 0x08;
   const FLAG_BATT_LOW = 0x20;  // below the firmware's 3.40 V cutoff: recording stopped, SD card off
+  const FLAG_SLEEPING = 0x40;  // the board is going to deep sleep (BOOT hold): the coming disconnect is on purpose
 
   // Battery (status bytes 17-18, mV, firmware from 2026-10-25 on). Rough single-cell Li-ion charge from voltage;
   // under load and while charging it reads off, so the volts are the number to trust.
@@ -1040,6 +1041,7 @@
   let minRssi = 0;                 // weakest reading this connection
   let lastLoggedSignalBand = "";
   let reportedDisconnectReason = false;
+  let boardSleeping = false;       // last status said the board is going to sleep
 
   function log(text) {
     const row = document.createElement("div");
@@ -1241,6 +1243,8 @@
     const newClipMask = value.byteLength >= 17 ? value.getUint8(16) : 0;
     updateBattery(value.byteLength >= 19 ? value.getUint16(17, true) : 0);
     battLow = !!(flags & FLAG_BATT_LOW);
+    if ((flags & FLAG_SLEEPING) && !boardSleeping) log("device reports: going to sleep");
+    boardSleeping = !!(flags & FLAG_SLEEPING);
     if (battMv && (!battLoggedMv || Math.abs(battMv - battLoggedMv) >= 50)) {
       battLoggedMv = battMv;
       log("battery: " + (battMv / 1000).toFixed(2) + " V (~" + battPercent(battMv) + "%)");
@@ -1328,11 +1332,16 @@
 
   function onDisconnected() {
     log("gatt server disconnected" + (rssi ? " (last signal " + rssi + " dBm, weakest " + minRssi + " dBm)" : ""));
-    if (recording) {
-      disconnectedWhileRecording = true;
-      log("warning: link dropped while a recording was in progress");
+    if (boardSleeping) {
+      // The board finished and saved any recording before going to sleep, so this is not a dropped recording.
+      setMessage("The board went to sleep. Press REC or BOOT on it to wake it, then Connect.");
+    } else {
+      if (recording) {
+        disconnectedWhileRecording = true;
+        log("warning: link dropped while a recording was in progress");
+      }
+      setMessage("Disconnected. Tap Connect to reconnect.");
     }
-    setMessage("Disconnected. Tap Connect to reconnect.");
     controlChar = null;
     statusChar = null;
     setConnectedUi(false);
@@ -1373,6 +1382,7 @@
     minRssi = 0;
     lastLoggedSignalBand = "";
     reportedDisconnectReason = false;
+    boardSleeping = false;
 
     try {
       setMessage("Opening device chooser…");

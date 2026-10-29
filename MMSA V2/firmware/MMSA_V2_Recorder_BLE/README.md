@@ -83,7 +83,10 @@ Checks every mic against a known tone without touching the array, recording or n
 |---|---|
 | REC short press | Start / stop recording (acts on release). The button must be down at least 40 ms; shorter blips (bounce, electrical noise) are ignored and counted (`btnnoise` in the health line). |
 | REC hold 1 s | Bluetooth on / off. Works while recording too, and doesn't stop the recording. After a hold, REC is ignored until it has been released and stayed up for 0.5 s, so letting go never starts or stops a recording, whichever way Bluetooth was switched. (Before 2026-10-24 a recording started after nearly every Bluetooth hold.) |
+| BOOT hold 2 s | Deep sleep (3 slow flashes). See [Deep sleep](#deep-sleep-2026-10-29). |
+| REC or BOOT press while asleep | Wake into idle (a fresh boot, ~1 s; doesn't record). RES also wakes it, as a normal reset. |
 | Serial `r` / `b` | Same as a short press / a hold |
+| Serial `z` | Deep sleep now (same as the BOOT hold) |
 | Serial `h` | Health line now (it also prints every minute): uptime, take/part, recorded seconds, free space, internal heap (free, lowest ever, largest block), PSRAM, deepest backlog and slowest SD write since the last line, audio loss counters, Bluetooth state, SD write errors recovered, button noise. `tools/soak_log.py` trends these. |
 | Serial `F` | Test builds only (`-DSTRESS_HOOKS`): the next SD block write counts as failed, to exercise the recovery. |
 | Serial `s` | SD-crosstalk snapshot test (idle only; this used to be the 1.5 s hold in Recorder8) |
@@ -98,10 +101,27 @@ Checks every mic against a known tone without touching the array, recording or n
 | 2 short flashes | Bluetooth ON (advertising as "MMSA V2") |
 | 1 long flash | Bluetooth OFF |
 | 5 fast flashes | The switch failed (the reason is on serial) |
+| 3 slow flashes | Going to sleep (BOOT hold) |
 
 No LED stays lit while Bluetooth is on, because a lit LED would add to the current being measured. Bluetooth is **off at boot**. Change `BLE_ON_AT_BOOT` to start with it on.
 
 **What "off" means.** The NimBLE host is shut down, and the radio controller is disabled, which powers down the radio and the Bluetooth modem. The controller is initialised once at boot (a 0.25 s warm-up) and its ~35 KB of RAM stays allocated after that. It isn't freed and recreated on every switch, because recreating it crashed the board about 1 switch in 20 (see `bleWarmUp()` and the controller wrap in the sketch).
+
+## Deep sleep (2026-10-29)
+
+Idle draws ~70–80 mA, which empties a 150 mAh cell in ~2 h. **Hold BOOT for 2 s** to put the board in deep sleep:
+1. Any recording is finished and saved first.
+2. A connected remote gets a final status with the recording stopped and status flag `0x40` (going to sleep). The page then says the board went to sleep, instead of warning that the link dropped mid-recording. Bluetooth is then switched off cleanly.
+3. `/BATLOG.CSV` gets a `# sleep` line.
+4. The LEDs give 3 slow flashes, and the board waits until every button is released.
+5. The SD card is unmounted, with its CS pin held high so the card drops to standby.
+6. The mic clock (IO4) is held low, so the mics power down.
+
+**Waking:** a press of **REC or BOOT** wakes it, and RES does too, as a normal reset. Waking is a fresh boot into idle (~1 s) and never starts a recording: the REC press that wakes it is ignored. The take name and the clock survive sleep, and Bluetooth comes back on if it was on. Serial `z` does the same as the hold. In sleep the USB serial port disappears, so a PC terminal disconnects.
+
+**Expected sleep current:** well under 1 mA, not yet measured. ESP32-S3 deep sleep with the RTC peripherals on is ~10–20 µA, the AP2112 regulator ~55 µA, the VBAT divider ~20 µA (100k/100k), and the mics with no clock are small. The SD card stays powered (no switch on the board), so its standby current, typically 0.1–0.5 mA, is the biggest unknown. The charger LEDs light only on USB.
+
+Unmodified boards (REC on IO35, which can't wake the chip) wake on BOOT or RES only.
 
 ## Operating modes for current measurements
 
@@ -109,12 +129,13 @@ Every mode change prints a `MODE:` line over serial.
 
 | Mode | How to get there |
 |---|---|
+| deep sleep | Hold BOOT 2 s (wake with REC or BOOT) |
 | idle, Bluetooth off | Power-up |
 | idle, Bluetooth advertising | Hold REC 1 s (2 flashes) |
 | idle, Bluetooth connected | Then press Connect in `ble_control.html` |
 | recording, any Bluetooth state | Short press from any of the above |
 
-- "Idle" is not a sleep state. The CPU (240 MHz), PDM clock, all 8 mics, the record-ready LED (IO40) and the loudness LED (IO41) all keep running. For a clean comparison, keep the room quiet (the loudness LED's brightness changes the reading) and keep the SD card in.
+- "Idle" is not a sleep state (see [Deep sleep](#deep-sleep-2026-10-29) for that). The CPU (240 MHz), PDM clock, all 8 mics, the record-ready LED (IO40) and the loudness LED (IO41) all keep running. For a clean comparison, keep the room quiet (the loudness LED's brightness changes the reading) and keep the SD card in.
 - **Advertising uses the library's default fast interval** (NimBLE: every 30–60 ms). That interval dominates the "advertising" current: a slower one (e.g. 500 ms, via `BLEAdvertising::setMinInterval/setMaxInterval` in `bleStart()`) would draw much less, at the cost of slower discovery. The PC remote connected with a 60 ms connection interval.
 - `/BATLOG.CSV` has a `ble` column (0 off, 1 advertising, 2 connected), and `tools/batlog_analyze.py` shows it in the timeline. A long battery run-down can therefore be split by mode too.
 
