@@ -73,28 +73,28 @@ The microphone reader and SD writer are separated so that short storage stalls d
 | [`MMSA V2/reference/`](MMSA%20V2/reference/) | Pin/net documentation, component notes, saved schematic views, and manufacturer datasheets |
 | [`MMSA V2/tools/`](MMSA%20V2/tools/) | Python tools for recorder stress tests, SD-card verification, WAV analysis, visualization, and source tracking |
 | [`MMSA V2/data/`](MMSA%20V2/data/) | Selected measurement artifacts and interactive visualization examples |
-| [`ESP32_S3_SD_Recorder/`](ESP32_S3_SD_Recorder/) | Earlier stereo development platform used to validate SD recording, buffering, controls, and recovery behavior |
-| [`ESP32_S3_USB_Mic/`](ESP32_S3_USB_Mic/) | Earlier USB Audio Class microphone firmware |
-| [`damping_tests/`](damping_tests/) and [`070926 Data/`](070926%20Data/) | Preliminary microphone-covering recordings and attenuation analysis |
+| [`legacy/ESP32_S3_SD_Recorder/`](legacy/ESP32_S3_SD_Recorder/) | Earlier stereo development platform used to validate SD recording, buffering, controls, and recovery behavior |
+| [`legacy/ESP32_S3_USB_Mic/`](legacy/ESP32_S3_USB_Mic/) | Earlier USB Audio Class microphone firmware |
+| [`damping_2026-07-09/`](damping_2026-07-09/) | Preliminary microphone-covering recordings and attenuation analysis |
 | [`presentation/`](presentation/) | Editable project presentation source and generated slide deck |
 
 ## Selected results
 
 **Acoustic source tracking.** A moving 1 kHz tone and white noise are traced along the array; each row is one microphone, shaded by its level above its own noise floor. The source is visible sweeping across the eight positions.
 
-![Array level maps for a 1 kHz tone and white noise](MMSA%20V2/data/team_update_2026-10-25/1_array_levels_tone_vs_noise.png)
+![Array level maps for a 1 kHz tone and white noise](MMSA%20V2/data/visualizations/MMSA8_0003_0004_levels_1-16k.png)
 
 **Battery run-down.** Recording all eight channels with Bluetooth connected ran for 6.5 h on a 1200 mAh cell before the 3.40 V cutoff.
 
-![Battery voltage during a 6.5 hour recording run-down](MMSA%20V2/data/team_update_2026-10-25/batlog_2026-10-25_rundown.png)
+![Battery voltage during a 6.5 hour recording run-down](MMSA%20V2/data/batlog/2026-10-25_rundown/batlog_2026-10-25_rundown.png)
 
 **Power characterization.** Current draw measured across a series resistor for each operating configuration.
 
-![Current draw by configuration](MMSA%20V2/data/team_update_2026-10-25/2_current_draw_by_config.png)
+![Current draw by configuration](MMSA%20V2/data/power/2026-10-24/power_2026-10-24_by_config.png)
 
 **Microphone covering study (preliminary).** Bench comparison of pop-filter and other coverings against a bare microphone, using a hairdryer as a wind source. These are not wind-tunnel results.
 
-![Microphone damping study summary](070926%20Data/mic_damping_summary.png)
+![Microphone damping study summary](damping_2026-07-09/mic_damping_summary.png)
 
 ## Known limitations and next steps
 

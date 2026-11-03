@@ -52,7 +52,7 @@ FQBN="esp32:esp32:esp32s3:UploadSpeed=921600,USBMode=hwcdc,CDCOnBoot=cdc,CPUFreq
 
 ## SD card test (prepared 2026-10-20)
 
-`MMSA_V2_SD_Test/` is V1's `SD_Card_SPI_Diagnostic` with the card-detect pin removed (V2 has none), plus three additions:
+`MMSA_V2_SD_Test/` is V1's `legacy/SD_Card_SPI_Diagnostic` with the card-detect pin removed (V2 has none), plus three additions:
 - a 20 MHz write-speed test: 1 MB in 4 KB chunks, reports KB/s and the worst chunk time, then reads back and verifies
 - REC button reruns the test
 - REC LED shows the result: solid = pass, fast blink = fail
@@ -66,7 +66,7 @@ Card: 32 GB SDHC (30436 MB), the V1 card with REC_00001–00024 still on it (the
 - Mounted at 100 kHz and at 20 MHz. Append, read back and directory listing all OK
 - 20 MHz write: 1 MB in ~865 ms = **~1180 KB/s**, chunk avg 3.4 ms, worst 5.6 ms, read-back verify PASS
 - Headroom: 8 mics × 16-bit × 48 kHz = 768 KB/s, so about 1.5×. Fine in bursts, but a recorder still needs a RAM buffer to ride out the occasional long stall a card does during real recordings (this 1 MB test is too short to show those).
-- Fixed an inherited V1 bug: file sizes printed as garbage (`size_t` passed to `%llu`). V1's `SD_Card_SPI_Diagnostic` still has it.
+- Fixed an inherited V1 bug: file sizes printed as garbage (`size_t` passed to `%llu`). V1's `legacy/SD_Card_SPI_Diagnostic` still has it.
 
 ## 2026-10-20: first mics (MIC 0 + MIC 1 on data line IO5): audio OK, L/R duplicated
 

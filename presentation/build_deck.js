@@ -43,7 +43,7 @@ const C = {
 };
 
 const outPath = path.resolve(__dirname, "MEMS_Microphone_Recorder_Project_Draft.pptx");
-const dampingFigure = path.resolve(__dirname, "..", "070926_Mic_Damping_Paper_Package", "02_Figures", "01_wind_attenuation.png");
+const dampingFigure = path.resolve(__dirname, "..", "damping_2026-07-09", "paper_package", "figures", "01_wind_attenuation.png");
 
 function addTitle(slide, title, subtitle) {
   slide.addText(title, { x: 0.58, y: 0.38, w: 11.9, h: 0.48, fontSize: 27, bold: true, color: C.navy, margin: 0, breakLine: false, fit: "shrink" });
