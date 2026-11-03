@@ -16,7 +16,7 @@ def load(path):
 for p in sys.argv[1:]:
     x, nch, sr = load(p)
     print(f"\n=== {p} ({len(x)/sr:.1f} s) ===   band levels dBFS: " + "  ".join(f"{a}-{b}" for a, b in BANDS))
-    for c in range(min(nch, 6)):
+    for c in range(nch):
         s = x[:, c] - x[:, c].mean()
         S = np.fft.rfft(s)
         f = np.fft.rfftfreq(len(s), 1 / sr)

@@ -32,7 +32,7 @@ for p in sys.argv[1:]:
     ch = x.reshape(-1, nch)
     print(" lag-1 autocorr per channel (as stored):", " ".join(f"{lag1(ch[:, c]):.2f}" for c in range(nch)))
     if nch >= 2:
-        k = min(nch, 6)
+        k = nch
         bp = np.stack([bandpass(ch[:, c], sr) for c in range(k)], axis=1)
         cc = np.corrcoef(bp.T)
         print(" 300-3000 Hz cross-correlation:")
@@ -40,7 +40,7 @@ for p in sys.argv[1:]:
             print("   " + " ".join(f"{cc[i, j]:5.2f}" for j in range(k)))
     if nch == 8:
         # Hypotheses: the real frame might be ordered differently. Try stride-s re-slicing of the raw stream
-        # and report lag-1 smoothness of the first 6 resulting streams.
+        # and report lag-1 smoothness of the resulting streams.
         for stride in (2, 4, 16):
             r = x[: (len(x) // stride) * stride].reshape(-1, stride)
             print(f" stride {stride:2d}: lag-1 of each column:", " ".join(f"{lag1(r[:, c]):.2f}" for c in range(min(stride, 16))))

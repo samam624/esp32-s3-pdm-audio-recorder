@@ -18,7 +18,7 @@ for p in sys.argv[1:]:
     x, nch, sr = load(p)
     print(f"\n=== {p} ===  quiet-frame PSD by band (dB re 32768^2/Hz):")
     print("       " + " ".join(f"{a//1000 if a>=1000 else a:>5}{'k' if a>=1000 else ' '}" for a in EDGES[:-1]))
-    for c in range(min(nch, 6)):
+    for c in range(nch):
         s = x[:, c] - x[:, c].mean()
         fl = 2400
         frames = s[: len(s) // fl * fl].reshape(-1, fl)

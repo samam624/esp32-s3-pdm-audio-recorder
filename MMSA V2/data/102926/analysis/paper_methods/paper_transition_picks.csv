@@ -1,0 +1,5 @@
+condition_mph,metric,leading_side_mic,trailing_side_mic,x_over_c_lo,x_over_c_hi,bracket_midpoint,adjacent_change,slope_per_x_over_c
+30,Lp,2,1,0.5805,0.6745,0.6275,29.4379,313.0778
+30,fmu,3,2,0.4864,0.5805,0.5334,271.9379,2889.2830
+60,Lp,3,2,0.4864,0.5805,0.5334,14.2824,151.7470
+60,fmu,3,2,0.4864,0.5805,0.5334,808.0429,8585.2862
