@@ -31,6 +31,7 @@ Sheet entries to the flex top level `Flex_TL`: `1V8`, `GND`, `CLK` (in), `DO` (o
 | LR internal pull-down | 200 kΩ (floating LR = left) | Table 6 note |
 | Sensitivity / SNR / AOP | −26 dBFS typ / 64 dB(A) / 122.5 dBSPL | Table 2 |
 | Current | 650 µA normal | Table 2 |
+| Package / port | HCLGA 3 × 4 × 1.00 (±0.1) mm. **Top port**: Ø0.25 mm sound inlet in the lid, facing away from the flex, 0.78 mm off center along the 4 mm side | p.1, Fig. 11 |
 | Handling | MSL 3, **max 3 reflow cycles**, no vacuum > 7 psi over the port | §4 |
 | Decoupling (ST rec.) | 100 nF + 1 µF ceramic close to pin 1 (board uses 100 nF + 10 µF) | §3 |
 
@@ -74,6 +75,31 @@ decode as noise depending on leakage, capacitance and receiver threshold. Theref
 **not** by itself prove an IO7 handover fault, and an entirely empty IO8 line is not an equivalent control. The
 useful evidence is that two fitted mic4 parts had nearly identical added hiss while mic5 remained clean.
 
+## Flex board build (JLC order, user screenshot 2026-10-30)
+
+Gerber "Project Outputs for Mems Microphone Project_Flex A_Y13", 5 pcs.
+
+| Item | Value |
+|---|---|
+| Base / layers | Flex, 2 layers, 25 µm dielectric, 1/3 oz ED copper |
+| Outline | 350 × 14 mm, ±0.1 mm |
+| **Thickness** | **0.11 mm** (the KiCad STEP shows 0.411 mm; use 0.11) |
+| Coverlay | Yellow polyimide, PI 12.5 µm + adhesive 15 µm; white silkscreen |
+| Finish | ENIG, 1 µin gold |
+| Stiffener | 0.225 mm polyimide on the **bottom only**, under the connector fingers (`pib_0.225.gbr`). Finger area finished at 0.3 mm for the ZIF; contacts on top |
+| Test | Flying probe, IPC class 2 |
+
+## Flex geometry (from `Flex Array_PCB.step`, 2026-10-30)
+
+- **mic0 is the end nearest the FPC tail** (user, 2026-10-30), and the order runs straight down the strip to mic7 at the far end.
+- **Strip:** 300 × 14 mm, then a 4.25 mm taper to a 46 × 5.5 mm tail centered on the strip (x 304.25–350).
+- **Ports:** in strip coordinates (x = 0 at the mic7 end), mic0..mic7 sit at x = **284, 245, 204, 165, 125, 84, 45, 4 mm**. The spacing alternates 39–41 mm (mean 40.0). All ports sit 0.78 mm off the strip centerline, on one side.
+- **Overhang:** mic0's port is 16 mm from the strip's tail end and mic7's is 4 mm from the far end.
+- **Components:** all on one side. Each mic has its two 0805 caps on the strip centerline, on the mic0 side:
+  - 10 µF, 1.4 mm tall (the tallest part, 0.3 mm above the mic lid), from 3.3 to 4.7 mm off the mic center.
+  - 100 nF, 1.0 mm tall, from 6.3 to 7.7 mm off the mic center.
+- **Test bed:** `cad/airfoil_testbed/` uses these numbers.
+
 ## Measured mic pitch (acoustic, 2026-10-24)
 
-`tools/spatial_track.py` on `data/MMSA8_0084.wav` (a sound source moved along the flex from the mic0 end to the mic7 end) fitted the mic spacing from the arrival-time differences: **39.5 mm pitch, so mic0 to mic7 spans ~276 mm** (delay fit residual 0.09 samples median; pitches from 38 to 42 mm fit almost as well). This assumes the mics sit in a straight line, evenly spaced. It fits the user's "evenly spaced out to 300 mm" if mic0 sits ~20 mm from the connector.
+`tools/spatial_track.py` on `data/MMSA8_0084.wav` (a sound source moved along the flex from the mic0 end to the mic7 end) fitted the mic spacing from the arrival-time differences: **39.5 mm pitch, so mic0 to mic7 spans ~276 mm** (delay fit residual 0.09 samples median; pitches from 38 to 42 mm fit almost as well). This assumes the mics sit in a straight line, evenly spaced. The CAD (above) gives 280 mm and a 40.0 mm mean pitch, inside the fit's range; use the CAD positions.

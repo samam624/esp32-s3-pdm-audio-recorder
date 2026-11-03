@@ -40,7 +40,7 @@ The design files don't show these changes:
 | R10 | 22 Ω | Series resistor on MIC_CLK (IO4 → FPC pin 3) | 0603 | `Yageo_RC0603FR-07.pdf` |
 | SD | MTSW-106-09-T-S-540 (Samtec) | 6-pin header for the microSD breakout | 2.54 mm THT | `Samtec_MTSW.pdf` |
 | FPC | 687110183622 (Würth), fitted in place of the designed Molex 52745-1097 (a matching part that was in stock; the netlist footprint keeps the Molex name) | 10-pin connector to the mic flex | 0.5 mm ZIF, top contact, SMT | **Not downloaded** (we-online.com blocks scripted downloads) |
-| (flex) | IMP34DT05TR (ST) ×8 | PDM mics, 4 stereo pairs | 3x4 mm LGA, bottom port | `IMP34DT05.pdf`. Flex wiring: `MIC_FLEX_MODULE.md` |
+| (flex) | IMP34DT05TR (ST) ×8 | PDM mics, 4 stereo pairs | HCLGA 3 × 4 × 1.00 mm, **top port** (Ø0.25 mm sound inlet in the lid, 0.78 mm off center; datasheet p.1 "Top-port design" and Fig. 11) | `IMP34DT05.pdf`. Flex wiring and geometry: `MIC_FLEX_MODULE.md` |
 | C1, C2 | 4.7 µF | Charger OUT (`4V2`) and `BAT` | 0603 | `Samsung_CL10A475KA8NQNC.pdf` |
 | C5 | 10 µF | VBUS | 0603 | — (LCSC only has Samsung's general catalog) |
 | C12 / C13 | 0.1 µF / 10 µF | `4V2` (LDO_3V3 input) | 0603 | `Yageo_CC0603KRX7R9BB104.pdf` / — |
