@@ -1,0 +1,372 @@
+{
+  "generated": "2026-10-31T05:12:47.959Z",
+  "units": "mm",
+  "frame": "X chordwise from the leading edge, Y spanwise (block centred), Z up; chord line at Z = 0, base bottom at Z = -baseDepth",
+  "parameters": {
+    "chord": 304.8,
+    "span": 30,
+    "baseDepth": 4,
+    "flexWidth": 14,
+    "flexThickness": 0.11,
+    "portXf": [
+      284,
+      245,
+      204,
+      165,
+      125,
+      84,
+      45,
+      4
+    ],
+    "portYfOffset": 0.78,
+    "micHeight": 1.1,
+    "micBody": [
+      3,
+      4.28
+    ],
+    "lidHalfWidth": 2,
+    "cap10u": {
+      "xf": [
+        3.28,
+        4.72
+      ],
+      "h": 1.4
+    },
+    "cap100n": {
+      "xf": [
+        6.28,
+        7.72
+      ],
+      "h": 1
+    },
+    "capHalfWidth": 0.6,
+    "mic0PortSigma": 17,
+    "channelClearance": 0.3,
+    "micPocketClearance": 0.15,
+    "gasket": 0.1,
+    "pocketLeadIn": 0.3,
+    "capMargin": 0.48,
+    "capHeadroom": 0.15,
+    "minSkin": 0.4,
+    "holeLidMargin": 0.35,
+    "plateauMargin": 1.5,
+    "cavityEndClearance": 1.5,
+    "frontSlotTop": -1,
+    "frontSlotSill": 0.6,
+    "backerFoam": 1,
+    "backerSideClearance": 0.4,
+    "backerEndGap": 1,
+    "minPrintGap": 0.35,
+    "labelFont": "C:/Windows/Fonts/arialbd.ttf",
+    "labelSize": 2.6,
+    "labelDepth": 0.4
+  },
+  "outerArcLength": 310.83,
+  "roofArcLength": 306.89,
+  "stripOnRoof": {
+    "start": 1,
+    "end": 301
+  },
+  "cavity": {
+    "frontX": 2.3,
+    "endX": 300.16,
+    "width": 14.6
+  },
+  "mics": [
+    {
+      "mic": 0,
+      "flexX": 284,
+      "D": 2,
+      "d": 1.1,
+      "roofDepth": 2.3,
+      "portX": 15.43,
+      "portXOverC": 0.051,
+      "surfaceArc": 19.94,
+      "surfaceZ": 10.89,
+      "surfaceSlopeDeg": 16.7,
+      "roofZ": 8.69,
+      "holeY": -0.65,
+      "portY": -0.78,
+      "caps": [
+        {
+          "name": "C10u",
+          "skin": 0.75,
+          "openThroughTop": false
+        },
+        {
+          "name": "C100n",
+          "skin": 1.15,
+          "openThroughTop": false
+        }
+      ]
+    },
+    {
+      "mic": 1,
+      "flexX": 245,
+      "D": 2.4,
+      "d": 1.4,
+      "roofDepth": 2.6,
+      "portX": 54.4,
+      "portXOverC": 0.178,
+      "surfaceArc": 59.47,
+      "surfaceZ": 17.05,
+      "surfaceSlopeDeg": 4.3,
+      "roofZ": 14.46,
+      "holeY": -0.45,
+      "portY": -0.78,
+      "caps": [
+        {
+          "name": "C10u",
+          "skin": 1.05,
+          "openThroughTop": false
+        },
+        {
+          "name": "C100n",
+          "skin": 1.45,
+          "openThroughTop": false
+        }
+      ]
+    },
+    {
+      "mic": 2,
+      "flexX": 204,
+      "D": 1.6,
+      "d": 0.8,
+      "roofDepth": 2,
+      "portX": 95.55,
+      "portXOverC": 0.313,
+      "surfaceArc": 100.64,
+      "surfaceZ": 18.28,
+      "surfaceSlopeDeg": -0.4,
+      "roofZ": 16.28,
+      "holeY": -0.78,
+      "portY": -0.78,
+      "caps": [
+        {
+          "name": "C10u",
+          "skin": 0.45,
+          "openThroughTop": false
+        },
+        {
+          "name": "C100n",
+          "skin": 0.85,
+          "openThroughTop": false
+        }
+      ]
+    },
+    {
+      "mic": 3,
+      "flexX": 165,
+      "D": 2,
+      "d": 1.4,
+      "roofDepth": 2.6,
+      "portX": 134.62,
+      "portXOverC": 0.442,
+      "surfaceArc": 139.74,
+      "surfaceZ": 17.12,
+      "surfaceSlopeDeg": -2.8,
+      "roofZ": 14.53,
+      "holeY": -0.65,
+      "portY": -0.78,
+      "caps": [
+        {
+          "name": "C10u",
+          "skin": 1.05,
+          "openThroughTop": false
+        },
+        {
+          "name": "C100n",
+          "skin": 1.45,
+          "openThroughTop": false
+        }
+      ]
+    },
+    {
+      "mic": 4,
+      "flexX": 125,
+      "D": 2.4,
+      "d": 0.8,
+      "roofDepth": 2,
+      "portX": 174.6,
+      "portXOverC": 0.573,
+      "surfaceArc": 179.79,
+      "surfaceZ": 14.53,
+      "surfaceSlopeDeg": -4.5,
+      "roofZ": 12.54,
+      "holeY": -0.45,
+      "portY": -0.78,
+      "caps": [
+        {
+          "name": "C10u",
+          "skin": 0.45,
+          "openThroughTop": false
+        },
+        {
+          "name": "C100n",
+          "skin": 0.85,
+          "openThroughTop": false
+        }
+      ]
+    },
+    {
+      "mic": 5,
+      "flexX": 84,
+      "D": 1.6,
+      "d": 1.1,
+      "roofDepth": 2.3,
+      "portX": 215.48,
+      "portXOverC": 0.707,
+      "surfaceArc": 220.84,
+      "surfaceZ": 10.86,
+      "surfaceSlopeDeg": -5.7,
+      "roofZ": 8.58,
+      "holeY": -0.78,
+      "portY": -0.78,
+      "caps": [
+        {
+          "name": "C10u",
+          "skin": 0.75,
+          "openThroughTop": false
+        },
+        {
+          "name": "C100n",
+          "skin": 1.15,
+          "openThroughTop": false
+        }
+      ]
+    },
+    {
+      "mic": 6,
+      "flexX": 45,
+      "D": 2.4,
+      "d": 1.1,
+      "roofDepth": 2.3,
+      "portX": 254.29,
+      "portXOverC": 0.834,
+      "surfaceArc": 259.88,
+      "surfaceZ": 6.63,
+      "surfaceSlopeDeg": -6.7,
+      "roofZ": 4.34,
+      "holeY": -0.45,
+      "portY": -0.78,
+      "caps": [
+        {
+          "name": "C10u",
+          "skin": 0.75,
+          "openThroughTop": false
+        },
+        {
+          "name": "C100n",
+          "skin": 1.15,
+          "openThroughTop": false
+        }
+      ]
+    },
+    {
+      "mic": 7,
+      "flexX": 4,
+      "D": 2,
+      "d": 0.8,
+      "roofDepth": 2,
+      "portX": 294.99,
+      "portXOverC": 0.968,
+      "surfaceArc": 300.92,
+      "surfaceZ": 1.4,
+      "surfaceSlopeDeg": -7.9,
+      "roofZ": -0.58,
+      "holeY": -0.65,
+      "portY": -0.78,
+      "caps": [
+        {
+          "name": "C10u",
+          "skin": 0.45,
+          "openThroughTop": false
+        },
+        {
+          "name": "C100n",
+          "skin": 0.85,
+          "openThroughTop": false
+        }
+      ]
+    }
+  ],
+  "checks": {
+    "interference": {
+      "mic0": 0,
+      "mic0_C10u": 0,
+      "mic0_C100n": 0,
+      "mic1": 0,
+      "mic1_C10u": 0,
+      "mic1_C100n": 0,
+      "mic2": 0,
+      "mic2_C10u": 0,
+      "mic2_C100n": 0,
+      "mic3": 0,
+      "mic3_C10u": 0,
+      "mic3_C100n": 0,
+      "mic4": 0,
+      "mic4_C10u": 0,
+      "mic4_C100n": 0,
+      "mic5": 0,
+      "mic5_C10u": 0,
+      "mic5_C100n": 0,
+      "mic6": 0,
+      "mic6_C10u": 0,
+      "mic6_C100n": 0,
+      "mic7": 0,
+      "mic7_C10u": 0,
+      "mic7_C100n": 0,
+      "flex": 0,
+      "backer_vs_block": 0,
+      "backer_vs_flex": 0
+    },
+    "block": {
+      "min": [
+        -0.0012460554338391944,
+        -15.000008784978391,
+        -4.000008784957352
+      ],
+      "max": [
+        304.80000878495736,
+        15.000008784978355,
+        18.57637646505585
+      ],
+      "volume": 87373.55087489689
+    },
+    "backer": {
+      "min": [
+        3.402437308917717,
+        -6.900000100022342,
+        -4.0000001
+      ],
+      "max": [
+        299.0165808176573,
+        6.900000100019388,
+        15.221986386345746
+      ],
+      "volume": 54548.85199510024
+    },
+    "backerPrintGap": 0.4,
+    "maxInterference": 0,
+    "print": {
+      "plate": {
+        "footprint": [
+          236.7,
+          236.7
+        ],
+        "height": 22.29,
+        "triangles": 87290,
+        "edgeGap": 9.6,
+        "noPrintZoneGap": 133.5
+      },
+      "backerOnly": {
+        "footprint": [
+          218.8,
+          218.8
+        ],
+        "height": 19.18,
+        "triangles": 1836
+      }
+    }
+  }
+}
