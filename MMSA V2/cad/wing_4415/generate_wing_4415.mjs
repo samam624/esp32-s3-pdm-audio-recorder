@@ -40,7 +40,7 @@ import path from 'node:path';
 import v8 from 'node:v8';
 import vm from 'node:vm';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { buildThreeMf, meshStats, weldMesh } from '../airfoil_testbed/threemf.mjs';
+import { buildThreeMf, meshStats, weldMesh } from '../airfoil_testbed_0012/threemf.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const outDir = path.join(here, 'output');

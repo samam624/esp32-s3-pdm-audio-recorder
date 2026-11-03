@@ -1,7 +1,7 @@
 /**
  * MMSA airfoil mic-port test bed, NACA 4415 version.
  *
- * Same job as ../airfoil_testbed (v1, NACA 0012): one print that tests 8 port
+ * Same job as ../airfoil_testbed_0012 (NACA 0012): one print that tests 8 port
  * geometries (hole diameter D, skin depth d) under a Monokote skin, with the
  * real mic flex in a channel under the surface. What changed:
  *  - The surface comes from the user's wing file, input/"Air Foil NACA 4415
@@ -38,7 +38,7 @@ import path from 'node:path';
 import v8 from 'node:v8';
 import vm from 'node:vm';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { buildThreeMf, meshStats, weldMesh } from '../airfoil_testbed/threemf.mjs';
+import { buildThreeMf, meshStats, weldMesh } from '../airfoil_testbed_0012/threemf.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const outDir = path.join(here, 'output');
@@ -50,7 +50,7 @@ const STEP_FILE = process.env.AIRFOIL_STEP ?? path.join(here, 'input', 'Air Foil
 // ---------------------------------------------------------------- parameters (mm)
 const P = {
   yawDeg: yawArg ? Number(yawArg.slice(6)) : null, // null = smallest angle (0.5 deg steps) that fits
-  bandWidth: 30.0, // sets the side walls: (30 - 14.6) / 2 = 7.7 mm minimum beside the channel, as v1
+  bandWidth: 30.0, // sets the side walls: (30 - 14.6) / 2 = 7.7 mm minimum beside the channel, as the 0012 rig
   baseDepth: 4.0, // flat base below the chord line (the tail slot is 2.4 mm tall)
 
   // Flex, from Flex Array_PCB.step. xf runs along the strip, 0 at the mic7 end,
@@ -71,7 +71,7 @@ const P = {
   stripStartMargin: 1.0, // the strip corner nearest the leading edge sits this far (roof arc) from it
   teMargin: 3.0, // the channel's far corner stays this far (roof arc) from the trailing edge
 
-  // Fits (same as v1)
+  // Fits (same as the 0012 rig)
   channelClearance: 0.3, // per side, flex in the channel
   micPocketClearance: 0.15, // per side
   gasket: 0.10, // thin double-sided tape between the mic lid and the pocket roof
@@ -98,7 +98,7 @@ const P = {
   labelEdgeMargin: 5.0, // labels stay this far inside the leading and trailing edges (plan x)
 };
 
-// Port variants, one per mic. D = hole diameter, d = skin over the mic lid. Same as v1.
+// Port variants, one per mic. D = hole diameter, d = skin over the mic lid. Same as the 0012 rig.
 const VARIANTS = [
   { D: 2.0, d: 1.1 }, // mic0
   { D: 2.4, d: 1.4 }, // mic1
@@ -523,7 +523,7 @@ const zTop = zMax + 5;
 const zBot = -B - 2;
 
 const blockHalf = P.bandWidth / 2;
-const wallMin = blockHalf - cavityWidth / 2; // side wall thickness beside the channel (7.7 mm, as v1)
+const wallMin = blockHalf - cavityWidth / 2; // side wall thickness beside the channel (7.7 mm, as the 0012 rig)
 const uChannel0 = (-12 - L.sigmaTail - (cavityWidth / 2) * sn) / cs;
 for (const v of [-1, 1]) {
   if (planOf(dev(uChannel0, (v * cavityWidth) / 2))[0] > -1.2) throw new Error('channel does not reach out through the front face');

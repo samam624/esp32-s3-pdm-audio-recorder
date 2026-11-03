@@ -43,7 +43,7 @@ Monokote was used before and passed audio. It adds about 25 um to the surface, i
 
 ## Next steps
 
-1. **Done as the airfoil test bed** (`cad/airfoil_testbed/`, 2026-10-30): one diagonal print of the NACA 0012 upper surface on a flat base, with all 8 mics at their real flex positions (CAD, not the 39.5 mm acoustic estimate). Each port is a different window diameter D (1.6 / 2.0 / 2.4 mm) and skin depth d (0.8 / 1.1 / 1.4 mm; the 10 µF caps stop d going below 0.8 without opening their pockets through the skin). The whole top is wrapped, so there is no bare reference port; the reference is the same print measured before the film goes on (step 4).
+1. **Done as the airfoil test bed** (`cad/airfoil_testbed_0012/`, 2026-10-30): one diagonal print of the NACA 0012 upper surface on a flat base, with all 8 mics at their real flex positions (CAD, not the 39.5 mm acoustic estimate). Each port is a different window diameter D (1.6 / 2.0 / 2.4 mm) and skin depth d (0.8 / 1.1 / 1.4 mm; the 10 µF caps stop d going below 0.8 without opening their pockets through the skin). The whole top is wrapped, so there is no bare reference port; the reference is the same print measured before the film goes on (step 4).
 2. Print in PETG or ASA, not PLA. PLA softens at about 55-60 C and Monokote needs roughly 105-120 C to seal. Test heat on a scrap piece first. Use the lowest iron setting that bonds, keep the iron moving, and back the skin with metal.
 3. Seal one sheet of Monokote over the whole top surface (the final wing gets wrapped the same way), with the flex removed so the iron doesn't heat the mics. Let it cool and settle before testing.
 4. Calibrate with a known source: a small speaker about 10 cm above the test bed, log sweep or pink noise, all 8 mics recording. Record once before the film goes on and once after; dividing each mic's after-spectrum by its own before-spectrum cancels the speaker, the position and the mic's sensitivity. Keep the level moderate so nothing clips.
@@ -56,7 +56,7 @@ Monokote was used before and passed audio. It adds about 25 um to the surface, i
   - **Angle:** a disturbance spreads downstream in a wedge of roughly 10° half-angle (typical turbulent-wedge figure, not measured here). At the 40 mm port pitch, a yaw of **15–20°** puts each port 10–14 mm to the side of the one before, clear of that wedge with margin. The Risø NACA0015 model used about 16° (`LITERATURE_wing_mounting_and_transition.md`, stagger recommendation).
   - **Monokote:** under the film the ports are flush and closed, so their wakes are much weaker. Keep the angle anyway.
   - **Fit on the 152.4 mm span:** the surface is a straight extrusion along the span, so it unrolls flat and the strip can lie along any straight line on it. At 20° the 300 × 14 mm strip covers about 287 mm of the 311 mm upper-surface arc and 116 mm of the span. The limit is about 27°. Check tip clearance and the tail's path around the nose when the wing is designed.
-  - **The bench test bed** (`cad/airfoil_testbed/`) runs straight along the chord.
+  - **The bench test bed** (`cad/airfoil_testbed_0012/`) runs straight along the chord.
   - **NACA 4415 wing (2026-11-01):** the next test uses `Air Foil NACA 4415 Small Slot.step` (243.84 mm chord, 199 mm span, 260 mm upper arc). The 300 mm strip only fits at **36.5° or more**, using ~190 mm of span, so the 15–20° figure above no longer applies. Its bench rig is `cad/airfoil_testbed_4415/` (flex at 36.5°). The file's section is ~20% thick, not the 15% of a true 4415; check before printing the wing.
   - **Printed wing (2026-11-02):** `cad/wing_4415/` is the full wing, in two P1S halves split at the chord line, with the flex, the MMSA V2 board and the 2000 mAh battery inside. mic0 is left unpopulated: its stretch of strip and the tail run round the nose to the board, so there's no extension. That leaves about 256 mm of strip on the surface, so the flex fits at 28° (28–30° works). Board dimensions and the port size are still placeholders. See its README.
 - **Next flex revision: use 0402 decoupling caps** (about 0.5 mm tall, below the 1.0–1.1 mm mic lid). The current 0805 10 µF caps are 1.4 mm tall, 0.3 mm above the lid. They force the skin over each mic to at least 0.8 mm; anything thinner opens the cap pocket through the surface, which is bad on an uncoated wing. ST recommends 100 nF + 1 µF at pin 1, and both come in 0402. That's fine for port acoustics, but its x/c positions differ from the angled layout.
@@ -75,7 +75,7 @@ Monokote was used before and passed audio. It adds about 25 um to the surface, i
 
 ## Files
 
-- `cad/airfoil_testbed/`: the test bed (generator, print files, STEP, README with the variant table).
+- `cad/airfoil_testbed_0012/`: the NACA 0012 test bed (superseded by `cad/airfoil_testbed_4415/`) (generator, print files, STEP, README with the variant table).
 - `tools/port_filter_model.py`: lumped model (hole divider and film variants).
 - `tools/transition_band_search.py`: band search and ramp multiplot.
 - `tools/overlay_flow_photos.py`: flow and array overlay.

@@ -1,11 +1,11 @@
 # Airfoil port test bed, NACA 4415
 
-This rig replaces [v1](../airfoil_testbed/) for the next port test. v1 was cut from the NACA 0012, which turned out to be the wrong profile (2026-11-01). The job is the same: one print tests 8 mic-port geometries under a Monokote skin. Each mic sits in its own pocket under a hole of a different diameter **D** and depth **d** (d = skin over the mic lid). The flex, port variants, fits and backer are all the same as v1.
+This rig replaces [the NACA 0012 rig](../airfoil_testbed_0012/) for the next port test. That one was cut from the NACA 0012, which turned out to be the wrong profile (2026-11-01). The job is the same: one print tests 8 mic-port geometries under a Monokote skin. Each mic sits in its own pocket under a hole of a different diameter **D** and depth **d** (d = skin over the mic lid). The flex, port variants, fits and backer are all the same as the 0012 rig.
 
 **What changed:**
 - **The surface comes from the wing file.** It is the upper surface of `input/Air Foil NACA 4415 Small Slot.step` (243.84 mm chord, LE at x = 60.96 in the STEP), sampled straight from the file. The printed top is within 0.03 mm of the STEP everywhere checked, about 4,800 points across the whole chord.
-- **The flex runs at 36.5° across the chord.** This airfoil's upper surface is only 260 mm long, too short for the 300 mm flex laid straight. 36.5° is the smallest angle (in 0.5° steps) that fits with the same end margins as v1, and the real wing has to angle the array anyway.
-- **The block is a straight diagonal slice of the wing**, 37.4 mm wide, at 38.2° to the chord in plan, on a flat 4 mm base. A straight strip laid at an angle over the rounded nose curves in plan view, so the channel inside bends near the leading edge. The outer walls stay straight anyway, so the side walls are at least 7.7 mm thick (as in v1) and thicker near the nose. The first build (2026-11-02, early morning) had walls that followed the channel and hooked round at the nose.
+- **The flex runs at 36.5° across the chord.** This airfoil's upper surface is only 260 mm long, too short for the 300 mm flex laid straight. 36.5° is the smallest angle (in 0.5° steps) that fits with the same end margins as the 0012 rig, and the real wing has to angle the array anyway.
+- **The block is a straight diagonal slice of the wing**, 37.4 mm wide, at 38.2° to the chord in plan, on a flat 4 mm base. A straight strip laid at an angle over the rounded nose curves in plan view, so the channel inside bends near the leading edge. The outer walls stay straight anyway, so the side walls are at least 7.7 mm thick (as in the 0012 rig) and thicker near the nose. The first build (2026-11-02, early morning) had walls that followed the channel and hooked round at the nose.
 
 ![plan](output/reference/testbed_plan.png)
 
@@ -32,11 +32,11 @@ Each build checks that:
 
 ## Print
 
-**Orientation: as laid out, base flat on the bed.** That's the only orientation that needs no supports, same as v1. The plate is 242 × 243 × 38 mm.
+**Orientation: as laid out, base flat on the bed.** That's the only orientation that needs no supports, same as the 0012 rig. The plate is 242 × 243 × 38 mm.
 
 Sliced with the command-line version of Bambu Studio (P1S 0.4 nozzle, Bambu PETG Basic, Textured PEI, **supports off**, brim auto): **0.12 mm Fine, 10% lightning infill: 76 g, 3 h 16 min, no warnings.**
 
-The v1 print notes all still apply:
+The 0012 rig's print notes all still apply:
 - PETG or ASA, not PLA.
 - No inner brim.
 - Elephant-foot compensation at 0.15 mm.
@@ -59,7 +59,7 @@ mic0 is at the tail end, so the tail exits through an 18 mm wide slot in the fro
 | 6 | 0.822 | −16 | 2.4 | 1.1 | 0.75 / 1.15 |
 | 7 | 0.952 | −19 | 2.0 | 0.8 | 0.45 / 0.85 |
 
-Film-loss guesses depend only on D and d, so they're the same as v1's table.
+Film-loss guesses depend only on D and d, so they're the same as the 0012 rig's table.
 
 **Labels:** each label (e.g. `3: D2.0 d1.4`) is engraved 0.4 mm into the bottom face next to its mic. They read correctly with the block upside down, which is how it's assembled.
 
@@ -67,7 +67,7 @@ Film-loss guesses depend only on D and d, so they're the same as v1's table.
 
 ## Assemble and test
 
-Same as v1; see [../airfoil_testbed/README.md](../airfoil_testbed/README.md) ("Assemble" and "Test").
+Same as the 0012 rig; see [../airfoil_testbed_0012/README.md](../airfoil_testbed_0012/README.md) ("Assemble" and "Test").
 - Work with the block upside down on a cloth.
 - Lay the flex components-down with the tail at the leading-edge end, and feed the tail out of the front slot.
 - Press each mic into its pocket.

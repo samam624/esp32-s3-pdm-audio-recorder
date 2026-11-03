@@ -98,7 +98,7 @@ Gerber "Project Outputs for Mems Microphone Project_Flex A_Y13", 5 pcs.
 - **Components:** all on one side. Each mic has its two 0805 caps on the strip centerline, on the mic0 side:
   - 10 µF, 1.4 mm tall (the tallest part, 0.3 mm above the mic lid), from 3.3 to 4.7 mm off the mic center.
   - 100 nF, 1.0 mm tall, from 6.3 to 7.7 mm off the mic center.
-- **Test bed:** `cad/airfoil_testbed/` uses these numbers.
+- **Test bed:** `cad/airfoil_testbed_0012/` (NACA 0012, superseded) and `cad/airfoil_testbed_4415/` use these numbers.
 
 ## Measured mic pitch (acoustic, 2026-10-24)
 

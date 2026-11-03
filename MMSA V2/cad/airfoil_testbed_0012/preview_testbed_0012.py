@@ -1,12 +1,12 @@
 """Section-view previews of the airfoil port test bed, cut from the generated STL meshes.
 
 Reads output/reference/{block,backer,flex,parts}.stl and testbed_design.json
-(written by generate_testbed.mjs) and writes output/reference/testbed_sections.png:
+(written by generate_testbed_0012.mjs) and writes output/reference/testbed_sections.png:
   top     full-chord section through the port line, with the flex, mics and backer
   bottom  one close-up per mic, cut through that mic's hole
 
 Usage:
-    python preview_testbed.py [OUTPUT_DIR]
+    python preview_testbed_0012.py [OUTPUT_DIR]
 """
 
 from __future__ import annotations
@@ -104,7 +104,7 @@ def main() -> None:
             s.set_color("#d6d5d0")
     handles = [Line2D([], [], color=c, lw=2, label=lab) for c, lab in LAYERS.values()]
     fig.legend(handles=handles, loc="upper right", ncol=4, frameon=False, fontsize=9)
-    fig.suptitle("MMSA airfoil port test bed v1: section views (close-ups cut through each hole; leading edge to the left)",
+    fig.suptitle("MMSA airfoil port test bed, NACA 0012: section views (close-ups cut through each hole; leading edge to the left)",
                  x=0.02, ha="left", fontsize=12, color=INK)
     path = ref / "testbed_sections.png"
     fig.savefig(path, dpi=140, facecolor=SURFACE, bbox_inches="tight")

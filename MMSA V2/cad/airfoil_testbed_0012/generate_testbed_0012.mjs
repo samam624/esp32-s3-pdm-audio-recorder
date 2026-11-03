@@ -1,5 +1,5 @@
 /**
- * MMSA airfoil mic-port test bed, v1.
+ * MMSA airfoil mic-port test bed, NACA 0012 (superseded by ../airfoil_testbed_4415).
  *
  * A 30 mm wide slice of the NACA 0012 upper surface (304.8 mm chord, same as
  * "Air Foil NACA 0012.step") sitting on a flat 4 mm base. The mic flex goes in
@@ -15,10 +15,10 @@
  * and leaves through a slot in the front face.
  *
  * Writes output/:
- *   MMSA_testbed_v1_print.3mf                    block + backer on one 256 mm bed plate (the print)
- *   MMSA_testbed_v1.step                         block + backer, opens in Fusion 360
- *   reference/MMSA_testbed_v1_backer_only.3mf    spare backer
- *   reference/MMSA_testbed_v1_fitcheck.step      adds a dummy flex, mics and caps
+ *   MMSA_testbed_0012_print.3mf                    block + backer on one 256 mm bed plate (the print)
+ *   MMSA_testbed_0012.step                         block + backer, opens in Fusion 360
+ *   reference/MMSA_testbed_0012_backer_only.3mf    spare backer
+ *   reference/MMSA_testbed_0012_fitcheck.step      adds a dummy flex, mics and caps
  *   reference/*.stl, reference/testbed_design.json          for preview_testbed.py and the README
  *
  * Run:  node generate_testbed.mjs        (add --dry to print the layout only)
@@ -580,8 +580,8 @@ function bedLayout(shapes, name) {
 
 const plateBed = bedLayout([block, backer], 'testbed_with_backer');
 const backerBed = bedLayout([backer], 'flex_backer');
-fs.writeFileSync(path.join(outDir, 'MMSA_testbed_v1_print.3mf'), buildThreeMf('MMSA port test bed v1 (block + backer printed in place)', [plateBed.object]));
-fs.writeFileSync(path.join(refDir, 'MMSA_testbed_v1_backer_only.3mf'), buildThreeMf('MMSA port test bed v1 - spare backer', [backerBed.object]));
+fs.writeFileSync(path.join(outDir, 'MMSA_testbed_0012_print.3mf'), buildThreeMf('MMSA port test bed NACA 0012 (block + backer printed in place)', [plateBed.object]));
+fs.writeFileSync(path.join(refDir, 'MMSA_testbed_0012_backer_only.3mf'), buildThreeMf('MMSA port test bed NACA 0012 - spare backer', [backerBed.object]));
 checks.print = {
   plate: {
     footprint: plateBed.footprint.map((x) => +x.toFixed(1)),
@@ -593,11 +593,11 @@ checks.print = {
   backerOnly: { footprint: backerBed.footprint.map((x) => +x.toFixed(1)), height: +backerBed.height.toFixed(2), triangles: backerBed.triangles },
 };
 
-await writeBlob(path.join(outDir, 'MMSA_testbed_v1.step'), replicad.exportSTEP([
+await writeBlob(path.join(outDir, 'MMSA_testbed_0012.step'), replicad.exportSTEP([
   { shape: block, name: 'testbed_block', color: '#c8c8c8' },
   { shape: backer, name: 'flex_backer', color: '#3b7dd8' },
 ]));
-await writeBlob(path.join(refDir, 'MMSA_testbed_v1_fitcheck.step'), replicad.exportSTEP([
+await writeBlob(path.join(refDir, 'MMSA_testbed_0012_fitcheck.step'), replicad.exportSTEP([
   { shape: block, name: 'testbed_block', color: '#c8c8c8', alpha: 0.5 },
   { shape: backer, name: 'flex_backer', color: '#3b7dd8' },
   { shape: flex, name: 'flex_strip', color: '#e0b000' },

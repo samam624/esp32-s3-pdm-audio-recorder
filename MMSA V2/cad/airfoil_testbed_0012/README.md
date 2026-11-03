@@ -1,4 +1,4 @@
-# Airfoil port test bed v1
+# Airfoil port test bed, NACA 0012 (superseded)
 
 > **Superseded for the next test by [`../airfoil_testbed_4415/`](../airfoil_testbed_4415/)** (2026-11-01). The NACA 0012 was the wrong profile; the next test uses the NACA 4415 wing file, with the flex angled across the chord.
 
@@ -16,13 +16,13 @@ One print that tests 8 mic-port geometries at once under a Monokote skin. It is 
 
 | File | Use |
 |---|---|
-| `output/MMSA_testbed_v1_print.3mf` | **The print.** Block and backer on one plate, already diagonal and centered on the P1S bed. Don't re-arrange it |
-| `output/MMSA_testbed_v1.step` | Block and backer as solids. Open in Fusion 360 (File > Open) to edit |
-| `output/reference/MMSA_testbed_v1_backer_only.3mf` | Spare backer, if one is needed later |
-| `output/reference/MMSA_testbed_v1_fitcheck.step` | Block and backer plus a dummy flex, mics and caps in place |
+| `output/MMSA_testbed_0012_print.3mf` | **The print.** Block and backer on one plate, already diagonal and centered on the P1S bed. Don't re-arrange it |
+| `output/MMSA_testbed_0012.step` | Block and backer as solids. Open in Fusion 360 (File > Open) to edit |
+| `output/reference/MMSA_testbed_0012_backer_only.3mf` | Spare backer, if one is needed later |
+| `output/reference/MMSA_testbed_0012_fitcheck.step` | Block and backer plus a dummy flex, mics and caps in place |
 | `output/reference/testbed_design.json` | Every computed position and check |
-| `generate_testbed.mjs` | Builds everything (`node generate_testbed.mjs`; `--dry` prints the layout only) |
-| `preview_testbed.py` | Redraws the section image from the meshes |
+| `generate_testbed_0012.mjs` | Builds everything (`node generate_testbed_0012.mjs`; `--dry` prints the layout only) |
+| `preview_testbed_0012.py` | Redraws the section image from the meshes |
 
 The generator uses replicad (OpenCascade in Node). It's already installed under `ProjectTreebeard/MSV3/.../tools/node/node_modules`. Set `REPLICAD_NODE_MODULES` if it moves. Each build checks that:
 - no mic, cap or flex overlaps the block or backer;
@@ -100,4 +100,4 @@ Work with the block **upside down**, its top surface on a soft cloth, so gravity
 
 ## Change something
 
-Edit `P` (fits, sizes) or `VARIANTS` (D and d per mic) at the top of `generate_testbed.mjs` and re-run it, then `python preview_testbed.py`. The build fails if a change makes parts collide, crowds the backer, puts the strip past either edge, or doesn't fit the bed.
+Edit `P` (fits, sizes) or `VARIANTS` (D and d per mic) at the top of `generate_testbed_0012.mjs` and re-run it, then `python preview_testbed_0012.py`. The build fails if a change makes parts collide, crowds the backer, puts the strip past either edge, or doesn't fit the bed.
